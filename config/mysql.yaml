@@ -1,0 +1,7 @@
+# mysql
+path: 42.192.46.30
+port: 3306
+db-name: douyin
+username: root
+password: abc123456
+singular: true

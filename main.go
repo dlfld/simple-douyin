@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
 	r := gin.Default()
@@ -37,5 +38,7 @@ func main() {
 	//apiRouter.GET("/message/chat/", controller.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
+	// 视频相关结构
+	apiRouter.GET("/publish/list/", handler.PublishList)
 	r.Run(":8080")
 }

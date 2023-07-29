@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary 消息操作
+// MessageAction @Summary 消息操作
 // @Schemes
 // @Description 登录用户对消息的相关操作，目前只支持消息发送
 // @Tags example

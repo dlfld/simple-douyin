@@ -16,10 +16,9 @@
                 "tags": [
                     "example"
                 ],
-                "summary": "消息操作",
                 "parameters": [
                     {
-                        "description": "token",
+                        "description": "Message Action Params",
                         "name": "token",
                         "in": "body",
                         "required": true,
@@ -27,8 +26,33 @@
                             "$ref": "#/definitions/message.MessageActionRequest"
                         }
                     }
+                ]
+            }
+        },
+        "/douyin/publish/list/": {
+            "get": {
+                "description": "获取用户发表的视频列表",
+                "consumes": [
+                    "application/json"
                 ],
-                "responses": {}
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "视频接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
+                    }
+                ]
             }
         }
     },

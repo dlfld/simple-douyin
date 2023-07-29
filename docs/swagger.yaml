@@ -19,7 +19,7 @@ paths:
       - application/json
       description: 登录用户对消息的相关操作，目前只支持消息发送
       parameters:
-      - description: token
+      - description: Message Action Params
         in: body
         name: token
         required: true
@@ -27,8 +27,22 @@ paths:
           $ref: '#/definitions/message.MessageActionRequest'
       produces:
       - application/json
-      responses: {}
-      summary: 消息操作
       tags:
       - example
+  /douyin/publish/list/:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户发表的视频列表
+      parameters:
+      - in: query
+        name: token
+        type: string
+      - in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      tags:
+      - 视频接口
 swagger: "2.0"

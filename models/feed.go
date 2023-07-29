@@ -24,7 +24,7 @@ type Video struct {
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 	Author        User           `gorm:"foreignkey:AuthorID" json:"author,omitempty"`
 	AuthorID      uint           `gorm:"index:idx_authorid;not null" json:"author_id,omitempty"`
-	PlayUrl       string         `gorm:"type:varchar(255);not null" json:"play_url,omitempty"`
+	PlayUrl       string         `gorm:"type:varchar(512);not null" json:"play_url,omitempty"`
 	CoverUrl      string         `gorm:"type:varchar(255)" json:"cover_url,omitempty"`
 	FavoriteCount uint           `gorm:"default:0;not null" json:"favorite_count,omitempty"`
 	CommentCount  uint           `gorm:"default:0;not null" json:"comment_count,omitempty"`

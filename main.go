@@ -1,14 +1,19 @@
 package main
 
 import (
+	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
 	r := gin.Default()
+	docs.SwaggerInfo.BasePath = ""
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	apiRouter := r.Group("/douyin")
 	//// basic apis
 	//apiRouter.GET("/feed/", controller.Feed)
@@ -32,5 +37,5 @@ func main() {
 	//apiRouter.GET("/message/chat/", controller.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
-	r.Run(":6666")
+	r.Run(":8080")
 }

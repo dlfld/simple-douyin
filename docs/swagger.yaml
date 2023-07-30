@@ -10,6 +10,13 @@ definitions:
       token:
         type: string
     type: object
+  video.PublishListRequest:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
@@ -29,18 +36,39 @@ paths:
       - application/json
       tags:
       - example
+  /douyin/publish/action/:
+    post:
+      consumes:
+      - application/json
+      description: 视频投稿
+      parameters:
+      - in: query
+        items:
+          type: integer
+        name: data
+        type: array
+      - in: query
+        name: title
+        type: string
+      - in: query
+        name: token
+        type: string
+      produces:
+      - application/json
+      tags:
+      - 视频接口
   /douyin/publish/list/:
     get:
       consumes:
       - application/json
       description: 获取用户发表的视频列表
       parameters:
-      - in: query
+      - description: body
+        in: body
         name: token
-        type: string
-      - in: query
-        name: user_id
-        type: integer
+        required: true
+        schema:
+          $ref: '#/definitions/video.PublishListRequest'
       produces:
       - application/json
       tags:

@@ -28,3 +28,13 @@ var InteractionService = interactionServiceConfig{
 	Name: "interactionService",
 	Addr: "127.0.0.1:8085",
 }
+
+var MinioConfig = minioConfig{
+	EndPoint:                  "42.192.46.30:9090",
+	AccessKeyId:               "douyinqingxunying",
+	SecretAccessKey:           "womenyiqiquchizhibaoyu",
+	UseSSL:                    false,
+	VideoBucketName:           "video1",
+	AvatarBucketName:          "avatar",
+	BackgroundImageBucketName: "backgroundImage",
+}

@@ -48,6 +48,40 @@ var doc = `{
                 ]
             }
         },
+        "/douyin/publish/action/": {
+            "post": {
+                "description": "视频投稿",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "视频接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "name": "data",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    }
+                ]
+            }
+        },
         "/douyin/publish/list/": {
             "get": {
                 "description": "获取用户发表的视频列表",
@@ -62,14 +96,13 @@ var doc = `{
                 ],
                 "parameters": [
                     {
-                        "type": "string",
+                        "description": "body",
                         "name": "token",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "user_id",
-                        "in": "query"
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/video.PublishListRequest"
+                        }
                     }
                 ]
             }
@@ -90,6 +123,17 @@ var doc = `{
                 },
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "video.PublishListRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         }

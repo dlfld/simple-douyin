@@ -1,15 +1,39 @@
 package main
 
 import (
+	"fmt"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"os"
+	"os/exec"
+	"runtime"
 )
 
-func main() {
+func getWorkingDirPath() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	return dir
+}
 
+func genSwagger() {
+	// 有问题，不能用
+	sysType := runtime.GOOS
+	if sysType == "linux" || sysType == "darwin" {
+		absWd := getWorkingDirPath()
+		command := "bash " + absWd + "/bash/swag_gen.sh"
+		cmd := exec.Command(command)
+		err := cmd.Run()
+		fmt.Printf("%+v\n", err)
+	}
+}
+func main() {
+	//执行生成swagger文件的命令 warning 失效
+	//genSwagger()
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
 	r := gin.Default()
@@ -40,5 +64,7 @@ func main() {
 
 	// 视频相关结构
 	apiRouter.GET("/publish/list/", handler.PublishList)
+	apiRouter.POST("/publish/action/", handler.VideoSubmit)
+
 	r.Run(":8080")
 }

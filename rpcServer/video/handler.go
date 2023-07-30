@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"github.com/douyin/kitex_gen/video"
+	"github.com/douyin/rpcServer/video/convert"
+	"github.com/douyin/rpcServer/video/db"
 	"net/http"
 	"strconv"
 )
@@ -26,11 +28,16 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 // 获取登录用户的视频发布列表，直接列出用户所有投稿过的视频。
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
 	// 根据登陆用户的id，查询用户所投稿过的所有视频
-	//print
-	videoList, err := FindVideoListBy("id", strconv.FormatInt(req.GetUserId(), 10))
+	videoList, err := db.FindVideoListBy("id", strconv.Itoa(int(req.GetUserId())))
 	if err != nil {
 		return nil, err
 	}
-	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: http.StatusOK}
+	// 将从数据库中查询出来的bo对象转换为kitex的dto对象
+	videoDtoSlice, err := convert.VideoSliceBo2Dto(videoList)
+	if err != nil {
+		return nil, err
+	}
+	// 封装返回结果
+	resp = &video.PublishListResponse{VideoList: videoDtoSlice, StatusCode: http.StatusOK}
 	return resp, err
 }

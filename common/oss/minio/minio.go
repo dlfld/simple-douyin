@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/douyin/common/conf"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -15,6 +16,15 @@ import (
 
 var minioClient *minio.Client
 var once sync.Once
+
+// init 初始化minio的连接对象
+func init() {
+	client, err := getClient()
+	if err != nil {
+		log.Fatal("minio客户端初始化失败！")
+	}
+	minioClient = client
+}
 
 // getClient
 //
@@ -47,19 +57,27 @@ func CreateBucket(bucketName string) error {
 	if len(bucketName) <= 0 {
 		return errors.New("bucketName invalid")
 	}
-	client, err := getClient()
-	if err != nil {
-		log.Fatalln("minio客户端创建失败")
-		return err
-	}
 	ctx := context.Background()
-	if err := client.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{}); err != nil {
-		_, err := client.BucketExists(ctx, bucketName)
+	if err := minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{}); err != nil {
+		exist, err := minioClient.BucketExists(ctx, bucketName)
 		if err != nil {
 			log.Printf("%+v\n", err)
 			return err
 		}
+		if exist {
+			log.Printf("Bucket %s 已经存在！", bucketName)
+			return nil
+		}
 	}
 	log.Printf("创建Bucket %s 成功\n", bucketName)
+	return nil
+}
+
+func DeleteBucket(bucketName string) error {
+	err := minioClient.RemoveBucket(context.Background(), bucketName)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 	return nil
 }

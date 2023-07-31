@@ -19,19 +19,22 @@ var once sync.Once
 
 // init 初始化minio的连接对象
 func init() {
-	client, err := getClient()
+	client, err := GetClient()
 	if err != nil {
 		log.Fatal("minio客户端初始化失败！")
 	}
 	minioClient = client
 }
 
-// getClient
+type Minio struct {
+}
+
+// GetClient
 //
 //	@Description: 创建minio链接客户端
 //	@return *minio.Client
 //	@return error
-func getClient() (*minio.Client, error) {
+func GetClient() (*minio.Client, error) {
 	// Initialize minio client object.
 	var err error
 	once.Do(func() {
@@ -73,6 +76,11 @@ func CreateBucket(bucketName string) error {
 	return nil
 }
 
+// DeleteBucket
+//
+//	    @Description: 删除桶
+//		@param bucketName 桶名字
+//		@return error
 func DeleteBucket(bucketName string) error {
 	err := minioClient.RemoveBucket(context.Background(), bucketName)
 	if err != nil {

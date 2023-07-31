@@ -30,9 +30,9 @@ var InteractionService = interactionServiceConfig{
 }
 
 var MinioConfig = minioConfig{
-	EndPoint:                  "10.131.18.162:9000",
-	AccessKeyId:               "v7vX5mBjOxqIo19brQpg",
-	SecretAccessKey:           "g7MJo1vy8SKlJMDH1t95dj8fVqjutRjlFmBFzjZ8",
+	EndPoint:                  "42.192.46.30:9000",
+	AccessKeyId:               "LX5CNH0ZL1I0BF6I4965",
+	SecretAccessKey:           "75+9VGc4jBsQPzkJdvqgZeN6u6p3O+NnfF0KYxPY",
 	UseSSL:                    false,
 	VideoBucketName:           "video",
 	AvatarBucketName:          "avatar",

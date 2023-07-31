@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetClient(t *testing.T) {
-	_, err := getClient()
+	_, err := GetClient()
 	if err != nil {
 		return
 	}

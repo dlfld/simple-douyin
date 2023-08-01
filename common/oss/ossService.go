@@ -13,7 +13,10 @@ type OssInterface interface {
 	CreateBucket(bucketName string) error
 	// DeleteBucket 删除桶
 	DeleteBucket(bucketName string) error
+	// // 上传Video文件
+	// UploadVideo(bucketName string, filePath string) error
 	// 上传文件
+	UploadFile(bucketName string, filePath string, contentType string) error
 }
 
 // Service
@@ -54,4 +57,13 @@ func (service *Service) CreateBucket(bucketName string) error {
 
 func (service *Service) DeleteBucket(bucketName string) error {
 	return service.ossService.(*minioService.MinioService).DeleteBucket(bucketName)
+}
+
+// func (service *Service) UploadVideo(bucketName string, filePath string) error {
+// 	return service.ossService.(*minioService.MinioService).UploadVideo(bucketName, filePath)
+// }
+
+
+func (service *Service) UploadFile(bucketName string, filePath string, contentType string) error {
+	return service.ossService.(*minioService.MinioService).UploadFile(bucketName, filePath, contentType)
 }

@@ -77,7 +77,9 @@ func (service *Service) UploadFile(bucketName string, filePath string, contentTy
 // UploadFileWithBytestream
 // @Description: 通用的文件上传函数(传入字节流, 信息从用户上传的 HTTP 请求中获取)
 // @param bucketName 桶名字
-// @param filePath 文件路径
+// @param reader io.Reader
+// @param fileName 文件名字
+// @param fileSize 文件大小
 // @param contentType 文件类型(image/jpeg video/mp4)
 // @return error
 func (service *Service) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {

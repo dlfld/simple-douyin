@@ -14,6 +14,7 @@ import (
 	"log"
 	"sync"
 	"os"
+	"io"
 )
 
 var once sync.Once
@@ -164,5 +165,23 @@ func (minioOss *MinioService) UploadFile(bucketName string, filePath string, con
 	}
 
 	log.Printf("Successfully uploaded file %s to bucket %s\n", filePath, bucketName)
+	return nil
+}
+
+
+func (minioOss *MinioService) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {
+	ctx := context.Background()
+
+	// 创建一个新的 PutObjectOptions 结构体
+	opts := minio.PutObjectOptions{ContentType: contentType}
+
+	// 上传文件
+	_, err := minioOss.Client.PutObject(ctx, bucketName, fileName, reader, fileSize, opts)
+	if err != nil {
+		log.Printf("Unable to upload file %s: %v\n", fileName, err)
+		return err
+	}
+
+	log.Printf("Successfully uploaded file %s to bucket %s\n", fileName, bucketName)
 	return nil
 }

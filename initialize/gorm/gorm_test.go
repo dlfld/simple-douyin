@@ -2,7 +2,6 @@ package initialize
 
 import "testing"
 
-func TestMysqlConnect(t *testing.T) {
-	GormInit()
+func TestMysqlCreate(t *testing.T) {
 	CreateTable()
 }

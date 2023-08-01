@@ -47,7 +47,7 @@ func PublishList(c *gin.Context) {
 // @Schemes
 // @Description 视频投稿
 // @Tags 视频接口
-// @Param token query video.PublishActionRequest true "body"
+// @Param token body video.PublishActionRequest true "body"
 // @Accept json
 // @Produce json
 // @Router /douyin/publish/action/ [POST]
@@ -58,14 +58,16 @@ func VideoSubmit(c *gin.Context) {
 		panic(err)
 	}
 	// 创建发生消息的请求实例 接收视频投稿信息
-	req := video.NewPublishActionRequest()
+	req := &video.PublishActionRequest{
+		Token: c.Query("token"),
+		Title: c.Query("title"),
+		Data:  []byte(c.Query("data")),
+	}
 
 	if err != nil {
 		return
 	}
 	// 前端请求数据绑定到req中
-	_ = c.ShouldBind(req)
-
 	// 发起RPC调用
 	resp, err := cli.PublishAction(context.Background(), req)
 

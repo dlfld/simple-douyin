@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/douyin/common/oss"
 	"github.com/douyin/kitex_gen/video"
 	"github.com/douyin/models"
 	"github.com/douyin/rpcServer/video/convert"
@@ -21,6 +22,8 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	// TODO: Your code here...
+	service, _ := oss.GetOssService()
+	service.UploadFile()
 	return
 }
 

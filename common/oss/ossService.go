@@ -16,7 +16,7 @@ type OssInterface interface {
 	// 上传文件
 }
 
-// Service
+// Service OssService结构体
 type Service struct {
 	ossService interface{}
 }

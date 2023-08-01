@@ -101,6 +101,8 @@ func GetFollowerList(userID uint) (userList []*User, err error) {
 func GetFriendList(userID uint) (userList []*User, err error) {
 	var relations []*FollowRelation
 	db, _ := mysql.NewMysqlConn()
+	// redis, _ := redis.NewRedisConn()
+
 	// select * from relations where user_id=1 and to_user_id in (select user_id from relations where to_user_id=1);
 	subQuery := db.Model(&FollowRelation{}).Select("user_id").Where("to_user_id = ?", userID)
 	db.Where("user_id = ? AND to_user_id IN (?)", userID, subQuery).Preload("ToUser").Find(&relations)

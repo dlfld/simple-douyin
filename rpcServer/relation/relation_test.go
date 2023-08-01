@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/douyin/common/mysql"
+	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 )
 
@@ -90,6 +92,16 @@ func TestGetFriends(t *testing.T) {
 		fmt.Println(v.ToUser.UserName, v.ToUser.ID)
 	}
 	fmt.Println(userList)
+}
+
+func TestConvert(t *testing.T) {
+	userList, _ := models.GetFriendList(1)
+	data, _ := json.Marshal(userList)
+	var kitexList []*model.User
+	fmt.Println(string(data))
+	json.Unmarshal(data, &kitexList)
+	fmt.Println(kitexList[0])
+
 }
 
 // func TestVideo(t *testing.T) {

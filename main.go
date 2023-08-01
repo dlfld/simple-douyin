@@ -31,9 +31,9 @@ func main() {
 	//
 	//// extra apis - II
 	apiRouter.POST("/relation/action/", handler.RelationAction)
-	//apiRouter.GET("/relation/follow/list/", controller.FollowList)
-	//apiRouter.GET("/relation/follower/list/", controller.FollowerList)
-	//apiRouter.GET("/relation/friend/list/", controller.FriendList)
+	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
+	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
+	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
 	//apiRouter.GET("/message/chat/", controller.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 

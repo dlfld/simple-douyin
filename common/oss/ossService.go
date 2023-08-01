@@ -3,6 +3,7 @@ package oss
 import (
 	"github.com/douyin/common/oss/minioService"
 	"sync"
+	"io"
 )
 
 // OssInterface Oss 服务接口
@@ -17,6 +18,10 @@ type OssInterface interface {
 	// UploadVideo(bucketName string, filePath string) error
 	// 上传文件
 	UploadFile(bucketName string, filePath string, contentType string) error
+	// 上传文件(传入字节流)
+	UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error
+
+	
 }
 
 // Service
@@ -66,4 +71,15 @@ func (service *Service) DeleteBucket(bucketName string) error {
 
 func (service *Service) UploadFile(bucketName string, filePath string, contentType string) error {
 	return service.ossService.(*minioService.MinioService).UploadFile(bucketName, filePath, contentType)
+}
+
+
+// UploadFileWithBytestream
+// @Description: 通用的文件上传函数(传入字节流, 信息从用户上传的 HTTP 请求中获取)
+// @param bucketName 桶名字
+// @param filePath 文件路径
+// @param contentType 文件类型(image/jpeg video/mp4)
+// @return error
+func (service *Service) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {
+	return service.ossService.(*minioService.MinioService).UploadFileWithBytestream(bucketName, reader, fileName, fileSize, contentType)
 }

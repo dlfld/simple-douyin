@@ -16,7 +16,7 @@ type OssInterface interface {
 	// 上传文件
 }
 
-// Service
+// Service OssService结构体
 type Service struct {
 	ossService interface{}
 }
@@ -43,9 +43,9 @@ func GetOssService() (*Service, error) {
 	return service, nil
 }
 
-func (service *Service) GetClient() interface{} {
+func (service *Service) GetClient() (interface{}, error) {
 	//TODO 这里涉及到了调用具体的minio的方法，（后面看看能否改为反射的方式）
-	return service.ossService.(*minioService.MinioService).Client
+	return service.ossService.(*minioService.MinioService).Client, nil
 }
 
 func (service *Service) CreateBucket(bucketName string) error {

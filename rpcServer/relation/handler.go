@@ -79,16 +79,26 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	var msg string
 	resp = new(relation.FollowActionResponse)
 	resp.StatusMsg = &msg
+	var token2UserID = map[string]uint{
+		"token1": 1,
+		"token2": 2,
+	}
+	userId, has := token2UserID[req.Token]
+	if !has {
+		msg = "Token error"
+		return
+	}
+
 	switch req.ActionType {
 	case 1:
-		err = models.Follow(1, uint(req.ToUserId))
+		err = models.Follow(userId, uint(req.ToUserId))
 		if err != nil {
 			msg = err.Error()
 		} else {
 			msg = "follow ok"
 		}
 	case 2:
-		err = models.Unfollow(1, uint(req.ToUserId))
+		err = models.Unfollow(userId, uint(req.ToUserId))
 		if err != nil {
 			msg = err.Error()
 		} else {

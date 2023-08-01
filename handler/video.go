@@ -60,6 +60,9 @@ func VideoSubmit(c *gin.Context) {
 	// 创建发生消息的请求实例 接收视频投稿信息
 	req := video.NewPublishActionRequest()
 
+	if err != nil {
+		return
+	}
 	// 前端请求数据绑定到req中
 	_ = c.ShouldBind(req)
 

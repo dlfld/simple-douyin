@@ -19,7 +19,7 @@ type OssInterface interface {
 	UploadFile(bucketName string, filePath string, contentType string) error
 }
 
-// Service
+// Service OssService结构体
 type Service struct {
 	ossService interface{}
 }

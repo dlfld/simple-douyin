@@ -32,7 +32,7 @@ func (FollowRelation) TableName() string {
 
 func Follow(userID, toUserID uint) (err error) {
 	db, _ := mysql.NewMysqlConn()
-
+	// cache, _ := redis.NewRedisConn()
 	var user User
 
 	relation := FollowRelation{
@@ -50,9 +50,12 @@ func Follow(userID, toUserID uint) (err error) {
 	return
 }
 
+// Unfollow
+//
+//	@Description: 用户取消关注, 更新Mysql与Redis缓存
 func Unfollow(userID, toUserID uint) (err error) {
 	db, _ := mysql.NewMysqlConn()
-
+	// cache,_:=redis.NewRedisConn()
 	var toUser User
 
 	relation := FollowRelation{
@@ -60,11 +63,13 @@ func Unfollow(userID, toUserID uint) (err error) {
 		ToUserID: toUserID,
 	}
 	var n int64
+
 	db.Find(&toUser, toUserID).Count(&n)
 	if n == 0 {
 		err = errors.New("user not found")
 		return
 	}
+	// 查询redis中是否有user_id的关注缓存
 
 	err = db.Where("to_user_id=? and user_id = ?", toUserID, userID).Delete(&relation).Error
 	return
@@ -78,8 +83,9 @@ func GetFollowList(userID uint) (userList []*User, err error) {
 	if err != nil {
 		return
 	}
-	for _, v := range relations {
-		userList = append(userList, &v.ToUser)
+	userList = make([]*User, len(relations))
+	for i, v := range relations {
+		userList[i] = &v.ToUser
 	}
 	return
 }
@@ -92,8 +98,9 @@ func GetFollowerList(userID uint) (userList []*User, err error) {
 	if err != nil {
 		return
 	}
-	for _, v := range relations {
-		userList = append(userList, &v.User)
+	userList = make([]*User, len(relations))
+	for i, v := range relations {
+		userList[i] = &v.User
 	}
 	return
 }
@@ -109,8 +116,9 @@ func GetFriendList(userID uint) (userList []*User, err error) {
 	if err != nil {
 		return
 	}
-	for _, v := range relations {
-		userList = append(userList, &v.ToUser)
+	userList = make([]*User, len(relations))
+	for i, v := range relations {
+		userList[i] = &v.ToUser
 	}
 	return
 }

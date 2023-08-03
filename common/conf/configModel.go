@@ -12,7 +12,8 @@ type redisConfig struct {
 
 // minio配置文件
 type minioConfig struct {
-	EndPoint                  string // IP
+	IP                        string // ip
+	EndPoint                  string // url
 	AccessKeyId               string // key
 	SecretAccessKey           string // password
 	UseSSL                    bool   // is use ssl

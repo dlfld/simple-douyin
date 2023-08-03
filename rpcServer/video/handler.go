@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"github.com/douyin/common/conf"
 	"github.com/douyin/common/oss"
 	"github.com/douyin/kitex_gen/video"
 	"github.com/douyin/models"
@@ -23,8 +25,22 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	// TODO: Your code here...
 	service, _ := oss.GetOssService()
-	service.UploadFile()
-	return
+	reader := bytes.NewReader(req.GetData())
+	// 上传文件的文件名
+	filename := req.GetTitle()
+	// TODO 根据Token获取用户信息，然后根据用户信息写入用户投稿的视频
+	//videoUrl := fmt.Sprintf("http://%s/%s/%s", conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
+
+	// TODO 魔法值需要改
+	contentType := "application/mp4"
+	err = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename, int64(len(req.GetData())), contentType)
+	if err != nil {
+		return nil, err
+	}
+	// TODO 魔法值需要改
+	statusMsg := "success"
+	resp = &video.PublishActionResponse{StatusCode: http.StatusOK, StatusMsg: &statusMsg}
+	return resp, nil
 }
 
 // PublishList implements the VideoServiceImpl interface.

@@ -30,6 +30,7 @@ var InteractionService = interactionServiceConfig{
 }
 
 var MinioConfig = minioConfig{
+	IP:                        "42.192.46.30",
 	EndPoint:                  "42.192.46.30:9000",
 	AccessKeyId:               "LX5CNH0ZL1I0BF6I4965",
 	SecretAccessKey:           "75+9VGc4jBsQPzkJdvqgZeN6u6p3O+NnfF0KYxPY",

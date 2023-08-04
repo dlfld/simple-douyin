@@ -3,6 +3,7 @@ package crud
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/bytedance/sonic"
 	"github.com/douyin/models"
@@ -18,8 +19,14 @@ func userRelationFollowerKey(userID uint) string {
 
 // RelationFollow 在缓存中建立关注关系
 func (c *CachedCRUD) RelationFollow(userID, toUserID uint) (err error) {
+	ex := c.redis.HExists(context.Background(), "UserInfoCache", strconv.Itoa(int(toUserID)))
+	if !ex.Val() {
+		var user models.User
+		c.mysql.Take(&user, toUserID)
+		c.CacheUserInfo(&user)
+	}
 	pipline := c.redis.Pipeline()
-
+	defer pipline.Close()
 	// 将被关注用户添加到关注列表
 	res := pipline.SAdd(context.Background(), userRelationFollowKey(userID), toUserID)
 	if res.Err() != nil {
@@ -40,6 +47,7 @@ func (c *CachedCRUD) RelationFollow(userID, toUserID uint) (err error) {
 // RelationUnFollow 在缓存中取消关注关系
 func (c *CachedCRUD) RelationUnFollow(userID, toUserID uint) (err error) {
 	pipline := c.redis.Pipeline()
+	defer pipline.Close()
 
 	// 从关注列表中移除被取消关注用户
 	res := pipline.SRem(context.Background(), userRelationFollowKey(userID), toUserID)
@@ -151,6 +159,7 @@ func (c *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, err e
 	var i int
 	users = make([]*models.User, len(userIDs))
 	pipline := c.redis.Pipeline()
+	defer pipline.Close()
 	// 遍历用户ID列表，批量查询缓存
 	for _, id := range userIDs {
 		pipline.HGet(context.Background(), "UserInfoCache", id)
@@ -158,6 +167,7 @@ func (c *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, err e
 	// 执行缓存查询操作
 	res, err := pipline.Exec(context.Background())
 	if err != nil {
+		// fmt.Println("%v\n", err.Error())
 		return
 	}
 
@@ -217,6 +227,7 @@ func (c *CachedCRUD) LoadUserCache(userID uint) (err error) {
 	}
 
 	pipline := c.redis.Pipeline()
+	defer pipline.Close()
 	// 加载关系表缓存
 	pipline.SAdd(context.Background(), userRelationFollowKey(userID), follows...)
 	pipline.SAdd(context.Background(), userRelationFollowerKey(userID), followers...)

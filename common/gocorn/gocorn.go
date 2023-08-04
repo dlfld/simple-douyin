@@ -8,9 +8,10 @@ import (
 )
 
 var once sync.Once
+var s *gocron.Scheduler
 
 func NewGocorn() *gocron.Scheduler {
-	var s *gocron.Scheduler
+
 	once.Do(
 		func() {
 			s = gocron.NewScheduler(time.Local)

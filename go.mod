@@ -4,15 +4,16 @@ go 1.20
 
 require (
 	github.com/apache/thrift v0.13.0
+	github.com/bytedance/sonic v1.10.0-rc3
 	github.com/cloudwego/kitex v0.6.2
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-co-op/gocron v1.31.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jinzhu/copier v0.3.5
 	github.com/minio/minio-go/v7 v7.0.61
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.1
-	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
 )
@@ -20,7 +21,6 @@ require (
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317 // indirect
-	github.com/bytedance/sonic v1.10.0-rc3 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
@@ -34,7 +34,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-co-op/gocron v1.31.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/spec v0.20.9 // indirect

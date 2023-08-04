@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/douyin/common/mysql"
-	"github.com/douyin/common/oss/minioService"
+	"github.com/douyin/common/oss"
 	myredis "github.com/douyin/common/redis"
 	"github.com/go-redis/redis/v8"
 
@@ -17,7 +17,7 @@ var g *CachedCRUD
 type CachedCRUD struct {
 	redis *redis.Client
 	mysql *gorm.DB
-	minio *minioService.MinioService
+	oss   *oss.Service
 }
 
 func NewCachedCRUD() (*CachedCRUD, error) {
@@ -35,11 +35,11 @@ func NewCachedCRUD() (*CachedCRUD, error) {
 				return
 			}
 			g.mysql = mysql
-			minio, e := minioService.GetMinio()
+			oss, e := oss.GetOssService()
 			if e != nil {
 				return
 			}
-			g.minio = minio
+			g.oss = oss
 		},
 	)
 

@@ -18,6 +18,8 @@ type OssInterface interface {
 	UploadFile(bucketName string, filePath string, contentType string) error
 	// UploadFileWithBytestream 上传文件(传入字节流)
 	UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error
+	// RemoveObject 删除对象
+	RemoveObject(bulkName, objectName string) error
 }
 
 // Service OssService结构体
@@ -104,4 +106,14 @@ func (service *Service) UploadFile(bucketName string, filePath string, contentTy
 // @return error
 func (service *Service) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {
 	return service.ossService.(*minioService.MinioService).UploadFileWithBytestream(bucketName, reader, fileName, fileSize, contentType)
+}
+
+// RemoveObject
+// @Description: 删除对象
+// @param minioClient
+// @param bulkName 桶名
+// @param objectName 对象名
+// @return error
+func (service *Service) RemoveObject(bulkName, objectName string) error {
+	return service.ossService.(*minioService.MinioService).RemoveObject(bulkName, objectName)
 }

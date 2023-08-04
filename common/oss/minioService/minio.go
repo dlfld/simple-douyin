@@ -11,10 +11,10 @@ import (
 	"github.com/douyin/common/conf"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"log"
-	"sync"
-	"os"
 	"io"
+	"log"
+	"os"
+	"sync"
 )
 
 var once sync.Once
@@ -94,44 +94,6 @@ func (minioOss *MinioService) DeleteBucket(bucketName string) error {
 	return nil
 }
 
-
-
-// // UploadVideo
-// // @Description: 上传视频
-// // @param bucketName 桶名字
-// // @param filePath 文件路径
-// // @return error
-// func (minioOss *MinioService) UploadVideo(bucketName string, filePath string) error {
-// 	ctx := context.Background()
-
-// 	file, err := os.Open(filePath)
-// 	if err != nil {
-// 		log.Printf("无法打开文件 %s: %v\n", filePath, err)
-// 		return err
-// 	}
-// 	defer file.Close()
-
-// 	fileInfo, err := file.Stat()
-// 	if err != nil {
-// 		log.Printf("获取不到文件中的信息 %s: %v\n", filePath, err)
-// 		return err
-// 	}
-
-// 	// 创建一个新的 PutObjectOptions 结构体
-// 	// opts := minio.PutObjectOptions{ContentType: "application/octet-stream"}
-// 	opts := minio.PutObjectOptions{ContentType: "video/mp4"}
-	
-// 	// 上传文件
-// 	_, err = minioOss.Client.PutObject(ctx, bucketName, fileInfo.Name(), file, fileInfo.Size(), opts)
-// 	if err != nil {
-// 		log.Printf("无法上传文件 %s: %v\n", filePath, err)
-// 		return err
-// 	}
-
-// 	log.Printf("成功把文件 %s 上传到 %s 桶中\n", filePath, bucketName)
-// 	return nil
-// }
-
 // UploadFile
 // @Description: 通用的文件上传函数
 // @param bucketName 桶名字
@@ -168,7 +130,6 @@ func (minioOss *MinioService) UploadFile(bucketName string, filePath string, con
 	return nil
 }
 
-
 func (minioOss *MinioService) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {
 	ctx := context.Background()
 
@@ -183,5 +144,19 @@ func (minioOss *MinioService) UploadFileWithBytestream(bucketName string, reader
 	}
 
 	log.Printf("Successfully uploaded file %s to bucket %s\n", fileName, bucketName)
+	return nil
+}
+
+// RemoveObject
+// @Description: 删除对象
+// @receiver minioOss
+// @param bulkName 桶名
+// @param objectName 对象名
+// @return error
+func (minioOss *MinioService) RemoveObject(bulkName, objectName string) error {
+	err := minioOss.Client.RemoveObject(context.Background(), bulkName, objectName, minio.RemoveObjectOptions{})
+	if err != nil {
+		log.Print("remove object eror " + err.Error())
+	}
 	return nil
 }

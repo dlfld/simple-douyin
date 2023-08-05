@@ -73,30 +73,32 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Router /douyin/favorite/list/ [GET]
 
 func InteractionFavoriteList(c *gin.Context) {
-	// 1. 创建客户端连接
-	err := initInteractionCli()
-	if err != nil {
-		panic(err)
-	}
+	c.JSON(http.StatusOK, gin.H{"msg": "ok"})
 
-	// 2. 创建发生消息的请求实例
-	req := interaction.NewFavoriteListRequest()
-
-	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBindJSON(req)
-	if err != nil {
-		panic(err)
-	}
-
-	// 4. 发起RPC调用
-	resp, err := cli.FavoriteList(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
-	}
-
-	// 5. gin返回给前端
-	c.JSON(http.StatusOK, resp)
+	//// 1. 创建客户端连接
+	//err := initInteractionCli()
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//// 2. 创建发生消息的请求实例
+	//req := interaction.NewFavoriteListRequest()
+	//
+	//// 3. 前端请求数据绑定到req中
+	//err = c.ShouldBindJSON(req)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//// 4. 发起RPC调用
+	//resp, err := cli.FavoriteList(context.Background(), req)
+	//if err != nil {
+	//	c.JSON(http.StatusInternalServerError, resp)
+	//	panic(err)
+	//}
+	//
+	//// 5. gin返回给前端
+	//c.JSON(http.StatusOK, resp)
 }
 
 // @Summary xxx

@@ -66,11 +66,13 @@ func main() {
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	apiRouter.POST("/publish/action/", handler.VideoSubmit)
 
+	apiRouter.GET("/t/ ", handler.RelationFollowerList)
+
 	//互动interaction
-	apiRouter.POST("/favorite/action/ ", handler.InteractionFavoriteAction)
-	apiRouter.GET("/favorite/list/ ", handler.InteractionFavoriteList)
-	apiRouter.POST("/comment/action/ ", handler.InteractionCommentAction)
-	apiRouter.GET("/comment/list/  ", handler.InteractionCommentList)
+	apiRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
+	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
+	apiRouter.POST("/comment/action/", handler.InteractionCommentAction)
+	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
 	r.Run(":8080")
 }

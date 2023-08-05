@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/douyin/kitex_gen/interaction"
+	"github.com/douyin/kitex_gen/model"
 )
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
@@ -16,7 +17,26 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 
 // FavoriteList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
-	// TODO: Your code here...
+	resp = &interaction.FavoriteListResponse{
+		StatusCode: 123,
+		StatusMsg:  new(string),
+		VideoList: []*model.Video{
+			&model.Video{
+				Id: 12,
+				Author: &model.User{
+					Id:   1234,
+					Name: "naruto",
+				},
+			},
+			&model.Video{
+				Id: 44,
+				Author: &model.User{
+					Id:   567,
+					Name: "kakasi",
+				},
+			},
+		},
+	}
 	return
 }
 

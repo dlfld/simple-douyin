@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 
 	"github.com/douyin/kitex_gen/interaction"
@@ -15,7 +16,7 @@ import (
 var cli interactionservice.Client
 var once sync.Once
 
-// NewMysqlConn 创建一个db数据库
+// initInteractionCli 创建一个rpc client 连接
 func initInteractionCli() (err error) {
 	once.Do(func() {
 		cli, err = interactionRpc.NewRpcInteractionClient()
@@ -43,12 +44,17 @@ func InteractionFavoriteAction(c *gin.Context) {
 	}
 
 	// 2. 创建发生消息的请求实例
-	req := interaction.NewFavoriteActionRequest()
-
 	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBindJSON(req)
+	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
-		panic(err)
+		log.Printf(err.Error())
+	}
+	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
+
+	req := &interaction.FavoriteActionRequest{
+		Token:      c.Query("token"),
+		VideoId:    videoId,
+		ActionType: int32(actionType),
 	}
 
 	// 4. 发起RPC调用

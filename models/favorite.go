@@ -12,10 +12,10 @@ package models
 //
 //	@Description: 用户与视频的点赞关系数据模型
 type FavoriteVideoRelation struct {
-	Video   Video `gorm:"foreignkey:VideoID;" json:"video,omitempty"`
-	VideoID uint  `gorm:"index:idx_videoid;not null" json:"video_id"`
-	User    User  `gorm:"foreignkey:UserID;" json:"user,omitempty"`
-	UserID  uint  `gorm:"index:idx_userid;not null" json:"user_id"`
+	//Video   Video `gorm:"foreignkey:VideoID;" json:"video,omitempty"`
+	VideoID uint `gorm:"index:idx_videoid;not null" json:"video_id"`
+	//User    User  `gorm:"foreignkey:UserID;" json:"user,omitempty"`
+	UserID uint `gorm:"index:idx_userid;not null" json:"user_id"`
 }
 
 // FavoriteCommentRelation

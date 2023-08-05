@@ -2,9 +2,13 @@ package main
 
 import (
 	"context"
+	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/interaction"
 	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
 )
+
+var dao *crud.CachedCRUD
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
 type InteractionServiceImpl struct{}
@@ -12,6 +16,11 @@ type InteractionServiceImpl struct{}
 // FavoriteAction implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	// TODO: Your code here...
+	m := models.FavoriteVideoRelation{
+		VideoID: req.VideoId,
+		UserID:  req.,
+	}
+
 	return
 }
 

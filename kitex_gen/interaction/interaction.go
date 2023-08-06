@@ -11,10 +11,10 @@ import (
 )
 
 type FavoriteActionRequest struct {
-	Token      string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
-	VideoId    int64  `thrift:"video_id,2,required" frugal:"2,required,i64" json:"video_id"`
-	ActionType int32  `thrift:"action_type,3,required" frugal:"3,required,i32" json:"action_type"`
-	UserId     int64  `thrift:"user_id,4,required" frugal:"4,required,i64" json:"user_id"`
+	Token      *string `thrift:"token,1,optional" frugal:"1,optional,string" json:"token,omitempty"`
+	VideoId    int64   `thrift:"video_id,2,required" frugal:"2,required,i64" json:"video_id"`
+	ActionType int32   `thrift:"action_type,3,required" frugal:"3,required,i32" json:"action_type"`
+	UserId     int64   `thrift:"user_id,4,required" frugal:"4,required,i64" json:"user_id"`
 }
 
 func NewFavoriteActionRequest() *FavoriteActionRequest {
@@ -25,8 +25,13 @@ func (p *FavoriteActionRequest) InitDefault() {
 	*p = FavoriteActionRequest{}
 }
 
+var FavoriteActionRequest_Token_DEFAULT string
+
 func (p *FavoriteActionRequest) GetToken() (v string) {
-	return p.Token
+	if !p.IsSetToken() {
+		return FavoriteActionRequest_Token_DEFAULT
+	}
+	return *p.Token
 }
 
 func (p *FavoriteActionRequest) GetVideoId() (v int64) {
@@ -40,7 +45,7 @@ func (p *FavoriteActionRequest) GetActionType() (v int32) {
 func (p *FavoriteActionRequest) GetUserId() (v int64) {
 	return p.UserId
 }
-func (p *FavoriteActionRequest) SetToken(val string) {
+func (p *FavoriteActionRequest) SetToken(val *string) {
 	p.Token = val
 }
 func (p *FavoriteActionRequest) SetVideoId(val int64) {
@@ -60,11 +65,14 @@ var fieldIDToName_FavoriteActionRequest = map[int16]string{
 	4: "user_id",
 }
 
+func (p *FavoriteActionRequest) IsSetToken() bool {
+	return p.Token != nil
+}
+
 func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetToken bool = false
 	var issetVideoId bool = false
 	var issetActionType bool = false
 	var issetUserId bool = false
@@ -88,7 +96,6 @@ func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -141,11 +148,6 @@ func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
-	if !issetToken {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
 	if !issetVideoId {
 		fieldId = 2
 		goto RequiredFieldNotSetError
@@ -182,7 +184,7 @@ func (p *FavoriteActionRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Token = v
+		p.Token = &v
 	}
 	return nil
 }
@@ -256,14 +258,16 @@ WriteStructEndError:
 }
 
 func (p *FavoriteActionRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Token); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetToken() {
+		if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Token); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -351,9 +355,14 @@ func (p *FavoriteActionRequest) DeepEqual(ano *FavoriteActionRequest) bool {
 	return true
 }
 
-func (p *FavoriteActionRequest) Field1DeepEqual(src string) bool {
+func (p *FavoriteActionRequest) Field1DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Token, src) != 0 {
+	if p.Token == src {
+		return true
+	} else if p.Token == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Token, *src) != 0 {
 		return false
 	}
 	return true

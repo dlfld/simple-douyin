@@ -68,16 +68,7 @@
       <recent name="$PROJECT_DIR$/handler" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm">
-    <configuration name="go build github.com/douyin/t" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/douyin/t" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/t/main.go" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Go Build.rpc">
     <configuration name="http" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
@@ -96,44 +87,56 @@
       <filePath value="$PROJECT_DIR$/rpcServer/interaction/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="Test2 in github.com/douyin/common/crud" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$/initialize/gorm" />
+      <working_directory value="$PROJECT_DIR$/common/crud" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/douyin/initialize/gorm" />
+      <package value="github.com/douyin/common/crud" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestInteractionMysqlCreate\E$" />
+      <pattern value="^\QTest2\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestNewMysqlConn in github.com/douyin/common/mysql" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestSearchCommentListSort in github.com/douyin/common/crud" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$/common/mysql" />
+      <working_directory value="$PROJECT_DIR$/common/crud" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/douyin/common/mysql" />
+      <package value="github.com/douyin/common/crud" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestNewMysqlConn\E$" />
+      <pattern value="^\QTestSearchCommentListSort\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestSearchSearchUserById in github.com/douyin/common/crud" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$/common/crud" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/common/crud" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestSearchSearchUserById\E$" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go Build.go build github.com/douyin/t" />
       <item itemvalue="Go Build.http" />
       <item itemvalue="Go Build.rpc" />
-      <item itemvalue="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" />
-      <item itemvalue="Go Test.TestNewMysqlConn in github.com/douyin/common/mysql" />
+      <item itemvalue="Go Test.Test2 in github.com/douyin/common/crud" />
+      <item itemvalue="Go Test.TestSearchCommentListSort in github.com/douyin/common/crud" />
+      <item itemvalue="Go Test.TestSearchSearchUserById in github.com/douyin/common/crud" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" />
-        <item itemvalue="Go Build.go build github.com/douyin/t" />
-        <item itemvalue="Go Test.TestNewMysqlConn in github.com/douyin/common/mysql" />
-        <item itemvalue="Go Build.http" />
         <item itemvalue="Go Build.rpc" />
+        <item itemvalue="Go Build.http" />
+        <item itemvalue="Go Test.TestSearchCommentListSort in github.com/douyin/common/crud" />
+        <item itemvalue="Go Test.Test2 in github.com/douyin/common/crud" />
+        <item itemvalue="Go Test.TestSearchSearchUserById in github.com/douyin/common/crud" />
       </list>
     </recent_temporary>
   </component>
@@ -152,7 +155,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/master" />
+                        <option value="wuwei/dev" />
                       </list>
                     </value>
                   </entry>
@@ -173,7 +176,13 @@
     <MESSAGE value="feat:FavoriteAction http done" />
     <MESSAGE value="feat: mysql create" />
     <MESSAGE value="feat: mysql create 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: mysql create 2" />
+    <MESSAGE value="feat: favorite action done" />
+    <MESSAGE value="feat: favorite action done 拿掉req的token" />
+    <MESSAGE value="feat: favorite list done" />
+    <MESSAGE value="feat: favorite list done v2" />
+    <MESSAGE value="feat: comment action done" />
+    <MESSAGE value="feat: comment list done" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: comment list done" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -182,9 +191,39 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/kitex_gen/interaction/interaction.go</url>
-          <line>7</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/rpcServer/interaction/handler.go</url>
+          <line>23</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/rpcServer/interaction/handler.go</url>
+          <line>58</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/common/crud/interaction.go</url>
+          <line>35</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/rpcServer/interaction/handler.go</url>
+          <line>91</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/common/crud/interaction.go</url>
+          <line>61</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/common/crud/interaction_test.go</url>
+          <line>70</line>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/rpcServer/interaction/handler.go</url>
+          <line>147</line>
+          <option name="timeStamp" value="50" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -48,11 +48,6 @@ struct Comment {
     4:required string create_date
 }
 
-struct BaseReq {
-    1:optional i64 user_id
-    2:optional string username
-}
-
 // 消息
 struct Message {
     1:required i64 id             // 消息id
@@ -61,3 +56,4 @@ struct Message {
     4:required string content     // 消息内容
     5:optional i64 create_time // 消息创建时间
 }
+

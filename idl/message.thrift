@@ -4,7 +4,7 @@ namespace go message
 
 // 查询消息
 struct message_chat_request {
-    1:required string token  // 用户鉴权token
+    1:required i64 from_user_id // 当前用户id
     2:required i64 to_user_id // 对方用户id
     3:required i64 pre_msg_time //上次最新消息的时间（新增字段-apk更新中）
 }
@@ -17,11 +17,10 @@ struct message_chat_response {
 
 // 发送消息
 struct message_action_request {
-    1: required string token    // 用户鉴权token
+    1: required i64 from_user_id // 当前用户id
     2: required i64 to_user_id  // 对方用户id
     3: required i32 action_type // 1-发送消息
     4: required string content  // 消息内容
-
 }
 
 struct message_action_response {

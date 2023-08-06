@@ -14,7 +14,6 @@ func (c *CachedCRUD) SearchFavoriteExist(m *models.FavoriteVideoRelation) (exist
 		fmt.Println(result.Error)
 	}
 	return result.RowsAffected > 0, result.Error
-
 }
 
 func (c *CachedCRUD) InsertFavorite(m *models.FavoriteVideoRelation) (rows int64, err error) {

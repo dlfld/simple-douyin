@@ -30,11 +30,12 @@ struct favorite_list_response {
 
 // 评论操作
 struct comment_action_request {
-    1:required string token
+    1:optional string token
     2:required i64 video_id
     3:required i32 action_type
     4:optional string comment_text
     5:optional i64 comment_id
+    6:optional i64 user_id
 }
 
 struct comment_action_response {

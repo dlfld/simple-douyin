@@ -65,6 +65,11 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	videoList := make([]*model.Video, len(dbList))
 	for i := 0; i < len(dbList); i++ {
 		author, _ := Dao.SearchUserById(dbList[i].AuthorID)
+		m := models.FavoriteVideoRelation{
+			VideoID: dbList[i].ID,
+			UserID:  req.UserId,
+		}
+		isFavorite, _ := Dao.SearchFavoriteExist(&m)
 		videoList[i] = &model.Video{
 			Id:            dbList[i].ID,
 			Author:        author,
@@ -72,8 +77,8 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 			CoverUrl:      dbList[i].CoverUrl,
 			FavoriteCount: dbList[i].FavoriteCount,
 			CommentCount:  dbList[i].CommentCount,
-			//IsFavorite:    false,   //TODO 这个字段什么意思？
-			Title: dbList[i].Title,
+			IsFavorite:    isFavorite,
+			Title:         dbList[i].Title,
 		}
 	}
 	resp.StatusCode = http.StatusOK

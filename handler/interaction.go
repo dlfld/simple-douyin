@@ -113,19 +113,24 @@ func InteractionFavoriteList(c *gin.Context) {
 // @Router /douyin/comment/action/ [POST]
 
 func InteractionCommentAction(c *gin.Context) {
-	// 1. 创建客户端连接
 	err := initInteractionCli()
 	if err != nil {
 		panic(err)
 	}
 
 	// 2. 创建发生消息的请求实例
-	req := interaction.NewCommentActionRequest()
-
 	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBindJSON(req)
-	if err != nil {
-		panic(err)
+	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 32)
+	commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
+	commentText := c.Query("comment_text")
+	req := &interaction.CommentActionRequest{
+		VideoId:     videoId,
+		UserId:      &userId,
+		ActionType:  int32(actionType),
+		CommentText: &commentText,
+		CommentId:   &commentId,
 	}
 
 	// 4. 发起RPC调用

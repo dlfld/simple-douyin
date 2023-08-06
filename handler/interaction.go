@@ -16,8 +16,8 @@ import (
 var cli interactionservice.Client
 var once sync.Once
 
-// initInteractionCli 创建一个rpc client 连接
-func initInteractionCli() (err error) {
+// InitInteractionCli 创建一个rpc client 连接
+func InitInteractionCli() (err error) {
 	once.Do(func() {
 		cli, err = interactionRpc.NewRpcInteractionClient()
 	})
@@ -38,10 +38,10 @@ func initInteractionCli() (err error) {
 
 func InteractionFavoriteAction(c *gin.Context) {
 	// 1. 创建客户端连接
-	err := initInteractionCli()
-	if err != nil {
-		panic(err)
-	}
+	//err := initInteractionCli()
+	//if err != nil {
+	//	panic(err)
+	//}
 
 	// 2. 创建发生消息的请求实例
 	// 3. 前端请求数据绑定到req中
@@ -80,7 +80,7 @@ func InteractionFavoriteList(c *gin.Context) {
 	//c.JSON(http.StatusOK, gin.H{"msg": "ok"})
 
 	// 1. 创建客户端连接
-	err := initInteractionCli()
+	err := InitInteractionCli()
 	if err != nil {
 		panic(err)
 	}
@@ -113,7 +113,7 @@ func InteractionFavoriteList(c *gin.Context) {
 // @Router /douyin/comment/action/ [POST]
 
 func InteractionCommentAction(c *gin.Context) {
-	err := initInteractionCli()
+	err := InitInteractionCli()
 	if err != nil {
 		panic(err)
 	}
@@ -154,8 +154,8 @@ func InteractionCommentAction(c *gin.Context) {
 // @Router /douyin/comment/list/ [GET]
 
 func InteractionCommentList(c *gin.Context) {
-	// 1. 创建客户端连接
-	err := initInteractionCli()
+	//// 1. 创建客户端连接
+	err := InitInteractionCli()
 	if err != nil {
 		panic(err)
 	}

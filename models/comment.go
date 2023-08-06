@@ -18,7 +18,7 @@ type Comment struct {
 	//CreatedAt time.Time `gorm:"index;not null" json:"create_date"`
 	//UpdatedAt time.Time
 	//DeletedAt gorm.DeletedAt `gorm:"index"`
-	//Video      Video          `gorm:"foreignkey:VideoID" json:"video,omitempty"`
+	Video   Video `gorm:"foreignkey:VideoID" json:"video,omitempty"`
 	VideoID int64 `gorm:"index:idx_videoid;not null" json:"video_id"`
 	//User       User           `gorm:"foreignkey:UserID" json:"user,omitempty"`
 	UserID     int64     `gorm:"index:idx_userid;not null" json:"user_id"`

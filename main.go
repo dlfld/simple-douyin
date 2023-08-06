@@ -74,5 +74,9 @@ func main() {
 	apiRouter.POST("/comment/action/", handler.InteractionCommentAction)
 	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
+	err := handler.InitInteractionCli()
+	if err != nil {
+		return
+	}
 	r.Run(":8080")
 }

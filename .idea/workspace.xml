@@ -68,7 +68,7 @@
       <recent name="$PROJECT_DIR$/handler" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.rpc">
+  <component name="RunManager" selected="Go Build.http">
     <configuration name="http" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
@@ -132,8 +132,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.rpc" />
         <item itemvalue="Go Build.http" />
+        <item itemvalue="Go Build.rpc" />
         <item itemvalue="Go Test.TestSearchCommentListSort in github.com/douyin/common/crud" />
         <item itemvalue="Go Test.Test2 in github.com/douyin/common/crud" />
         <item itemvalue="Go Test.TestSearchSearchUserById in github.com/douyin/common/crud" />
@@ -155,7 +155,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/xjx" />
+                        <option value="wuwei/dev" />
                       </list>
                     </value>
                   </entry>
@@ -183,7 +183,8 @@
     <MESSAGE value="feat: comment action done" />
     <MESSAGE value="feat: comment list done" />
     <MESSAGE value="docs: comment list done docs" />
-    <option name="LAST_COMMIT_MESSAGE" value="docs: comment list done docs" />
+    <MESSAGE value="docs: comment list done docs2" />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: comment list done docs2" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

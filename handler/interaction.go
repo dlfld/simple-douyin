@@ -161,12 +161,13 @@ func InteractionCommentList(c *gin.Context) {
 	}
 
 	// 2. 创建发生消息的请求实例
-	req := interaction.NewCommentListRequest()
-
 	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBindJSON(req)
-	if err != nil {
-		panic(err)
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	req := &interaction.CommentListRequest{
+		UserId:  &userId,
+		VideoId: videoId,
+		//Token:  c.Query("token"),
 	}
 
 	// 4. 发起RPC调用

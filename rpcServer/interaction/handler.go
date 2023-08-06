@@ -146,6 +146,23 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 // CommentList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
-	// TODO: Your code here...
+	dbList, err := Dao.SearchCommentListSort(req.VideoId)
+	if err != nil {
+		return nil, err
+	}
+	commentList := make([]*model.Comment, len(dbList))
+	for i := 0; i < len(dbList); i++ {
+		user, _ := Dao.SearchUserById(dbList[i].UserID)
+		commentList[i] = &model.Comment{
+			Id:         dbList[i].ID,
+			User:       user,
+			Content:    dbList[i].Content,
+			CreateDate: dbList[i].CreateTime.String(),
+		}
+	}
+	resp = &interaction.CommentListResponse{
+		StatusCode:  http.StatusOK,
+		CommentList: commentList,
+	}
 	return
 }

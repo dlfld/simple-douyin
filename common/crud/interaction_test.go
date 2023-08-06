@@ -46,7 +46,7 @@ func TestSearchSearchUserById(t *testing.T) {
 	fmt.Println("user: ", user)
 }
 
-func Test2(t *testing.T) {
+func TestDeleteComment(t *testing.T) {
 	c, err := NewCachedCRUD()
 	if err != nil {
 		return
@@ -60,4 +60,17 @@ func Test2(t *testing.T) {
 		return
 	}
 	fmt.Println("rows: ", rows)
+}
+
+func TestSearchCommentListSort(t *testing.T) {
+	c, err := NewCachedCRUD()
+	if err != nil {
+		return
+	}
+	commentList, err := c.SearchCommentListSort(3)
+	if err != nil {
+		return
+	}
+	fmt.Println("commentList: ", commentList)
+	fmt.Println("time: ", commentList[0].CreateTime.GoString())
 }

@@ -46,8 +46,9 @@ struct comment_action_response {
 
 // 视频评论列表
 struct comment_list_request {
-    1:required string token
+    1:optional string token
     2:required i64 video_id
+    3:optional i64 user_id
 }
 
 struct comment_list_response {

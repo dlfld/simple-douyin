@@ -2076,8 +2076,9 @@ func (p *CommentActionResponse) Field3DeepEqual(src *model.Comment) bool {
 }
 
 type CommentListRequest struct {
-	Token   string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
-	VideoId int64  `thrift:"video_id,2,required" frugal:"2,required,i64" json:"video_id"`
+	Token   *string `thrift:"token,1,optional" frugal:"1,optional,string" json:"token,omitempty"`
+	VideoId int64   `thrift:"video_id,2,required" frugal:"2,required,i64" json:"video_id"`
+	UserId  *int64  `thrift:"user_id,3,optional" frugal:"3,optional,i64" json:"user_id,omitempty"`
 }
 
 func NewCommentListRequest() *CommentListRequest {
@@ -2088,30 +2089,55 @@ func (p *CommentListRequest) InitDefault() {
 	*p = CommentListRequest{}
 }
 
+var CommentListRequest_Token_DEFAULT string
+
 func (p *CommentListRequest) GetToken() (v string) {
-	return p.Token
+	if !p.IsSetToken() {
+		return CommentListRequest_Token_DEFAULT
+	}
+	return *p.Token
 }
 
 func (p *CommentListRequest) GetVideoId() (v int64) {
 	return p.VideoId
 }
-func (p *CommentListRequest) SetToken(val string) {
+
+var CommentListRequest_UserId_DEFAULT int64
+
+func (p *CommentListRequest) GetUserId() (v int64) {
+	if !p.IsSetUserId() {
+		return CommentListRequest_UserId_DEFAULT
+	}
+	return *p.UserId
+}
+func (p *CommentListRequest) SetToken(val *string) {
 	p.Token = val
 }
 func (p *CommentListRequest) SetVideoId(val int64) {
 	p.VideoId = val
 }
+func (p *CommentListRequest) SetUserId(val *int64) {
+	p.UserId = val
+}
 
 var fieldIDToName_CommentListRequest = map[int16]string{
 	1: "token",
 	2: "video_id",
+	3: "user_id",
+}
+
+func (p *CommentListRequest) IsSetToken() bool {
+	return p.Token != nil
+}
+
+func (p *CommentListRequest) IsSetUserId() bool {
+	return p.UserId != nil
 }
 
 func (p *CommentListRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetToken bool = false
 	var issetVideoId bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
@@ -2133,7 +2159,6 @@ func (p *CommentListRequest) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetToken = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2145,6 +2170,16 @@ func (p *CommentListRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto ReadFieldError
 				}
 				issetVideoId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -2162,11 +2197,6 @@ func (p *CommentListRequest) Read(iprot thrift.TProtocol) (err error) {
 	}
 	if err = iprot.ReadStructEnd(); err != nil {
 		goto ReadStructEndError
-	}
-
-	if !issetToken {
-		fieldId = 1
-		goto RequiredFieldNotSetError
 	}
 
 	if !issetVideoId {
@@ -2195,7 +2225,7 @@ func (p *CommentListRequest) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Token = v
+		p.Token = &v
 	}
 	return nil
 }
@@ -2205,6 +2235,15 @@ func (p *CommentListRequest) ReadField2(iprot thrift.TProtocol) error {
 		return err
 	} else {
 		p.VideoId = v
+	}
+	return nil
+}
+
+func (p *CommentListRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = &v
 	}
 	return nil
 }
@@ -2221,6 +2260,10 @@ func (p *CommentListRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField2(oprot); err != nil {
 			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
 			goto WriteFieldError
 		}
 
@@ -2243,14 +2286,16 @@ WriteStructEndError:
 }
 
 func (p *CommentListRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.Token); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetToken() {
+		if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteString(*p.Token); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -2276,6 +2321,25 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
+func (p *CommentListRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if p.IsSetUserId() {
+		if err = oprot.WriteFieldBegin("user_id", thrift.I64, 3); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := oprot.WriteI64(*p.UserId); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
 func (p *CommentListRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -2295,12 +2359,20 @@ func (p *CommentListRequest) DeepEqual(ano *CommentListRequest) bool {
 	if !p.Field2DeepEqual(ano.VideoId) {
 		return false
 	}
+	if !p.Field3DeepEqual(ano.UserId) {
+		return false
+	}
 	return true
 }
 
-func (p *CommentListRequest) Field1DeepEqual(src string) bool {
+func (p *CommentListRequest) Field1DeepEqual(src *string) bool {
 
-	if strings.Compare(p.Token, src) != 0 {
+	if p.Token == src {
+		return true
+	} else if p.Token == nil || src == nil {
+		return false
+	}
+	if strings.Compare(*p.Token, *src) != 0 {
 		return false
 	}
 	return true
@@ -2308,6 +2380,18 @@ func (p *CommentListRequest) Field1DeepEqual(src string) bool {
 func (p *CommentListRequest) Field2DeepEqual(src int64) bool {
 
 	if p.VideoId != src {
+		return false
+	}
+	return true
+}
+func (p *CommentListRequest) Field3DeepEqual(src *int64) bool {
+
+	if p.UserId == src {
+		return true
+	} else if p.UserId == nil || src == nil {
+		return false
+	}
+	if *p.UserId != *src {
 		return false
 	}
 	return true

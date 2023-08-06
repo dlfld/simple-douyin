@@ -61,5 +61,12 @@ func (c *CachedCRUD) InsertComment(m *models.Comment) (rows int64, err error) {
 func (c *CachedCRUD) DeleteComment(m *models.Comment) (rows int64, err error) {
 	result := c.mysql.Where("id = ? and video_id = ?", m.ID, m.VideoID).Delete(m)
 	return result.RowsAffected, result.Error
+}
 
+func (c *CachedCRUD) SearchCommentListSort(videoId int64) (videoList []*models.Comment, err error) {
+	//result := c.mysql.Raw("SELECT * from comments c join users u on c.user_id = u.id  WHERE video_id = 3 ORDER BY c.id DESC")
+	result := c.mysql.Raw("SELECT * from comments where video_id = ? ORDER BY id DESC", videoId)
+	var t []*models.Comment
+	result.Scan(&t)
+	return t, nil
 }

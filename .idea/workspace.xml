@@ -155,7 +155,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="wuwei/dev" />
+                        <option value="origin/xjx" />
                       </list>
                     </value>
                   </entry>
@@ -182,7 +182,8 @@
     <MESSAGE value="feat: favorite list done v2" />
     <MESSAGE value="feat: comment action done" />
     <MESSAGE value="feat: comment list done" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: comment list done" />
+    <MESSAGE value="docs: comment list done docs" />
+    <option name="LAST_COMMIT_MESSAGE" value="docs: comment list done docs" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

@@ -10,6 +10,18 @@ type redisConfig struct {
 	Password string
 }
 
+// minio配置文件
+type minioConfig struct {
+	IP                        string // ip
+	EndPoint                  string // url
+	AccessKeyId               string // key
+	SecretAccessKey           string // password
+	UseSSL                    bool   // is use ssl
+	VideoBucketName           string // 存视频桶的名字
+	AvatarBucketName          string // 存头像桶名字
+	BackgroundImageBucketName string // 存背景图片桶名字
+}
+
 type userServiceConfig struct {
 	Name string
 	Addr string

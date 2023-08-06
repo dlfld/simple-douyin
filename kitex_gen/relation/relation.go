@@ -562,8 +562,8 @@ func (p *FollowActionResponse) Field2DeepEqual(src *string) bool {
 }
 
 type FollowingListRequest struct {
-	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
-	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token"`
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id" form:"user_id"`
+	Token  string `thrift:"token,2,required" frugal:"2,required,string" json:"token" form:"token"`
 }
 
 func NewFollowingListRequest() *FollowingListRequest {

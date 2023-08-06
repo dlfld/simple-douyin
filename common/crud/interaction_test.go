@@ -45,3 +45,19 @@ func TestSearchSearchUserById(t *testing.T) {
 	}
 	fmt.Println("user: ", user)
 }
+
+func Test2(t *testing.T) {
+	c, err := NewCachedCRUD()
+	if err != nil {
+		return
+	}
+	m := models.Comment{
+		ID:      9,
+		VideoID: 3,
+	}
+	rows, err := c.DeleteComment(&m)
+	if err != nil {
+		return
+	}
+	fmt.Println("rows: ", rows)
+}

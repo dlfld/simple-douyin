@@ -20,8 +20,8 @@ type FavoriteVideoRelation struct {
 //
 //	@Description: 用户与评论的点赞关系数据模型
 type FavoriteCommentRelation struct {
-	Comment   Comment `gorm:"foreignkey:CommentID;" json:"comment,omitempty"`
-	CommentID uint    `gorm:"column:comment_id;index:idx_commentid;not null" json:"video_id"`
+	//Comment   Comment `gorm:"foreignkey:CommentID;" json:"comment,omitempty"`
+	CommentID uint `gorm:"column:comment_id;index:idx_commentid;not null" json:"video_id"`
 	//User      User    `gorm:"foreignkey:UserID;" json:"user,omitempty"`
 	UserID uint `gorm:"column:user_id;index:idx_userid;not null" json:"user_id"`
 }

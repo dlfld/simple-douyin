@@ -46,3 +46,20 @@ func (c *CachedCRUD) SearchUserById(id int64) (user *model.User, err error) {
 	result.Scan(&t)
 	return &t, err
 }
+
+// 评论
+
+func (c *CachedCRUD) InsertComment(m *models.Comment) (rows int64, err error) {
+	result := c.mysql.Create(m)
+	if result.Error != nil {
+		// TODO : log err
+		fmt.Println(result.Error)
+	}
+	return result.RowsAffected, result.Error
+}
+
+func (c *CachedCRUD) DeleteComment(m *models.Comment) (rows int64, err error) {
+	result := c.mysql.Where("id = ? and video_id = ?", m.ID, m.VideoID).Delete(m)
+	return result.RowsAffected, result.Error
+
+}

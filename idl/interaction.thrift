@@ -4,7 +4,7 @@ namespace go interaction
 
 // 赞操作
 struct favorite_action_request {
-    1:required string token
+    1:required i64 user_id // 当前用户id
     2:required i64 video_id
     3:required i32 action_type
 }
@@ -28,7 +28,7 @@ struct favorite_list_response {
 
 // 评论操作
 struct comment_action_request {
-    1:required string token
+    1:required i64 user_id // 当前用户id
     2:required i64 video_id
     3:required i32 action_type
     4:optional string comment_text
@@ -43,7 +43,7 @@ struct comment_action_response {
 
 // 视频评论列表
 struct comment_list_request {
-    1:required string token
+    1:required i64 user_id // 当前用户id
     2:required i64 video_id
 }
 

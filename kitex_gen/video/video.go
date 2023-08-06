@@ -12,9 +12,9 @@ import (
 )
 
 type PublishActionRequest struct {
-	Token string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
-	Data  []byte `thrift:"data,2,required" frugal:"2,required,binary" json:"data"`
-	Title string `thrift:"title,3,required" frugal:"3,required,string" json:"title"`
+	UserId int64  `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
+	Data   []byte `thrift:"data,2,required" frugal:"2,required,binary" json:"data"`
+	Title  string `thrift:"title,3,required" frugal:"3,required,string" json:"title"`
 }
 
 func NewPublishActionRequest() *PublishActionRequest {
@@ -25,8 +25,8 @@ func (p *PublishActionRequest) InitDefault() {
 	*p = PublishActionRequest{}
 }
 
-func (p *PublishActionRequest) GetToken() (v string) {
-	return p.Token
+func (p *PublishActionRequest) GetUserId() (v int64) {
+	return p.UserId
 }
 
 func (p *PublishActionRequest) GetData() (v []byte) {
@@ -36,8 +36,8 @@ func (p *PublishActionRequest) GetData() (v []byte) {
 func (p *PublishActionRequest) GetTitle() (v string) {
 	return p.Title
 }
-func (p *PublishActionRequest) SetToken(val string) {
-	p.Token = val
+func (p *PublishActionRequest) SetUserId(val int64) {
+	p.UserId = val
 }
 func (p *PublishActionRequest) SetData(val []byte) {
 	p.Data = val
@@ -47,7 +47,7 @@ func (p *PublishActionRequest) SetTitle(val string) {
 }
 
 var fieldIDToName_PublishActionRequest = map[int16]string{
-	1: "token",
+	1: "user_id",
 	2: "data",
 	3: "title",
 }
@@ -56,7 +56,7 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetToken bool = false
+	var issetUserId bool = false
 	var issetData bool = false
 	var issetTitle bool = false
 
@@ -75,11 +75,11 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetToken = true
+				issetUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -121,7 +121,7 @@ func (p *PublishActionRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
-	if !issetToken {
+	if !issetUserId {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
@@ -154,10 +154,10 @@ RequiredFieldNotSetError:
 }
 
 func (p *PublishActionRequest) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.Token = v
+		p.UserId = v
 	}
 	return nil
 }
@@ -218,10 +218,10 @@ WriteStructEndError:
 }
 
 func (p *PublishActionRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Token); err != nil {
+	if err := oprot.WriteI64(p.UserId); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -281,7 +281,7 @@ func (p *PublishActionRequest) DeepEqual(ano *PublishActionRequest) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Token) {
+	if !p.Field1DeepEqual(ano.UserId) {
 		return false
 	}
 	if !p.Field2DeepEqual(ano.Data) {
@@ -293,9 +293,9 @@ func (p *PublishActionRequest) DeepEqual(ano *PublishActionRequest) bool {
 	return true
 }
 
-func (p *PublishActionRequest) Field1DeepEqual(src string) bool {
+func (p *PublishActionRequest) Field1DeepEqual(src int64) bool {
 
-	if strings.Compare(p.Token, src) != 0 {
+	if p.UserId != src {
 		return false
 	}
 	return true
@@ -563,8 +563,8 @@ func (p *PublishActionResponse) Field2DeepEqual(src *string) bool {
 }
 
 type FeedRequest struct {
-	LatestTime *int64  `thrift:"latest_time,1,optional" frugal:"1,optional,i64" json:"latest_time,omitempty"`
-	Token      *string `thrift:"token,2,optional" frugal:"2,optional,string" json:"token,omitempty"`
+	LatestTime *int64 `thrift:"latest_time,1,optional" frugal:"1,optional,i64" json:"latest_time,omitempty"`
+	UserId     int64  `thrift:"user_id,2,required" frugal:"2,required,i64" json:"user_id"`
 }
 
 func NewFeedRequest() *FeedRequest {
@@ -584,38 +584,30 @@ func (p *FeedRequest) GetLatestTime() (v int64) {
 	return *p.LatestTime
 }
 
-var FeedRequest_Token_DEFAULT string
-
-func (p *FeedRequest) GetToken() (v string) {
-	if !p.IsSetToken() {
-		return FeedRequest_Token_DEFAULT
-	}
-	return *p.Token
+func (p *FeedRequest) GetUserId() (v int64) {
+	return p.UserId
 }
 func (p *FeedRequest) SetLatestTime(val *int64) {
 	p.LatestTime = val
 }
-func (p *FeedRequest) SetToken(val *string) {
-	p.Token = val
+func (p *FeedRequest) SetUserId(val int64) {
+	p.UserId = val
 }
 
 var fieldIDToName_FeedRequest = map[int16]string{
 	1: "latest_time",
-	2: "token",
+	2: "user_id",
 }
 
 func (p *FeedRequest) IsSetLatestTime() bool {
 	return p.LatestTime != nil
 }
 
-func (p *FeedRequest) IsSetToken() bool {
-	return p.Token != nil
-}
-
 func (p *FeedRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
+	var issetUserId bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -642,10 +634,11 @@ func (p *FeedRequest) Read(iprot thrift.TProtocol) (err error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetUserId = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -665,6 +658,10 @@ func (p *FeedRequest) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
+	if !issetUserId {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
 	return nil
 ReadStructBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
@@ -679,6 +676,8 @@ ReadFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FeedRequest[fieldId]))
 }
 
 func (p *FeedRequest) ReadField1(iprot thrift.TProtocol) error {
@@ -691,10 +690,10 @@ func (p *FeedRequest) ReadField1(iprot thrift.TProtocol) error {
 }
 
 func (p *FeedRequest) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.Token = &v
+		p.UserId = v
 	}
 	return nil
 }
@@ -752,16 +751,14 @@ WriteFieldEndError:
 }
 
 func (p *FeedRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if p.IsSetToken() {
-		if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.Token); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -786,7 +783,7 @@ func (p *FeedRequest) DeepEqual(ano *FeedRequest) bool {
 	if !p.Field1DeepEqual(ano.LatestTime) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Token) {
+	if !p.Field2DeepEqual(ano.UserId) {
 		return false
 	}
 	return true
@@ -804,14 +801,9 @@ func (p *FeedRequest) Field1DeepEqual(src *int64) bool {
 	}
 	return true
 }
-func (p *FeedRequest) Field2DeepEqual(src *string) bool {
+func (p *FeedRequest) Field2DeepEqual(src int64) bool {
 
-	if p.Token == src {
-		return true
-	} else if p.Token == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.Token, *src) != 0 {
+	if p.UserId != src {
 		return false
 	}
 	return true

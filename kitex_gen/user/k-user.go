@@ -5,8 +5,8 @@ package user
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 	model2 "github.com/douyin/kitex_gen/model"
+	"reflect"
 	"strings"
 
 	"github.com/apache/thrift/lib/go/thrift"

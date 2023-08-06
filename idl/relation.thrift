@@ -4,7 +4,7 @@ namespace go relation
 
 // 关注操作
 struct follow_action_request {
-    1:required string token
+    1:required i64 from_user_id // 当前用户id
     2:required i64 to_user_id
     3:required i32 action_type
 }
@@ -41,8 +41,6 @@ struct follower_list_response {
 // 好友列表
 struct relation_friend_list_request {
     1:required i64 user_id   // 用户id
-    2:required string token  // 用户鉴权token
-    255:optional model.BaseReq base_req
 }
 
 struct relation_friend_list_response {

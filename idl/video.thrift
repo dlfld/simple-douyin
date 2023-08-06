@@ -4,7 +4,7 @@ namespace go video
 
 // 视频投稿
 struct publish_action_request {
-    1:required string token
+    1:required i64 user_id // 当前用户id
     2:required binary data
     3:required string title
 }
@@ -16,7 +16,7 @@ struct publish_action_response {
 // 视频流
 struct feed_request {
     1:optional i64 latest_time
-    2:optional string token
+    2:required i64 user_id // 当前用户id
 }
 
 struct feed_response {

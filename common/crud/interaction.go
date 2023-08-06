@@ -3,6 +3,7 @@ package crud
 import (
 	"fmt"
 	_ "github.com/douyin/kitex_gen/interaction"
+	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 )
 
@@ -32,4 +33,17 @@ func (c *CachedCRUD) CancelFavorite(m *models.FavoriteVideoRelation) (rows int64
 	result := c.mysql.Where("user_id = ? and video_id = ?", m.UserID, m.VideoID).Delete(m)
 	return result.RowsAffected, result.Error
 
+}
+func (c *CachedCRUD) SearchVideoListById(id int64) (videoList []*models.Video, err error) {
+	result := c.mysql.Raw("SELECT * FROM videos WHERE id in (SELECT video_id from user_favorite_videos WHERE user_id = ?)", id)
+	var t []*models.Video
+	result.Scan(&t)
+	return t, nil
+}
+
+func (c *CachedCRUD) SearchUserById(id int64) (user *model.User, err error) {
+	result := c.mysql.Raw("SELECT * FROM users WHERE id = ?", id)
+	var t model.User
+	result.Scan(&t)
+	return &t, err
 }

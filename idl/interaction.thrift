@@ -19,7 +19,7 @@ struct favorite_action_response {
 // 喜欢列表
 struct favorite_list_request {
     1:required i64 user_id
-    2:required string token
+    2:optional string token
 }
 
 struct favorite_list_response {

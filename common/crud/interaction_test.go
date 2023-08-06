@@ -21,3 +21,27 @@ func TestInsertFavorite(t *testing.T) {
 	}
 	fmt.Println("rows: ", rows)
 }
+
+func TestSearchVideoListById(t *testing.T) {
+	c, err := NewCachedCRUD()
+	if err != nil {
+		return
+	}
+	videoList, err := c.SearchVideoListById(1)
+	if err != nil {
+		return
+	}
+	fmt.Println("videoList: ", videoList)
+}
+
+func TestSearchSearchUserById(t *testing.T) {
+	c, err := NewCachedCRUD()
+	if err != nil {
+		return
+	}
+	user, err := c.SearchUserById(1)
+	if err != nil {
+		return
+	}
+	fmt.Println("user: ", user)
+}

@@ -87,9 +87,10 @@ func InteractionFavoriteList(c *gin.Context) {
 
 	// 2. 创建发生消息的请求实例
 	// 3. 前端请求数据绑定到req中
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteListRequest{
-		UserId: 12,
-		Token:  c.Query("token"),
+		UserId: userId,
+		//Token:  c.Query("token"),
 	}
 
 	// 4. 发起RPC调用
@@ -98,7 +99,6 @@ func InteractionFavoriteList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		panic(err)
 	}
-
 	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }

@@ -2,11 +2,11 @@ package main
 
 import (
 	"context"
+	"github.com/douyin/kitex_gen/model"
 	"net/http"
 
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/interaction"
-	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 )
 
@@ -57,26 +57,29 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 
 // FavoriteList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
-	resp = &interaction.FavoriteListResponse{
-		StatusCode: 123,
-		StatusMsg:  new(string),
-		VideoList: []*model.Video{
-			&model.Video{
-				Id: 12,
-				Author: &model.User{
-					Id:   1234,
-					Name: "naruto",
-				},
-			},
-			&model.Video{
-				Id: 44,
-				Author: &model.User{
-					Id:   567,
-					Name: "kakasi",
-				},
-			},
-		},
+	resp = new(interaction.FavoriteListResponse)
+	dbList, err := Dao.SearchVideoListById(req.UserId)
+	if err != nil {
+		return nil, err
 	}
+	videoList := make([]*model.Video, len(dbList))
+	for i := 0; i < len(dbList); i++ {
+		author, _ := Dao.SearchUserById(dbList[i].AuthorID)
+		videoList[i] = &model.Video{
+			Id:            dbList[i].ID,
+			Author:        author,
+			PlayUrl:       dbList[i].PlayUrl,
+			CoverUrl:      dbList[i].CoverUrl,
+			FavoriteCount: dbList[i].FavoriteCount,
+			CommentCount:  dbList[i].CommentCount,
+			//IsFavorite:    false,   //TODO 这个字段什么意思？
+			Title: dbList[i].Title,
+		}
+	}
+	resp.StatusCode = http.StatusOK
+	msg := "ok"
+	resp.StatusMsg = &msg
+	resp.VideoList = videoList
 	return
 }
 

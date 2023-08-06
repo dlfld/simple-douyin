@@ -46,15 +46,13 @@ func InteractionFavoriteAction(c *gin.Context) {
 	// 2. 创建发生消息的请求实例
 	// 3. 前端请求数据绑定到req中
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
-	if err != nil {
-		log.Printf(err.Error())
-	}
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
-
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteActionRequest{
 		Token:      c.Query("token"),
 		VideoId:    videoId,
 		ActionType: int32(actionType),
+		UserId:     userId,
 	}
 
 	// 4. 发起RPC调用

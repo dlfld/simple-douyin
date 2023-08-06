@@ -6,12 +6,12 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
-	model2 "github.com/douyin/kitex_gen/model"
 	"strings"
 
 	"github.com/apache/thrift/lib/go/thrift"
 
 	"github.com/cloudwego/kitex/pkg/protocol/bthrift"
+	"github.com/douyin/kitex_gen/model"
 )
 
 // unused protection
@@ -22,7 +22,7 @@ var (
 	_ = reflect.Type(nil)
 	_ = thrift.TProtocol(nil)
 	_ = bthrift.BinaryWriter(nil)
-	_ = model2.KitexUnusedProtection
+	_ = model.KitexUnusedProtection
 )
 
 func (p *FavoriteActionRequest) FastRead(buf []byte) (int, error) {
@@ -34,6 +34,7 @@ func (p *FavoriteActionRequest) FastRead(buf []byte) (int, error) {
 	var issetToken bool = false
 	var issetVideoId bool = false
 	var issetActionType bool = false
+	var issetUserId bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -95,6 +96,21 @@ func (p *FavoriteActionRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField4(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -127,6 +143,11 @@ func (p *FavoriteActionRequest) FastRead(buf []byte) (int, error) {
 
 	if !issetActionType {
 		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUserId {
+		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
 	return offset, nil
@@ -188,6 +209,20 @@ func (p *FavoriteActionRequest) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *FavoriteActionRequest) FastReadField4(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.UserId = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *FavoriteActionRequest) FastWrite(buf []byte) int {
 	return 0
@@ -199,6 +234,7 @@ func (p *FavoriteActionRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift
 	if p != nil {
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
+		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -213,6 +249,7 @@ func (p *FavoriteActionRequest) BLength() int {
 		l += p.field1Length()
 		l += p.field2Length()
 		l += p.field3Length()
+		l += p.field4Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -246,6 +283,15 @@ func (p *FavoriteActionRequest) fastWriteField3(buf []byte, binaryWriter bthrift
 	return offset
 }
 
+func (p *FavoriteActionRequest) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 4)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *FavoriteActionRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("token", thrift.STRING, 1)
@@ -268,6 +314,15 @@ func (p *FavoriteActionRequest) field3Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("action_type", thrift.I32, 3)
 	l += bthrift.Binary.I32Length(p.ActionType)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *FavoriteActionRequest) field4Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 4)
+	l += bthrift.Binary.I64Length(p.UserId)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -804,9 +859,9 @@ func (p *FavoriteListResponse) FastReadField3(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	p.VideoList = make([]*model2.Video, 0, size)
+	p.VideoList = make([]*model.Video, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := model2.NewVideo()
+		_elem := model.NewVideo()
 		if l, err := _elem.FastRead(buf[offset:]); err != nil {
 			return offset, err
 		} else {
@@ -1409,7 +1464,7 @@ func (p *CommentActionResponse) FastReadField2(buf []byte) (int, error) {
 func (p *CommentActionResponse) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := model2.NewComment()
+	tmp := model.NewComment()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -1852,9 +1907,9 @@ func (p *CommentListResponse) FastReadField3(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	p.CommentList = make([]*model2.Comment, 0, size)
+	p.CommentList = make([]*model.Comment, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := model2.NewComment()
+		_elem := model.NewComment()
 		if l, err := _elem.FastRead(buf[offset:]); err != nil {
 			return offset, err
 		} else {

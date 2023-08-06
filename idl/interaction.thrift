@@ -4,9 +4,11 @@ namespace go interaction
 
 // 赞操作
 struct favorite_action_request {
-    1:required string token
+    1:optional string token
     2:required i64 video_id
+    // 1-点赞，2-取消点赞
     3:required i32 action_type
+    4:required i64 user_id
 }
 
 struct favorite_action_response {

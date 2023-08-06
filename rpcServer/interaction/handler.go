@@ -2,24 +2,56 @@ package main
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/interaction"
 	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
 )
 
-var dao *crud.CachedCRUD
+var Dao *crud.CachedCRUD
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
 type InteractionServiceImpl struct{}
 
+func InitDao() (err error) {
+	Dao, err = crud.NewCachedCRUD()
+	return
+}
+
 // FavoriteAction implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
-	// TODO: Your code here...
-	//m := models.FavoriteVideoRelation{
-	//	VideoID: req.VideoId,
-	//	UserID:  nil,
-	//}
+	resp = new(interaction.FavoriteActionResponse)
+	actionType := req.ActionType
 
+	m := models.FavoriteVideoRelation{
+		VideoID: req.VideoId,
+		UserID:  req.UserId,
+	}
+	if actionType == 1 { // 点赞
+		exist, _ := Dao.SearchFavoriteExist(&m)
+		if exist {
+			resp.StatusCode = http.StatusOK
+			msg := "该记录已经存在"
+			resp.StatusMsg = &msg
+			return
+		}
+		_, err = Dao.InsertFavorite(&m)
+	} else if actionType == 2 { //取消点赞
+		_, err = Dao.CancelFavorite(&m)
+	} else {
+		resp.StatusCode = http.StatusInternalServerError
+		msg := "actionType 错误"
+		resp.StatusMsg = &msg
+		return
+	}
+	if err != nil {
+		// TODO: log err
+	}
+	resp.StatusCode = http.StatusOK
+	msg := "ok"
+	resp.StatusMsg = &msg
 	return
 }
 

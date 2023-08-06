@@ -3,7 +3,7 @@ package interactionservice
 
 import (
 	server "github.com/cloudwego/kitex/server"
-	"github.com/douyin/kitex_gen/interaction"
+	interaction "github.com/douyin/kitex_gen/interaction"
 )
 
 // NewServer creates a server.Server with the given handler and options.

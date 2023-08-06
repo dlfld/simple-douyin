@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a7d6e3fc-4fd4-4f68-b4b3-4c7beec7139d" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2T3GUfYj5pZEUgRwTvqmdBGMtVJ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+    <ConfirmationsSetting value="1" id="Remove" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/wuwei/go/src/simple-douyin/handler",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "go.vgo"
+  },
+  "keyToStringList": {
+    "GitStage.ChangesTree.GroupingKeys": [
+      "directory",
+      "module",
+      "repository"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/handler" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm">
+    <configuration name="go build github.com/douyin/t" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/t" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/t/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="http" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rpc" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/rpcServer/interaction" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/rpcServer/interaction/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$/initialize/gorm" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/initialize/gorm" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestInteractionMysqlCreate\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestNewMysqlConn in github.com/douyin/common/mysql" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$/common/mysql" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/common/mysql" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestNewMysqlConn\E$" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Go Build.go build github.com/douyin/t" />
+      <item itemvalue="Go Build.http" />
+      <item itemvalue="Go Build.rpc" />
+      <item itemvalue="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" />
+      <item itemvalue="Go Test.TestNewMysqlConn in github.com/douyin/common/mysql" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestInteractionMysqlCreate in github.com/douyin/initialize/gorm" />
+        <item itemvalue="Go Build.go build github.com/douyin/t" />
+        <item itemvalue="Go Test.TestNewMysqlConn in github.com/douyin/common/mysql" />
+        <item itemvalue="Go Build.http" />
+        <item itemvalue="Go Build.rpc" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="test:add ping api" />
+    <MESSAGE value="feat:add NewRpcServer to main" />
+    <MESSAGE value="feat:contact rpc and gin" />
+    <MESSAGE value="feat:test" />
+    <MESSAGE value="feat:gin rpc test done" />
+    <MESSAGE value="feat:FavoriteAction http done" />
+    <MESSAGE value="feat: mysql create" />
+    <MESSAGE value="feat: mysql create 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: mysql create 2" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/kitex_gen/interaction/interaction.go</url>
+          <line>7</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

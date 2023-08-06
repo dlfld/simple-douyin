@@ -10,6 +10,10 @@ import (
 )
 
 func main() {
+	err := InitDao()
+	if err != nil {
+		log.Printf("新建数据库连接失败：%+v\n", err)
+	}
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
 	if err != nil {
 		log.Printf("addr获取失败：%+v\n", err)

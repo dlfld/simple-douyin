@@ -14,6 +14,7 @@ type FavoriteActionRequest struct {
 	Token      string `thrift:"token,1,required" frugal:"1,required,string" json:"token"`
 	VideoId    int64  `thrift:"video_id,2,required" frugal:"2,required,i64" json:"video_id"`
 	ActionType int32  `thrift:"action_type,3,required" frugal:"3,required,i32" json:"action_type"`
+	UserId     int64  `thrift:"user_id,4,required" frugal:"4,required,i64" json:"user_id"`
 }
 
 func NewFavoriteActionRequest() *FavoriteActionRequest {
@@ -35,6 +36,10 @@ func (p *FavoriteActionRequest) GetVideoId() (v int64) {
 func (p *FavoriteActionRequest) GetActionType() (v int32) {
 	return p.ActionType
 }
+
+func (p *FavoriteActionRequest) GetUserId() (v int64) {
+	return p.UserId
+}
 func (p *FavoriteActionRequest) SetToken(val string) {
 	p.Token = val
 }
@@ -44,11 +49,15 @@ func (p *FavoriteActionRequest) SetVideoId(val int64) {
 func (p *FavoriteActionRequest) SetActionType(val int32) {
 	p.ActionType = val
 }
+func (p *FavoriteActionRequest) SetUserId(val int64) {
+	p.UserId = val
+}
 
 var fieldIDToName_FavoriteActionRequest = map[int16]string{
 	1: "token",
 	2: "video_id",
 	3: "action_type",
+	4: "user_id",
 }
 
 func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -58,6 +67,7 @@ func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 	var issetToken bool = false
 	var issetVideoId bool = false
 	var issetActionType bool = false
+	var issetUserId bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -106,6 +116,17 @@ func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -132,6 +153,11 @@ func (p *FavoriteActionRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetActionType {
 		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUserId {
+		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -179,6 +205,15 @@ func (p *FavoriteActionRequest) ReadField3(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *FavoriteActionRequest) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
 func (p *FavoriteActionRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("favorite_action_request"); err != nil {
@@ -195,6 +230,10 @@ func (p *FavoriteActionRequest) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField3(oprot); err != nil {
 			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
 			goto WriteFieldError
 		}
 
@@ -267,6 +306,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
+func (p *FavoriteActionRequest) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
 func (p *FavoriteActionRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -289,6 +345,9 @@ func (p *FavoriteActionRequest) DeepEqual(ano *FavoriteActionRequest) bool {
 	if !p.Field3DeepEqual(ano.ActionType) {
 		return false
 	}
+	if !p.Field4DeepEqual(ano.UserId) {
+		return false
+	}
 	return true
 }
 
@@ -309,6 +368,13 @@ func (p *FavoriteActionRequest) Field2DeepEqual(src int64) bool {
 func (p *FavoriteActionRequest) Field3DeepEqual(src int32) bool {
 
 	if p.ActionType != src {
+		return false
+	}
+	return true
+}
+func (p *FavoriteActionRequest) Field4DeepEqual(src int64) bool {
+
+	if p.UserId != src {
 		return false
 	}
 	return true

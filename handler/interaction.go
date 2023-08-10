@@ -33,9 +33,8 @@ func InitInteractionCli() (err error) {
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body relation.FavoriteActionRequest true "request body"
+// @Param request_body body interaction.FavoriteActionRequest true "request body"
 // @Router /douyin/favorite/action/ [POST]
-
 func InteractionFavoriteAction(c *gin.Context) {
 	// 1. 创建客户端连接
 	//err := initInteractionCli()
@@ -73,9 +72,8 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body relation.FavoriteActionRequest true "request body"
+// @Param request_body body interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
-
 func InteractionFavoriteList(c *gin.Context) {
 	//c.JSON(http.StatusOK, gin.H{"msg": "ok"})
 
@@ -109,9 +107,8 @@ func InteractionFavoriteList(c *gin.Context) {
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body relation.FavoriteActionRequest true "request body"
+// @Param request_body body interaction.CommentActionRequest true "request body"
 // @Router /douyin/comment/action/ [POST]
-
 func InteractionCommentAction(c *gin.Context) {
 	err := InitInteractionCli()
 	if err != nil {
@@ -150,9 +147,8 @@ func InteractionCommentAction(c *gin.Context) {
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body relation.FavoriteActionRequest true "request body"
+// @Param request_body body interaction.CommentListRequest true "request body"
 // @Router /douyin/comment/list/ [GET]
-
 func InteractionCommentList(c *gin.Context) {
 	//// 1. 创建客户端连接
 	err := InitInteractionCli()

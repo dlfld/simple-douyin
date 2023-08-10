@@ -57,11 +57,12 @@ func VideoSubmit(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
+	// Token: c.Query("token"),
 	// 创建发生消息的请求实例 接收视频投稿信息
 	req := &video.PublishActionRequest{
-		Token: c.Query("token"),
-		Title: c.Query("title"),
-		Data:  []byte(c.Query("data")),
+		UserId: 1, // todo: implement userid get
+		Title:  c.Query("title"),
+		Data:   []byte(c.Query("data")),
 	}
 
 	if err != nil {

@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
-	//docs "github.com/douyin/docs"
+	"os"
+	"os/exec"
+	"runtime"
+
+	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"os"
-	"os/exec"
-	"runtime"
 )
 
 func getWorkingDirPath() string {
@@ -37,7 +38,7 @@ func main() {
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
 	r := gin.Default()
-	//docs.SwaggerInfo.BasePath = ""
+	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	apiRouter := r.Group("/douyin")
 	//// basic apis
@@ -59,14 +60,14 @@ func main() {
 	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
 	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
-	//apiRouter.GET("/message/chat/", controller.MessageChat)
+	apiRouter.GET("/message/chat/", handler.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
 	// 视频相关结构
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	apiRouter.POST("/publish/action/", handler.VideoSubmit)
 
-	apiRouter.GET("/t/ ", handler.RelationFollowerList)
+	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
 	apiRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)

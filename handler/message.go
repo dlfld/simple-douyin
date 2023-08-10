@@ -2,18 +2,18 @@ package handler
 
 import (
 	"fmt"
-	"github.com/douyin/kitex_gen/message"
-	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/rpcClient/messageRpc"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/douyin/kitex_gen/message"
+	"github.com/douyin/rpcClient/messageRpc"
+	"github.com/gin-gonic/gin"
 )
 
 // MessageAction @Summary 消息操作
 // @Schemes
 // @Description 登录用户对消息的相关操作，目前只支持消息发送
-// @Tags example
+// @Tags 消息
 // @Accept json
 // @Produce json
 // @Param token body message.MessageActionRequest true "Message Action Params"
@@ -30,11 +30,12 @@ func MessageAction(c *gin.Context) {
 	_ = c.ShouldBind(req)
 	fmt.Println(req)
 	temUid, _ := strconv.Atoi(c.Query("userID"))
-	uid := int64(temUid)
-	user := model.BaseReq{
-		UserId: &uid,
-	}
-	req.User = &user
+	// uid := int64(temUid)
+	// user := model.BaseReq{
+	// 	UserId: &uid,
+	// }
+	// req.User = &user
+	req.FromUserId = int64(temUid)
 	// 4. 发起RPC调用
 	//ctx := context.WithValue(context.Background(), "userID", c.Query(""))
 	resp, err := cli.SendMessage(c, req)
@@ -45,6 +46,14 @@ func MessageAction(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// MessageAction @Summary 消息操作
+// @Schemes
+// @Description 登录用户对消息的相关操作，目前只支持消息发送
+// @Tags 消息
+// @Accept json
+// @Produce json
+// @Param token body message.MessageChatRequest true "Message Action Params"
+// @Router /douyin/message/chat/ [POST]
 func MessageChat(c *gin.Context) {
 	// 1. 创建客户端连接
 	cli, err := messageRpc.NewRpcMessageClient()
@@ -57,11 +66,12 @@ func MessageChat(c *gin.Context) {
 	_ = c.ShouldBind(req)
 	fmt.Println(req)
 	temUid, _ := strconv.Atoi(c.Query("userID"))
-	uid := int64(temUid)
-	user := model.BaseReq{
-		UserId: &uid,
-	}
-	req.User = &user
+	// uid := int64(temUid)
+	// user := model.BaseReq{
+	// 	UserId: &uid,
+	// }
+	// req.User = &user
+	req.FromUserId = int64(temUid)
 	// 4. 发起RPC调用
 	//ctx := context.WithValue(context.Background(), "userID", c.Query(""))
 	resp, err := cli.MessageList(c, req)

@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
+	"time"
+
 	"github.com/douyin/kitex_gen/message"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
-	"time"
 )
 
 // MessageServiceImpl implements the last service interface defined in the IDL.
@@ -15,7 +16,7 @@ type MessageServiceImpl struct{}
 func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.MessageChatRequest) (resp *message.MessageChatResponse, err error) {
 	// TODO: Your code here...
 	messageList := make([]*model.Message, 0)
-	db.Table(models.Message{}.TableName()).Where("from_user_id=? and to_user_id=?", req.User.UserId, req.ToUserId).Find(&messageList)
+	db.Table(models.Message{}.TableName()).Where("from_user_id=? and to_user_id=?", req.FromUserId, req.ToUserId).Find(&messageList)
 	if db.Error != nil {
 		return HandlerChatError(ErrMysqlRead), db.Error
 	}
@@ -32,7 +33,7 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 	}
 	curTime := time.Now().UnixNano()
 	messageRecord := models.Message{
-		FromUserID: *req.User.UserId,
+		FromUserID: req.FromUserId,
 		ToUserID:   req.ToUserId,
 		Content:    req.Content,
 		CreatedAt:  &curTime,

@@ -148,7 +148,8 @@ func RelationFriendList(c *gin.Context) {
 	}
 	req := &relation.RelationFriendListRequest{
 		UserId: int64(userId),
-		Token:  c.Query("token"),
+		// Token:  c.Query("token"),
+
 	}
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)

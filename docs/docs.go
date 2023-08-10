@@ -16,6 +16,114 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/douyin/comment/action/": {
+            "post": {
+                "description": "xxx",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "互动接口"
+                ],
+                "summary": "xxx",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interaction.CommentActionRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/douyin/comment/list/": {
+            "get": {
+                "description": "xxx",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "互动接口"
+                ],
+                "summary": "xxx",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interaction.CommentListRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/douyin/favorite/action/": {
+            "post": {
+                "description": "xxx",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "互动接口"
+                ],
+                "summary": "xxx",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interaction.FavoriteActionRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/douyin/favorite/list/": {
+            "get": {
+                "description": "xxx",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "互动接口"
+                ],
+                "summary": "xxx",
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request_body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/interaction.FavoriteListRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/douyin/message/action/": {
             "post": {
                 "description": "登录用户对消息的相关操作，目前只支持消息发送",
@@ -26,7 +134,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "消息"
                 ],
                 "parameters": [
                     {
@@ -36,6 +144,32 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/message.MessageActionRequest"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/douyin/message/chat/": {
+            "post": {
+                "description": "登录用户对消息的相关操作，目前只支持消息发送",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "消息"
+                ],
+                "parameters": [
+                    {
+                        "description": "Message Action Params",
+                        "name": "token",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message.MessageChatRequest"
                         }
                     }
                 ],
@@ -219,6 +353,71 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "interaction.CommentActionRequest": {
+            "type": "object",
+            "properties": {
+                "action_type": {
+                    "type": "integer"
+                },
+                "comment_id": {
+                    "type": "integer"
+                },
+                "comment_text": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "video_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "interaction.CommentListRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "video_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "interaction.FavoriteActionRequest": {
+            "type": "object",
+            "properties": {
+                "action_type": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "video_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "interaction.FavoriteListRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "message.MessageActionRequest": {
             "type": "object",
             "properties": {
@@ -229,6 +428,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "from_user_id": {
+                    "type": "integer"
+                },
+                "to_user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "message.MessageChatRequest": {
+            "type": "object",
+            "properties": {
+                "from_user_id": {
+                    "type": "integer"
+                },
+                "pre_msg_time": {
                     "type": "integer"
                 },
                 "to_user_id": {

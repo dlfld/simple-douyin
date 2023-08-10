@@ -6,14 +6,15 @@ package crud
 import (
 	"context"
 	"fmt"
-	myRedis "github.com/douyin/common/redis"
 	"testing"
+
+	myRedis "github.com/douyin/common/redis"
 )
 
 func TestFindVideoListByUserId(t *testing.T) {
 	cache, _ := myRedis.NewRedisConn()
-	exists := cache.Exists(context.Background(), "aaa").
-		// print("aaa\n")
+	// exists := cache.Exists(context.Background(), "aaa").Val()
+	// print("aaa\n")
 	result, _ := cache.Get(context.Background(), "aaa").Result()
 	fmt.Printf("result:%+v\n", result)
 	s2 := cache.LRange(context.Background(), "mylist", 0, -1).Val()

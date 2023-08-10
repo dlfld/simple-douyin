@@ -1,4 +1,46 @@
 definitions:
+  interaction.CommentActionRequest:
+    properties:
+      action_type:
+        type: integer
+      comment_id:
+        type: integer
+      comment_text:
+        type: string
+      token:
+        type: string
+      user_id:
+        type: integer
+      video_id:
+        type: integer
+    type: object
+  interaction.CommentListRequest:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: integer
+      video_id:
+        type: integer
+    type: object
+  interaction.FavoriteActionRequest:
+    properties:
+      action_type:
+        type: integer
+      token:
+        type: string
+      user_id:
+        type: integer
+      video_id:
+        type: integer
+    type: object
+  interaction.FavoriteListRequest:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
   message.MessageActionRequest:
     properties:
       action_type:
@@ -6,6 +48,15 @@ definitions:
       content:
         type: string
       from_user_id:
+        type: integer
+      to_user_id:
+        type: integer
+    type: object
+  message.MessageChatRequest:
+    properties:
+      from_user_id:
+        type: integer
+      pre_msg_time:
         type: integer
       to_user_id:
         type: integer
@@ -40,6 +91,78 @@ definitions:
 info:
   contact: {}
 paths:
+  /douyin/comment/action/:
+    post:
+      consumes:
+      - application/json
+      description: xxx
+      parameters:
+      - description: request body
+        in: body
+        name: request_body
+        required: true
+        schema:
+          $ref: '#/definitions/interaction.CommentActionRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: xxx
+      tags:
+      - 互动接口
+  /douyin/comment/list/:
+    get:
+      consumes:
+      - application/json
+      description: xxx
+      parameters:
+      - description: request body
+        in: body
+        name: request_body
+        required: true
+        schema:
+          $ref: '#/definitions/interaction.CommentListRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: xxx
+      tags:
+      - 互动接口
+  /douyin/favorite/action/:
+    post:
+      consumes:
+      - application/json
+      description: xxx
+      parameters:
+      - description: request body
+        in: body
+        name: request_body
+        required: true
+        schema:
+          $ref: '#/definitions/interaction.FavoriteActionRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: xxx
+      tags:
+      - 互动接口
+  /douyin/favorite/list/:
+    get:
+      consumes:
+      - application/json
+      description: xxx
+      parameters:
+      - description: request body
+        in: body
+        name: request_body
+        required: true
+        schema:
+          $ref: '#/definitions/interaction.FavoriteListRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: xxx
+      tags:
+      - 互动接口
   /douyin/message/action/:
     post:
       consumes:
@@ -56,7 +179,24 @@ paths:
       - application/json
       responses: {}
       tags:
-      - example
+      - 消息
+  /douyin/message/chat/:
+    post:
+      consumes:
+      - application/json
+      description: 登录用户对消息的相关操作，目前只支持消息发送
+      parameters:
+      - description: Message Action Params
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/message.MessageChatRequest'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - 消息
   /douyin/publish/action/:
     post:
       consumes:

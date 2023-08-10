@@ -81,15 +81,16 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	crud, _ := crud.NewCachedCRUD()
 	resp = new(relation.FollowActionResponse)
 	resp.StatusMsg = &msg
-	var token2UserID = map[string]uint{
-		"token1": 1,
-		"token2": 2,
-	}
-	userId, has := token2UserID[req.Token]
-	if !has {
-		msg = "Token error"
-		return
-	}
+	// var token2UserID = map[string]uint{
+	// 	"token1": 1,
+	// 	"token2": 2,
+	// }
+	// userId, has := token2UserID[req.Token]
+	// if !has {
+	// 	msg = "Token error"
+	// 	return
+	// }
+	userId := uint(req.FromUserId)
 
 	switch req.ActionType {
 	case 1:

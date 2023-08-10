@@ -21,7 +21,7 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 		//对同名属性的转换，其中还有一个id是不同名的需要手动转换
 		err := copier.Copy(&videoDto, &videoBo)
 		// 两个结构体还有这个变量是不同名的
-		videoDto.Id = int64(videoBo.ID)
+		videoDto.Id = videoBo.ID
 		if err != nil {
 			return nil, err
 		}

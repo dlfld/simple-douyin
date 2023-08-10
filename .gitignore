@@ -20,5 +20,4 @@
 # Go workspace file
 go.work
 .vscode
-docs
 .idea

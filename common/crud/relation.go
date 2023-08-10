@@ -122,6 +122,31 @@ func (c *CachedCRUD) CacheUserInfo(user *models.User) (err error) {
 	return nil
 }
 
+// CacheUsersInfo 批量将用户信息存入缓存
+func (c *CachedCRUD) CacheUsersInfo(users []*models.User) (err error) {
+	pipline := c.redis.Pipeline()
+	// 序列化用户信息
+	for _, v := range users {
+		data, err := sonic.Marshal(v)
+		if err != nil {
+			return err
+		}
+		res := pipline.HSet(
+			context.Background(),
+			"UserInfoCache",
+			fmt.Sprintf("%d", v.ID),
+			string(data),
+		)
+		if res.Err() != nil {
+			return res.Err()
+		}
+	}
+	// 将用户信息存入缓存的哈希表中
+
+	_, err = pipline.Exec(context.Background())
+	return
+}
+
 // GetUserInfo 从缓存或数据库中获取用户信息
 func (c *CachedCRUD) GetUserInfo(userID string) (user *models.User, err error) {
 	// 查询缓存中是否存在用户信息
@@ -165,17 +190,18 @@ func (c *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, err e
 		pipline.HGet(context.Background(), "UserInfoCache", id)
 	}
 	// 执行缓存查询操作
-	res, err := pipline.Exec(context.Background())
-	if err != nil {
-		// fmt.Println("%v\n", err.Error())
-		return
-	}
+	res, _ := pipline.Exec(context.Background())
 
-	// 遍历查询结果，进行反序列化
+	uncached_users_id := make([]string, 0)
+	uncached_users_pos := make([]int, 0)
+	// 遍历查询结果，进行反序列化,记录缓存中没有查询到的用户
 	for i, r = range res {
 		data, err = r.(*redis.StringCmd).Result()
 		if err != nil {
-			return nil, err
+			// 记录cache中没有查到的id
+			uncached_users_id = append(uncached_users_id, userIDs[i])
+			uncached_users_pos = append(uncached_users_pos, i)
+			continue
 		}
 		user = new(models.User)
 		err = sonic.Unmarshal([]byte(data), &user)
@@ -183,6 +209,17 @@ func (c *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, err e
 			return
 		}
 		users[i] = user
+	}
+
+	// 查询mysql获取缓存中没有的用户
+	if len(uncached_users_id) > 0 {
+		var mysql_users []*models.User
+		c.mysql.Where("id in ?", uncached_users_id).Find(&mysql_users)
+		for i, v := range mysql_users {
+			users[uncached_users_pos[i]] = v
+		}
+		// 存入缓存
+		go c.CacheUsersInfo(mysql_users)
 	}
 	return users, err
 }

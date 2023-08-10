@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	docs "github.com/douyin/docs"
+	//docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -37,7 +37,7 @@ func main() {
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
 	r := gin.Default()
-	docs.SwaggerInfo.BasePath = ""
+	//docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	apiRouter := r.Group("/douyin")
 	//// basic apis
@@ -66,5 +66,17 @@ func main() {
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	apiRouter.POST("/publish/action/", handler.VideoSubmit)
 
+	apiRouter.GET("/t/ ", handler.RelationFollowerList)
+
+	//互动interaction
+	apiRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
+	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
+	apiRouter.POST("/comment/action/", handler.InteractionCommentAction)
+	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
+
+	err := handler.InitInteractionCli()
+	if err != nil {
+		return
+	}
 	r.Run(":8080")
 }

@@ -31,3 +31,23 @@ func TestCachedGetFollow(t *testing.T) {
 	// crud.RelationGetFollows(1)
 	// fmt.Println("cache using:", time.Since(ts))
 }
+
+func TestGetAllUsers(t *testing.T) {
+	crud, err := NewCachedCRUD()
+	if err != nil {
+		fmt.Println(err)
+	}
+	// c := crud.redis.HGet(context.Background(), "UserInfoCache", "11")
+	// s, r := c.Result()
+	// if r != nil {
+	// 	fmt.Println("err:", r.Error())
+	// }
+	// fmt.Println(s)
+
+	users, err := crud.GetUsersByID([]string{"11", "12", "1", "2"})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(users)
+	time.Sleep(time.Second * 2)
+}

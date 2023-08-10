@@ -1,7 +1,7 @@
 package conf
 
 var Mysql = mysqlConfig{
-	Login: ".\/?charset=utf8&parseTime=True&loc=Local",
+	Login: "./?charset=utf8&parseTime=True&loc=Local",
 	Debug: true,
 }
 var Redis = redisConfig{

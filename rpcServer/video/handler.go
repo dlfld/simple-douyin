@@ -3,11 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"github.com/douyin/common/conf"
-	"github.com/douyin/common/crud"
-	"github.com/douyin/common/oss"
+	video2 "github.com/douyin/common/crud/video"
 	"github.com/douyin/kitex_gen/video"
-	"github.com/douyin/rpcServer/video/convert"
 	"net/http"
 )
 
@@ -23,16 +22,21 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	// TODO: Your code here...
-	service, _ := oss.GetOssService()
+
 	reader := bytes.NewReader(req.GetData())
 	// 上传文件的文件名
 	filename := req.GetTitle()
+	userId := req.UserId
 	// TODO 根据Token获取用户信息，然后根据用户信息写入用户投稿的视频，在redis中加入这一条视频
-	//videoUrl := fmt.Sprintf("http://%s/%s/%s", conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
-
+	videoUrl := fmt.Sprintf("http://%s/%s/%s", conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
 	// TODO 魔法值需要改
 	contentType := "application/mp4"
-	err = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename, int64(len(req.GetData())), contentType)
+	dataLen := int64(len(req.GetData()))
+	//执行视频上传逻辑
+	err = video2.UploadVideo(reader, filename, contentType, videoUrl, dataLen, userId)
+	if err != nil {
+		return nil, err
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -46,16 +50,11 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 // 获取登录用户的视频发布列表，直接列出用户所有投稿过的视频。
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
 	// 根据登陆用户的id，查询用户所投稿过的所有视频
-	videoList, err := crud.FindVideoListByUserId(int(req.GetUserId()))
-	if err != nil {
-		return nil, err
-	}
-	// 将从数据库中查询出来的bo对象转换为kitex的dto对象
-	videoDtoSlice, err := convert.VideoSliceBo2Dto(videoList)
+	videoList, err := video2.FindVideoListByUserId(int(req.GetUserId()))
 	if err != nil {
 		return nil, err
 	}
 	// 封装返回结果
-	resp = &video.PublishListResponse{VideoList: videoDtoSlice, StatusCode: http.StatusOK}
+	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: http.StatusOK}
 	return resp, err
 }

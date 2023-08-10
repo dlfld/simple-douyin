@@ -1,0 +1,178 @@
+definitions:
+  message.MessageActionRequest:
+    properties:
+      action_type:
+        type: integer
+      content:
+        type: string
+      from_user_id:
+        type: integer
+      to_user_id:
+        type: integer
+    type: object
+  relation.FollowActionRequest:
+    properties:
+      action_type:
+        type: integer
+      from_user_id:
+        type: integer
+      to_user_id:
+        type: integer
+    type: object
+  video.PublishActionRequest:
+    properties:
+      data:
+        items:
+          type: integer
+        type: array
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  video.PublishListRequest:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /douyin/message/action/:
+    post:
+      consumes:
+      - application/json
+      description: 登录用户对消息的相关操作，目前只支持消息发送
+      parameters:
+      - description: Message Action Params
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/message.MessageActionRequest'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - example
+  /douyin/publish/action/:
+    post:
+      consumes:
+      - application/json
+      description: 视频投稿
+      parameters:
+      - description: body
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/video.PublishActionRequest'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - 视频接口
+  /douyin/publish/list/:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户发表的视频列表
+      parameters:
+      - description: body
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/video.PublishListRequest'
+      produces:
+      - application/json
+      responses: {}
+      tags:
+      - 视频接口
+  /douyin/relation/action/:
+    post:
+      consumes:
+      - application/json
+      description: 登录用户对其他用户进行关注或取消关注。
+      parameters:
+      - description: request body
+        in: body
+        name: request_body
+        required: true
+        schema:
+          $ref: '#/definitions/relation.FollowActionRequest'
+      produces:
+      - application/json
+      responses: {}
+      summary: 关系操作
+      tags:
+      - 社交接口
+  /douyin/relation/follow/list/:
+    get:
+      consumes:
+      - application/json
+      description: 登录用户关注的所有用户列表。
+      parameters:
+      - description: 用户id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 用户关注列表
+      tags:
+      - 社交接口
+  /douyin/relation/follower/list/:
+    get:
+      consumes:
+      - application/json
+      description: 所有关注登录用户的粉丝列表。
+      parameters:
+      - description: 用户id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 用户粉丝列表
+      tags:
+      - 社交接口
+  /douyin/relation/friend/list/:
+    get:
+      consumes:
+      - application/json
+      description: 所有与登录用户互相关注的用户列表
+      parameters:
+      - description: 用户id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 用户好友列表
+      tags:
+      - 社交接口
+swagger: "2.0"

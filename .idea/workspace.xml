@@ -5,34 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a7d6e3fc-4fd4-4f68-b4b3-4c7beec7139d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/simple-douyin.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/crud/interaction.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common/crud/interaction_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/handler/interaction.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/idl/gentest.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kitex_info.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rpcServer/interaction/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rpcServer/interaction/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/script/bootstrap.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/idl/interaction.thrift" beforeDir="false" afterPath="$PROJECT_DIR$/idl/interaction.thrift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize/gorm/gorm.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/gorm/gorm.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/initialize/gorm/gorm_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/initialize/gorm/gorm_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/interaction.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/interaction.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/interactionservice.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/interactionservice.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/invoker.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/invoker.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/interactionservice/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kitex_gen/interaction/k-interaction.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/interaction/k-interaction.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/favorite.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/favorite.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/feed.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/feed.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rpcServer/interaction/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/interaction/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rpcServer/video/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/video/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +21,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="GOROOT" url="file://$USER_HOME$/go/go1.20" />
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -77,14 +52,14 @@
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "正在合并 master",
+    "git-widget-placeholder": "dlf",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/dailinfeng",
+    "last_opened_file_path": "/Users/dailinfeng/Desktop/小项目/simple-douyin",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "go.vgo"
+    "settings.editor.selected.configurable": "goland.project.structure"
   },
   "keyToStringList": {
     "GitStage.ChangesTree.GroupingKeys": [
@@ -233,11 +208,6 @@
           <url>file://$PROJECT_DIR$/rpcServer/interaction/handler.go</url>
           <line>91</line>
           <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/common/crud/interaction.go</url>
-          <line>61</line>
-          <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/common/crud/interaction_test.go</url>

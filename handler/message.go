@@ -1,22 +1,13 @@
 package handler
 
 import (
-<<<<<<< HEAD
-	"context"
-	"net/http"
-
-=======
 	"fmt"
->>>>>>> wdk
 	"github.com/douyin/kitex_gen/message"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/rpcClient/messageRpc"
 	"github.com/gin-gonic/gin"
-<<<<<<< HEAD
-=======
 	"net/http"
 	"strconv"
->>>>>>> wdk
 )
 
 // MessageAction @Summary 消息操作

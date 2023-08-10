@@ -9,7 +9,6 @@ import (
 	"github.com/douyin/kitex_gen/video"
 	"github.com/douyin/rpcServer/video/convert"
 	"net/http"
-	"strconv"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -47,7 +46,7 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 // 获取登录用户的视频发布列表，直接列出用户所有投稿过的视频。
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
 	// 根据登陆用户的id，查询用户所投稿过的所有视频
-	videoList, err := crud.FindVideoListByUserId(strconv.Itoa(int(req.GetUserId())))
+	videoList, err := crud.FindVideoListByUserId(int(req.GetUserId()))
 	if err != nil {
 		return nil, err
 	}

@@ -53,3 +53,17 @@ func FindVideoListBy(field, condition string) ([]*Video, error) {
 	//conn.
 	return videos, nil
 }
+
+//	InsertVideo 插入数据
+//
+// @Description:
+// @param video
+// @return error
+func InsertVideo(video *Video) error {
+	conn, err := mysql.NewMysqlConn()
+	if err != nil {
+		return err
+	}
+	conn.Create(video)
+	return nil
+}

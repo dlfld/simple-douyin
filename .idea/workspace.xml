@@ -6,13 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a7d6e3fc-4fd4-4f68-b4b3-4c7beec7139d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/conf/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/conf/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/crud/video.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/crud/video_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rpcServer/video/convert/StrucConvert_test.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rpcServer/video/convert/StructConvert.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/video_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/feed.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/feed.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rpcServer/video/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/video/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +79,7 @@
       <recent name="$PROJECT_DIR$/common/crud/video" />
     </key>
   </component>
-  <component name="RunManager" selected="Go 构建.go build video.go">
+  <component name="RunManager" selected="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
@@ -100,15 +96,6 @@
       <package value="github.com/douyin" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/main.go" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <package value="github.com/douyin" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/rpcServer/user/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="go build video.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -142,6 +129,18 @@
       <pattern value="^\QTestFindVideoListByUserId\E$" />
       <method v="2" />
     </configuration>
+    <configuration name="github.com/douyin/common/crud/video 中的 TestUploadVideo" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$/common/crud/video" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/common/crud/video" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUploadVideo\E$" />
+      <method v="2" />
+    </configuration>
     <configuration name="video_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$/common/crud/video" />
@@ -156,17 +155,17 @@
     <list>
       <item itemvalue="Go 构建.go build main.go (1)" />
       <item itemvalue="Go 构建.go build video.go" />
-      <item itemvalue="Go 构建.go build main.go" />
+      <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo" />
       <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestFindVideoListByUserId" />
       <item itemvalue="Go 测试.video_test.go" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo" />
         <item itemvalue="Go 构建.go build video.go" />
         <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestFindVideoListByUserId" />
         <item itemvalue="Go 测试.video_test.go" />
         <item itemvalue="Go 构建.go build main.go (1)" />
-        <item itemvalue="Go 构建.go build main.go" />
       </list>
     </recent_temporary>
   </component>

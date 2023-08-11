@@ -16,6 +16,7 @@ import (
 	"io"
 	"log"
 	"strconv"
+	"time"
 )
 
 //	userPublishVideoList
@@ -93,14 +94,14 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @Description: 执行视频上传逻辑
 // 1. 上传视频到OSS
 // 2. 将视频信息写入视频表
-// 3. 更新用户发布视频的redis缓存
+// 3. 更新用户发布视频的redis缓存，在list后面push当前的数据
 // @param reader 视频文件的io流
 // @param filename 文件名
 // @param contentType 文件类型
 // @param videoUrl 视频url
 // @param dataLen 数据长度
 // @param userId 用户id
-func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataLen, userId int64) error {
+func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataLen, userId int64, title string) error {
 	service, _ := oss.GetOssService()
 	//视频文件上传
 	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename, dataLen, contentType)
@@ -108,6 +109,29 @@ func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataL
 		log.Fatalln("OSS视频文件上传失败")
 		return err
 	}
-	//
+	video := models.Video{
+		Title:         title,
+		FavoriteCount: 0,
+		CreatedAt:     time.Now(),
+		UpdatedAt:     time.Now(),
+		AuthorID:      userId,
+		PlayUrl:       videoUrl,
+		CoverUrl:      "抽取第一帧图片作为cover图片",
+		CommentCount:  0,
+	}
+	//插入数据
+	err = models.InsertVideo(&video)
+	if err != nil {
+		return err
+	}
+	// 将这一条数据插入redis
+	cache, err := myRedis.NewRedisConn()
+	if err != nil {
+		log.Print("redis 客户端获取失败\n")
+		return err
+	}
+	// 将video数据放入redis中，
+	videoJson, _ := json.Marshal(video)
+	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
 	return nil
 }

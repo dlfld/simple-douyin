@@ -29,12 +29,12 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
 		return resp, nil
 	}
-	//如果name为空
 	if len(username) > 32 {
 		statusMsg := "用户名必须小于32位"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
 		return resp, nil
 	}
+	//如果name为空
 	if len(username) <= 0 {
 		username = util.RandomString(16)
 	}

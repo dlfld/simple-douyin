@@ -20,9 +20,11 @@ import (
 func main() {
 	addr, err := net.ResolveTCPAddr("tcp", conf.UserService.Addr)
 	svr := userservice.NewServer(new(UserServiceImpl), server.WithServiceAddr(addr))
-
-	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
+	err = svr.Run()
+	//if err != nil {
+	//	log.Println(err.Error())
+	//}
 }

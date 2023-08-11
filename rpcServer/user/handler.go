@@ -179,7 +179,7 @@ func (s *UserServiceImpl) UserMsg(ctx context.Context, req *user.UserRequest) (r
 
 	var u model.User
 	u.SetId(int64(user.ID))
-	u.SetName(user.UserName)
+	u.SetUserName(user.UserName)
 	//用户存在，将user信息写入上下文
 	//ctx.Set("user", user)
 	statusMsg := "获取用户信息成功"

@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	Id              int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
-	Name            string  `thrift:"name,2,required" frugal:"2,required,string" json:"name"`
+	UserName        string  `thrift:"user_name,2,required" frugal:"2,required,string" json:"user_name"`
 	FollowCount     *int64  `thrift:"follow_count,3,optional" frugal:"3,optional,i64" json:"follow_count,omitempty"`
 	FollowerCount   *int64  `thrift:"follower_count,4,optional" frugal:"4,optional,i64" json:"follower_count,omitempty"`
 	IsFollow        bool    `thrift:"is_follow,5,required" frugal:"5,required,bool" json:"is_follow"`
@@ -34,8 +34,8 @@ func (p *User) GetId() (v int64) {
 	return p.Id
 }
 
-func (p *User) GetName() (v string) {
-	return p.Name
+func (p *User) GetUserName() (v string) {
+	return p.UserName
 }
 
 var User_FollowCount_DEFAULT int64
@@ -116,8 +116,8 @@ func (p *User) GetFavoriteCount() (v int64) {
 func (p *User) SetId(val int64) {
 	p.Id = val
 }
-func (p *User) SetName(val string) {
-	p.Name = val
+func (p *User) SetUserName(val string) {
+	p.UserName = val
 }
 func (p *User) SetFollowCount(val *int64) {
 	p.FollowCount = val
@@ -149,7 +149,7 @@ func (p *User) SetFavoriteCount(val *int64) {
 
 var fieldIDToName_User = map[int16]string{
 	1:  "id",
-	2:  "name",
+	2:  "user_name",
 	3:  "follow_count",
 	4:  "follower_count",
 	5:  "is_follow",
@@ -198,7 +198,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 	var fieldTypeId thrift.TType
 	var fieldId int16
 	var issetId bool = false
-	var issetName bool = false
+	var issetUserName bool = false
 	var issetIsFollow bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
@@ -231,7 +231,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetName = true
+				issetUserName = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -347,7 +347,7 @@ func (p *User) Read(iprot thrift.TProtocol) (err error) {
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetName {
+	if !issetUserName {
 		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
@@ -387,7 +387,7 @@ func (p *User) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.Name = v
+		p.UserName = v
 	}
 	return nil
 }
@@ -560,10 +560,10 @@ WriteFieldEndError:
 }
 
 func (p *User) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("name", thrift.STRING, 2); err != nil {
+	if err = oprot.WriteFieldBegin("user_name", thrift.STRING, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Name); err != nil {
+	if err := oprot.WriteString(p.UserName); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -761,7 +761,7 @@ func (p *User) DeepEqual(ano *User) bool {
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Name) {
+	if !p.Field2DeepEqual(ano.UserName) {
 		return false
 	}
 	if !p.Field3DeepEqual(ano.FollowCount) {
@@ -803,7 +803,7 @@ func (p *User) Field1DeepEqual(src int64) bool {
 }
 func (p *User) Field2DeepEqual(src string) bool {
 
-	if strings.Compare(p.Name, src) != 0 {
+	if strings.Compare(p.UserName, src) != 0 {
 		return false
 	}
 	return true

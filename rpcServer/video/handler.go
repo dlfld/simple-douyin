@@ -22,7 +22,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	// TODO: Your code here...
-
 	reader := bytes.NewReader(req.GetData())
 	// 上传文件的文件名
 	filename := req.GetTitle()
@@ -31,12 +30,10 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	videoUrl := fmt.Sprintf("http://%s/%s/%s", conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
 	// TODO 魔法值需要改
 	contentType := "application/mp4"
+	title := req.Title
 	dataLen := int64(len(req.GetData()))
 	//执行视频上传逻辑
-	err = video2.UploadVideo(reader, filename, contentType, videoUrl, dataLen, userId)
-	if err != nil {
-		return nil, err
-	}
+	err = video2.UploadVideo(reader, filename, contentType, videoUrl, dataLen, userId, title)
 	if err != nil {
 		return nil, err
 	}

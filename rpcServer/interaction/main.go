@@ -10,19 +10,17 @@ import (
 )
 
 func main() {
-	err := InitDao()
-	if err != nil {
-		log.Printf("新建数据库连接失败：%+v\n", err)
-	}
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
 	if err != nil {
 		log.Printf("addr获取失败：%+v\n", err)
 	}
 
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr))
+	InitDao()
 
 	err = svr.Run()
 	if err != nil {
 		log.Printf("rpc服务启动失败：%+v\n", err)
 	}
+
 }

@@ -74,3 +74,15 @@ func TestSearchCommentListSort(t *testing.T) {
 	fmt.Println("commentList: ", commentList)
 	fmt.Println("time: ", commentList[0].CreateTime.GoString())
 }
+
+func TestSearchUserById(t *testing.T) {
+	c, err := NewCachedCRUD()
+	if err != nil {
+		return
+	}
+	res, err := c.SearchUserById(1)
+	if err != nil {
+		return
+	}
+	fmt.Println("res: ", res)
+}

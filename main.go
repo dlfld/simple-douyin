@@ -29,7 +29,7 @@ func main() {
 	//apiRouter.GET("/relation/follow/list/", controller.FollowList)
 	//apiRouter.GET("/relation/follower/list/", controller.FollowerList)
 	//apiRouter.GET("/relation/friend/list/", controller.FriendList)
-	//apiRouter.GET("/message/chat/", controller.MessageChat)
+	apiRouter.GET("/message/chat/", handler.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
 	r.Run(":6666")

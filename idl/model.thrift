@@ -54,6 +54,6 @@ struct Message {
     2:required i64 to_user_id     // 消息接收者
     3:required i64 from_user_id   // 消息发送者
     4:required string content     // 消息内容
-    5:optional i64 create_time // 消息创建时间
+    5:optional string create_time // 消息创建时间
 }
 

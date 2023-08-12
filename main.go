@@ -61,6 +61,7 @@ func main() {
 	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
 	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
+
 	apiRouter.GET("/message/chat/", handler.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 

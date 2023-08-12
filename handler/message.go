@@ -28,21 +28,16 @@ func MessageAction(c *gin.Context) {
 	req := message.NewMessageActionRequest()
 	// 3. 前端请求数据绑定到req中
 	_ = c.ShouldBind(req)
-	fmt.Println(req)
-	temUid, _ := strconv.Atoi(c.Query("userID"))
-	// uid := int64(temUid)
-	// user := model.BaseReq{
-	// 	UserId: &uid,
-	// }
-	// req.User = &user
-	req.FromUserId = int64(temUid)
+	temUid, _ := strconv.Atoi(c.Query("userId"))
+	uid := int64(temUid)
+	req.FromUserId = uid
 	// 4. 发起RPC调用
-	//ctx := context.WithValue(context.Background(), "userID", c.Query(""))
 	resp, err := cli.SendMessage(c, req)
-	if err != nil {
-		c.JSON(http.StatusOK, resp)
+	// 5. 处理错误返回响应
+	if resp == nil {
+		resp = message.NewMessageActionResponse()
 	}
-	// 5. gin返回给前端
+	HandlerErr(resp, err)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -63,21 +58,19 @@ func MessageChat(c *gin.Context) {
 	// 2. 创建请求实例
 	req := message.NewMessageChatRequest()
 	// 3. 前端请求数据绑定到req中
-	_ = c.ShouldBind(req)
-	fmt.Println(req)
-	temUid, _ := strconv.Atoi(c.Query("userID"))
-	// uid := int64(temUid)
-	// user := model.BaseReq{
-	// 	UserId: &uid,
-	// }
-	// req.User = &user
-	req.FromUserId = int64(temUid)
+	fmt.Println(c.Query("userId"))
+	uid, _ := strconv.Atoi(c.Query("userId"))
+	toUserID, _ := strconv.Atoi(c.Query("to_user_id"))
+	preMsgTime, _ := strconv.Atoi(c.Query("pre_msg_time"))
+	req.FromUserId = int64(uid)
+	req.ToUserId = int64(toUserID)
+	req.PreMsgTime = int64(preMsgTime)
 	// 4. 发起RPC调用
-	//ctx := context.WithValue(context.Background(), "userID", c.Query(""))
 	resp, err := cli.MessageList(c, req)
-	if err != nil {
-		c.JSON(http.StatusOK, resp)
+	if resp == nil {
+		resp = message.NewMessageChatResponse()
 	}
-	// 5. gin返回给前端
+	// 5. 处理错误返回响应
+	HandlerErr(resp, err)
 	c.JSON(http.StatusOK, resp)
 }

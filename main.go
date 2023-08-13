@@ -65,10 +65,10 @@ func main() {
 	apiRouter.GET("/message/chat/", handler.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
-	// 视频相关结构
+	// 视频相关接口
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	apiRouter.POST("/publish/action/", handler.VideoSubmit)
-
+	apiRouter.GET("/feed/", handler.VideoFeed)
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction

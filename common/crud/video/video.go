@@ -103,6 +103,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @param userId 用户id
 func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataLen, userId int64, title string) error {
 	service, _ := oss.GetOssService()
+	//
 	//视频文件上传
 	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename, dataLen, contentType)
 	if err != nil {
@@ -134,4 +135,41 @@ func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataL
 	videoJson, _ := json.Marshal(video)
 	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
 	return nil
+}
+
+//	GetVideoFeed
+//
+// @Description: 获取视频流
+// @param latestTime
+// @param nums
+// @return []*models.Video
+// @return error
+// @return int64 返回上一次最后一个元素的时间
+func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
+	//获取latestTime时间之前的 不包括last？
+	list, err := models.GetVideoFeedList(latestTime, nums)
+	if err != nil {
+		return nil, err, 0
+	}
+	resVideoList := make([]*model.Video, 0)
+	resVideoList, err = convert.VideoSliceBo2Dto(list)
+	if err != nil {
+		return nil, err, 0
+	}
+
+	userVideoMap := map[int64]*model.User{}
+	for i, item := range list {
+		//如果这条视频已经查询过user了
+		if v, ok := userVideoMap[item.ID]; ok {
+			resVideoList[i].Author = v
+			continue
+		}
+		//这一个还没被查询过
+		userBo, _ := models.GetUserById(item.AuthorID)
+		user, _ := convert.UserBo2Dto(*userBo)
+		//缓存
+		userVideoMap[item.ID] = user
+		resVideoList[i].Author = user
+	}
+	return resVideoList, nil, list[len(list)-1].CreatedAt.UnixMilli()
 }

@@ -5,6 +5,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/douyin/kitex_gen/video"
 	"github.com/douyin/rpcClient/videoRpc"
@@ -65,13 +66,44 @@ func VideoSubmit(c *gin.Context) {
 		Data:   []byte(c.Query("data")),
 	}
 
-	if err != nil {
-		return
-	}
 	// 前端请求数据绑定到req中
 	// 发起RPC调用
 	resp, err := cli.PublishAction(context.Background(), req)
 
+	if err != nil {
+		panic(err)
+	}
+	//返回给前端
+	c.JSON(http.StatusOK, resp)
+}
+
+// VideoFeed @Summary 视频操作
+// @Schemes
+// @Description 获取最近新发的30条视频
+// @Tags 视频接口
+// @Param latest_time query int64 true "可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间"
+// @Param token query string true "用户鉴权token"
+// @Accept json
+// @Produce json
+// @Router /douyin/feed [GET]
+func VideoFeed(c *gin.Context) {
+	// 创建客户端链接
+	cli, err := videoRpc.NewRpcVideoClient()
+	if err != nil {
+		panic(err)
+	}
+	//token := c.Query("token")
+	latestTime := c.Query("latest_time")
+	var timestamp int64 = 0
+	if latestTime != "" {
+		timestamp, _ = strconv.ParseInt(latestTime, 10, 64)
+	} else {
+		timestamp = time.Now().UnixMilli()
+	}
+	//封装feed
+	feedRequest := &video.FeedRequest{}
+	feedRequest.LatestTime = &timestamp
+	resp, err := cli.Feed(context.Background(), feedRequest)
 	if err != nil {
 		panic(err)
 	}

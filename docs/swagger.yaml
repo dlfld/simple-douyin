@@ -105,7 +105,6 @@ paths:
           $ref: '#/definitions/interaction.CommentActionRequest'
       produces:
       - application/json
-      responses: {}
       summary: xxx
       tags:
       - 互动接口
@@ -123,7 +122,6 @@ paths:
           $ref: '#/definitions/interaction.CommentListRequest'
       produces:
       - application/json
-      responses: {}
       summary: xxx
       tags:
       - 互动接口
@@ -141,7 +139,6 @@ paths:
           $ref: '#/definitions/interaction.FavoriteActionRequest'
       produces:
       - application/json
-      responses: {}
       summary: xxx
       tags:
       - 互动接口
@@ -159,10 +156,29 @@ paths:
           $ref: '#/definitions/interaction.FavoriteListRequest'
       produces:
       - application/json
-      responses: {}
       summary: xxx
       tags:
       - 互动接口
+  /douyin/feed:
+    get:
+      consumes:
+      - application/json
+      description: 获取最近新发的30条视频
+      parameters:
+      - description: 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
+        in: query
+        name: latest_time
+        required: true
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      tags:
+      - 视频接口
   /douyin/message/action/:
     post:
       consumes:
@@ -177,7 +193,6 @@ paths:
           $ref: '#/definitions/message.MessageActionRequest'
       produces:
       - application/json
-      responses: {}
       tags:
       - 消息
   /douyin/message/chat/:
@@ -194,7 +209,6 @@ paths:
           $ref: '#/definitions/message.MessageChatRequest'
       produces:
       - application/json
-      responses: {}
       tags:
       - 消息
   /douyin/publish/action/:
@@ -211,7 +225,6 @@ paths:
           $ref: '#/definitions/video.PublishActionRequest'
       produces:
       - application/json
-      responses: {}
       tags:
       - 视频接口
   /douyin/publish/list/:
@@ -228,7 +241,6 @@ paths:
           $ref: '#/definitions/video.PublishListRequest'
       produces:
       - application/json
-      responses: {}
       tags:
       - 视频接口
   /douyin/relation/action/:
@@ -245,7 +257,6 @@ paths:
           $ref: '#/definitions/relation.FollowActionRequest'
       produces:
       - application/json
-      responses: {}
       summary: 关系操作
       tags:
       - 社交接口
@@ -267,7 +278,6 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
       summary: 用户关注列表
       tags:
       - 社交接口
@@ -289,7 +299,6 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
       summary: 用户粉丝列表
       tags:
       - 社交接口
@@ -311,8 +320,67 @@ paths:
         type: string
       produces:
       - application/json
-      responses: {}
       summary: 用户好友列表
       tags:
       - 社交接口
+  /douyin/user/:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户基础信息。
+      parameters:
+      - description: 用户id
+        in: query
+        name: user_id
+        required: true
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      tags:
+      - 基础接口
+  /douyin/user/login/:
+    post:
+      consumes:
+      - application/json
+      description: 登录。
+      parameters:
+      - description: 注册昵称
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 注册密码
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      tags:
+      - 基础接口
+  /douyin/user/register/:
+    post:
+      consumes:
+      - application/json
+      description: 初始注册。
+      parameters:
+      - description: 注册昵称
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: 注册密码
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      tags:
+      - 基础接口
 swagger: "2.0"

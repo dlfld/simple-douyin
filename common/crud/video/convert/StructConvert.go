@@ -5,6 +5,7 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/jinzhu/copier"
+	"log"
 )
 
 // VideoSliceBo2Dto
@@ -28,4 +29,20 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 		dtoSlice = append(dtoSlice, &videoDto)
 	}
 	return dtoSlice, nil
+}
+
+//	UserBo2Dto
+//
+// @Description: user对象的转换
+// @param user
+// @return model.User
+// @return error
+func UserBo2Dto(user models.User) (*model.User, error) {
+	userDto := model.User{}
+	err := copier.Copy(&userDto, &user)
+	if err != nil {
+		log.Fatalln("user 类型转换失败")
+		return &userDto, err
+	}
+	return &userDto, err
 }

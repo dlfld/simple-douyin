@@ -27,8 +27,7 @@
                             "$ref": "#/definitions/interaction.CommentActionRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/comment/list/": {
@@ -54,8 +53,7 @@
                             "$ref": "#/definitions/interaction.CommentListRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/favorite/action/": {
@@ -81,8 +79,7 @@
                             "$ref": "#/definitions/interaction.FavoriteActionRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/favorite/list/": {
@@ -108,8 +105,37 @@
                             "$ref": "#/definitions/interaction.FavoriteListRequest"
                         }
                     }
+                ]
+            }
+        },
+        "/douyin/feed": {
+            "get": {
+                "description": "获取最近新发的30条视频",
+                "consumes": [
+                    "application/json"
                 ],
-                "responses": {}
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "视频接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间",
+                        "name": "latest_time",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户鉴权token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             }
         },
         "/douyin/message/action/": {
@@ -134,8 +160,7 @@
                             "$ref": "#/definitions/message.MessageActionRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/message/chat/": {
@@ -160,8 +185,7 @@
                             "$ref": "#/definitions/message.MessageChatRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/publish/action/": {
@@ -186,8 +210,7 @@
                             "$ref": "#/definitions/video.PublishActionRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/publish/list/": {
@@ -212,8 +235,7 @@
                             "$ref": "#/definitions/video.PublishListRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/relation/action/": {
@@ -239,8 +261,7 @@
                             "$ref": "#/definitions/relation.FollowActionRequest"
                         }
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/relation/follow/list/": {
@@ -271,8 +292,7 @@
                         "in": "query",
                         "required": true
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/relation/follower/list/": {
@@ -303,8 +323,7 @@
                         "in": "query",
                         "required": true
                     }
-                ],
-                "responses": {}
+                ]
             }
         },
         "/douyin/relation/friend/list/": {
@@ -335,8 +354,97 @@
                         "in": "query",
                         "required": true
                     }
+                ]
+            }
+        },
+        "/douyin/user/": {
+            "get": {
+                "description": "获取用户基础信息。",
+                "consumes": [
+                    "application/json"
                 ],
-                "responses": {}
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "基础接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户鉴权token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/douyin/user/login/": {
+            "post": {
+                "description": "登录。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "基础接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "注册昵称",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "注册密码",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/douyin/user/register/": {
+            "post": {
+                "description": "初始注册。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "基础接口"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "注册昵称",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "注册密码",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             }
         }
     },

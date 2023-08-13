@@ -12,7 +12,10 @@ import (
 
 func TestFindVideoListByUserId(t *testing.T) {
 	id, _ := FindVideoListByUserId(1)
-	fmt.Printf("%+v", id)
+	for _, item := range id {
+		fmt.Printf("%v\n", item)
+	}
+
 }
 
 func TestUploadVideo(t *testing.T) {
@@ -27,4 +30,12 @@ func TestUploadVideo(t *testing.T) {
 	title := "title"
 	dataLen := int64(len([]byte{'1'}))
 	UploadVideo(reader, filename, contentType, videoUrl, dataLen, int64(userId), title)
+}
+
+func TestGetVideoFeed(t *testing.T) {
+	feed, _ := GetVideoFeed(0, 2)
+	for _, item := range feed {
+		fmt.Printf("%v\n", item)
+	}
+
 }

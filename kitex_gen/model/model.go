@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	Id              int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
-	UserName        string  `thrift:"user_name,2,required" frugal:"2,required,string" json:"user_name"`
+	UserName        string  `thrift:"user_name,2,required" frugal:"2,required,string" json:"name"`
 	FollowCount     *int64  `thrift:"follow_count,3,optional" frugal:"3,optional,i64" json:"follow_count,omitempty"`
 	FollowerCount   *int64  `thrift:"follower_count,4,optional" frugal:"4,optional,i64" json:"follower_count,omitempty"`
 	IsFollow        bool    `thrift:"is_follow,5,required" frugal:"5,required,bool" json:"is_follow"`

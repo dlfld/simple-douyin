@@ -7,29 +7,40 @@ import (
 	"github.com/douyin/common/conf"
 	video2 "github.com/douyin/common/crud/video"
 	"github.com/douyin/kitex_gen/video"
+	"log"
 	"net/http"
 )
+
+// 视频类型
+const contentType = "application/mp4"
+
+// 视频播放链接url
+const videoUrlTemplate = "http://%s:9000/%s/%s"
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
 type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	// TODO: Your code here...
-	return
+	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 1)
+
+	if err != nil {
+		log.Fatalln("视频流调用失败")
+	}
+	statusMsg := "Success"
+	//resp =
+	//fmt.Printf("%+v\n", resp)
+	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &lastTime}, nil
+
 }
 
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
-	// TODO: Your code here...
 	reader := bytes.NewReader(req.GetData())
 	// 上传文件的文件名
 	filename := req.GetTitle()
 	userId := req.UserId
-	// TODO 根据Token获取用户信息，然后根据用户信息写入用户投稿的视频，在redis中加入这一条视频
-	videoUrl := fmt.Sprintf("http://%s/%s/%s", conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
-	// TODO 魔法值需要改
-	contentType := "application/mp4"
+	videoUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
 	title := req.Title
 	dataLen := int64(len(req.GetData()))
 	//执行视频上传逻辑
@@ -37,7 +48,6 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	if err != nil {
 		return nil, err
 	}
-	// TODO 魔法值需要改
 	statusMsg := "success"
 	resp = &video.PublishActionResponse{StatusCode: http.StatusOK, StatusMsg: &statusMsg}
 	return resp, nil

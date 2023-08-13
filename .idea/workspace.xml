@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a7d6e3fc-4fd4-4f68-b4b3-4c7beec7139d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/rpcServer/user/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/user/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/convert/StructConvert.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/convert/StructConvert.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/video_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/docs.go" beforeDir="false" afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/swagger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kitex_gen/model/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/kitex_gen/model/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/feed.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/feed.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rpcServer/video/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/video/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,32 +52,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/dailinfeng/Desktop/小项目/simple-douyin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "goland.project.structure"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dlf&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/dailinfeng/Desktop/小项目/simple-douyin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;goland.project.structure&quot;
   },
-  "keyToStringList": {
-    "GitStage.ChangesTree.GroupingKeys": [
-      "directory",
-      "module",
-      "repository"
+  &quot;keyToStringList&quot;: {
+    &quot;GitStage.ChangesTree.GroupingKeys&quot;: [
+      &quot;directory&quot;,
+      &quot;module&quot;,
+      &quot;repository&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/handler" />
@@ -75,7 +86,7 @@
       <recent name="$PROJECT_DIR$/common/crud/video" />
     </key>
   </component>
-  <component name="RunManager" selected="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo">
+  <component name="RunManager" selected="Go 构建.go build github.com/douyin/rpcServer/interaction">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
@@ -85,22 +96,13 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="go build main.go (1)" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/douyin/rpcServer/interaction" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <package value="github.com/douyin" />
+      <kind value="PACKAGE" />
+      <package value="github.com/douyin/rpcServer/interaction" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/main.go" />
-      <method v="2" />
-    </configuration>
-    <configuration name="go build video.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <package value="github.com/douyin" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/common/crud/video/video.go" />
+      <filePath value="$PROJECT_DIR$/rpcServer/interaction/main.go" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -125,7 +127,7 @@
       <pattern value="^\QTestFindVideoListByUserId\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="github.com/douyin/common/crud/video 中的 TestUploadVideo" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="github.com/douyin/common/crud/video 中的 TestGetVideoFeed" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$/common/crud/video" />
       <root_directory value="$PROJECT_DIR$" />
@@ -134,34 +136,19 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestUploadVideo\E$" />
-      <method v="2" />
-    </configuration>
-    <configuration name="video_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$/common/crud/video" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="FILE" />
-      <package value="github.com/douyin" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/common/crud/video/video_test.go" />
-      <framework value="gotest" />
+      <pattern value="^\QTestGetVideoFeed\E$" />
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Go 构建.go build main.go (1)" />
-      <item itemvalue="Go 构建.go build video.go" />
-      <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo" />
+      <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/interaction" />
+      <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestGetVideoFeed" />
       <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestFindVideoListByUserId" />
-      <item itemvalue="Go 测试.video_test.go" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestUploadVideo" />
-        <item itemvalue="Go 构建.go build video.go" />
+        <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/interaction" />
+        <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestGetVideoFeed" />
         <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestFindVideoListByUserId" />
-        <item itemvalue="Go 测试.video_test.go" />
-        <item itemvalue="Go 构建.go build main.go (1)" />
       </list>
     </recent_temporary>
   </component>

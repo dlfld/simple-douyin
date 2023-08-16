@@ -2,7 +2,7 @@ namespace go model
 
 struct User {
     1:required i64 id
-    2:required string name
+    2:required string user_name
     3:optional i64 follow_count
     4:optional i64 follower_count
     5:required bool is_follow
@@ -48,6 +48,11 @@ struct Comment {
     4:required string create_date
 }
 
+struct BaseReq {
+    1:optional i64 user_id
+    2:optional string username
+}
+
 // 消息
 struct Message {
     1:required i64 id             // 消息id
@@ -56,4 +61,3 @@ struct Message {
     4:required string content     // 消息内容
     5:optional i64 create_time // 消息创建时间
 }
-

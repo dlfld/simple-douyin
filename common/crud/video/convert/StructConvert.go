@@ -2,6 +2,8 @@
 package convert
 
 import (
+	"log"
+
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/jinzhu/copier"
@@ -21,11 +23,28 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 		//对同名属性的转换，其中还有一个id是不同名的需要手动转换
 		err := copier.Copy(&videoDto, &videoBo)
 		// 两个结构体还有这个变量是不同名的
-		videoDto.Id = int64(videoBo.ID)
+		videoDto.Id = videoBo.ID
 		if err != nil {
 			return nil, err
 		}
 		dtoSlice = append(dtoSlice, &videoDto)
 	}
 	return dtoSlice, nil
+}
+
+//	UserBo2Dto
+//
+// @Description: user对象的转换
+// @param user
+// @return model.User
+// @return error
+func UserBo2Dto(user models.User) (*model.User, error) {
+	userDto := model.User{}
+	err := copier.Copy(&userDto, &user)
+	userDto.Id = int64(user.ID)
+	if err != nil {
+		log.Fatalln("user 类型转换失败")
+		return &userDto, err
+	}
+	return &userDto, err
 }

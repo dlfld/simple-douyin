@@ -2,22 +2,23 @@ package main
 
 import (
 	"context"
-	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/interaction"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
+	d "github.com/douyin/rpcServer/interaction/dao"
 	"net/http"
 	"time"
 )
 
-var Dao *crud.CachedCRUD
+var dao *d.Dao
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
-type InteractionServiceImpl struct{}
+type InteractionServiceImpl struct {
+	dao *d.Dao
+}
 
-func InitDao() (err error) {
-	Dao, err = crud.NewCachedCRUD()
-	return
+func InitDao() {
+	dao = d.NewDao()
 }
 
 // FavoriteAction implements the InteractionServiceImpl interface.
@@ -30,16 +31,16 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		UserID:  req.UserId,
 	}
 	if actionType == 1 { // 点赞
-		exist, _ := Dao.SearchFavoriteExist(&m)
+		exist, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if exist {
 			resp.StatusCode = http.StatusOK
 			msg := "该记录已经存在"
 			resp.StatusMsg = &msg
 			return
 		}
-		_, err = Dao.InsertFavorite(&m)
+		_, err = dao.Mysql.InsertFavorite(&m)
 	} else if actionType == 2 { //取消点赞
-		_, err = Dao.CancelFavorite(&m)
+		_, err = dao.Mysql.CancelFavorite(&m)
 	} else {
 		resp.StatusCode = http.StatusInternalServerError
 		msg := "actionType 错误"
@@ -58,18 +59,18 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 // FavoriteList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
 	resp = new(interaction.FavoriteListResponse)
-	dbList, err := Dao.SearchVideoListById(req.UserId)
+	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
 		return nil, err
 	}
 	videoList := make([]*model.Video, len(dbList))
 	for i := 0; i < len(dbList); i++ {
-		author, _ := Dao.SearchUserById(dbList[i].AuthorID)
+		author, _ := dao.Mysql.SearchUserById(dbList[i].AuthorID)
 		m := models.FavoriteVideoRelation{
 			VideoID: dbList[i].ID,
 			UserID:  req.UserId,
 		}
-		isFavorite, _ := Dao.SearchFavoriteExist(&m)
+		isFavorite, _ := dao.Mysql.SearchFavoriteExist(&m)
 		videoList[i] = &model.Video{
 			Id:            dbList[i].ID,
 			Author:        author,
@@ -104,12 +105,12 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			UserID:  *req.UserId,
 			Content: *req.CommentText,
 		}
-		_, err = Dao.InsertComment(&m)
+		_, err = dao.Mysql.InsertComment(&m)
 		if err != nil {
 			// TODO log err
 			return
 		}
-		user, _ := Dao.SearchUserById(*req.UserId)
+		user, _ := dao.Mysql.SearchUserById(*req.UserId)
 		resp.Comment = &model.Comment{
 			Id:         0,
 			User:       user,
@@ -127,7 +128,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			VideoID: req.VideoId,
 			ID:      *req.CommentId,
 		}
-		_, err = Dao.DeleteComment(&m)
+		_, err = dao.Mysql.DeleteComment(&m)
 	} else {
 		resp.StatusCode = http.StatusOK
 		msg := "actionType 错误"
@@ -146,13 +147,13 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 // CommentList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
-	dbList, err := Dao.SearchCommentListSort(req.VideoId)
+	dbList, err := dao.Mysql.SearchCommentListSort(req.VideoId)
 	if err != nil {
 		return nil, err
 	}
 	commentList := make([]*model.Comment, len(dbList))
 	for i := 0; i < len(dbList); i++ {
-		user, _ := Dao.SearchUserById(dbList[i].UserID)
+		user, _ := dao.Mysql.SearchUserById(dbList[i].UserID)
 		commentList[i] = &model.Comment{
 			Id:         dbList[i].ID,
 			User:       user,

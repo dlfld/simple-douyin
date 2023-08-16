@@ -9,6 +9,8 @@
 package models
 
 import (
+	"github.com/douyin/common/mysql"
+	"github.com/douyin/kitex_gen/model"
 	"gorm.io/gorm"
 )
 
@@ -32,4 +34,71 @@ type User struct {
 
 func (User) TableName() string {
 	return "users"
+}
+
+// CreateUser create user
+func CreateUser(username, encryptPassword string) (*User, error) {
+	newUser := User{UserName: username, Password: encryptPassword}
+	db, err := mysql.NewMysqlConn()
+	if err != nil {
+		return nil, err
+	}
+	if result := db.Create(&newUser); result.Error != nil {
+		return nil, result.Error
+	}
+	return &newUser, nil
+}
+
+// GetUserByName query user by name
+func GetUserByName(username string) (*User, error) {
+	db, err := mysql.NewMysqlConn()
+	if err != nil {
+		return nil, err
+	}
+	var user User
+	if result := db.Where("user_name = ?", username).First(&user); result.Error != nil || user.ID <= 0 {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
+// GetUserByUserId query user by name
+func GetUserByUserId(userId uint) (*User, error) {
+	db, err := mysql.NewMysqlConn()
+	if err != nil {
+		return nil, err
+	}
+	var user User
+	if result := db.First(&user, userId); result.Error != nil || user.ID <= 0 {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+
+// ChangeModel model Change IsFollow UnSure!!!
+func ChangeModel(u User) *model.User {
+	FollowCount := int64(u.FollowingCount)
+	FollowerCount := int64(u.FollowerCount)
+	//IsFollow:=u
+	Avatar := u.Avatar
+	BackgroundImage := u.BackgroundImage
+	Signature := u.Signature
+	TotalFavorited := int64(u.TotalFavorited)
+	WorkCount := int64(u.TotalFavorited)
+	FavoriteCount := int64(u.FavoriteCount)
+
+	user := model.User{
+		Id:              int64(u.ID),
+		Name:            u.UserName,
+		FollowCount:     &FollowCount,
+		FollowerCount:   &FollowerCount,
+		IsFollow:        false,
+		Avatar:          &Avatar,
+		BackgroundImage: &BackgroundImage,
+		Signature:       &Signature,
+		TotalFavorited:  &TotalFavorited,
+		WorkCount:       &WorkCount,
+		FavoriteCount:   &FavoriteCount,
+	}
+	return &user
 }

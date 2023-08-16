@@ -1,4 +1,4 @@
-package crud
+package dao
 
 import (
 	"fmt"
@@ -7,10 +7,7 @@ import (
 )
 
 func TestInsertFavorite(t *testing.T) {
-	c, err := NewCachedCRUD()
-	if err != nil {
-		return
-	}
+	c := NewMysql()
 	m := models.FavoriteVideoRelation{
 		VideoID: 100,
 		UserID:  34324324,
@@ -23,10 +20,7 @@ func TestInsertFavorite(t *testing.T) {
 }
 
 func TestSearchVideoListById(t *testing.T) {
-	c, err := NewCachedCRUD()
-	if err != nil {
-		return
-	}
+	c := NewMysql()
 	videoList, err := c.SearchVideoListById(1)
 	if err != nil {
 		return
@@ -35,10 +29,7 @@ func TestSearchVideoListById(t *testing.T) {
 }
 
 func TestSearchSearchUserById(t *testing.T) {
-	c, err := NewCachedCRUD()
-	if err != nil {
-		return
-	}
+	c := NewMysql()
 	user, err := c.SearchUserById(1)
 	if err != nil {
 		return
@@ -47,10 +38,7 @@ func TestSearchSearchUserById(t *testing.T) {
 }
 
 func TestDeleteComment(t *testing.T) {
-	c, err := NewCachedCRUD()
-	if err != nil {
-		return
-	}
+	c := NewMysql()
 	m := models.Comment{
 		ID:      9,
 		VideoID: 3,
@@ -63,14 +51,20 @@ func TestDeleteComment(t *testing.T) {
 }
 
 func TestSearchCommentListSort(t *testing.T) {
-	c, err := NewCachedCRUD()
-	if err != nil {
-		return
-	}
+	c := NewMysql()
 	commentList, err := c.SearchCommentListSort(3)
 	if err != nil {
 		return
 	}
 	fmt.Println("commentList: ", commentList)
 	fmt.Println("time: ", commentList[0].CreateTime.GoString())
+}
+
+func TestSearchUserById(t *testing.T) {
+	c := NewMysql()
+	res, err := c.SearchUserById(1)
+	if err != nil {
+		return
+	}
+	fmt.Println("res: ", res)
 }

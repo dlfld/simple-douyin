@@ -53,3 +53,58 @@ func FindVideoListBy(field, condition string) ([]*Video, error) {
 	//conn.
 	return videos, nil
 }
+
+//	InsertVideo 插入数据
+//
+// @Description:
+// @param video
+// @return error
+func InsertVideo(video *Video) error {
+	conn, err := mysql.NewMysqlConn()
+	if err != nil {
+		return err
+	}
+	conn.Create(video)
+	return nil
+}
+
+//	GetVideoFeedList
+//
+// @Description: 根据latestTime查询视频
+// @param latestTime
+// @return []*Video
+// @return error
+func GetVideoFeedList(latestTime int64, nums int) ([]*Video, error) {
+	conn, err := mysql.NewMysqlConn()
+	if err != nil {
+		return nil, err
+	}
+	var videos []*Video
+	//如果是默认的，返回最新的30条，也就是返回id最大的30条数据
+	if latestTime == 0 {
+		conn.Order("id desc").Limit(nums).Find(&videos)
+	} else {
+		//	返回latestTime前的30条视频
+		conn.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), nums).Scan(&videos)
+	}
+	if len(videos) == 0 {
+		conn.Order("id desc").Limit(nums).Find(&videos)
+	}
+	return videos, nil
+}
+
+//	GetUserById
+//
+// @Description: 	根据userid查询user信息
+// @param id
+// @return *User
+// @return error
+func GetUserById(id int64) (*User, error) {
+	conn, err := mysql.NewMysqlConn()
+	if err != nil {
+		return nil, err
+	}
+	user := User{}
+	conn.Where("id=?", id).Find(&user)
+	return &user, nil
+}

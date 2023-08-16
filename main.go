@@ -6,6 +6,9 @@ import (
 	"os/exec"
 	"runtime"
 
+	"github.com/douyin/common/middleware"
+	"github.com/douyin/controller"
+
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
@@ -41,11 +44,13 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	apiRouter := r.Group("/douyin")
+	jwtRouter := r.Group("/douyin")
+	jwtRouter.Use(middleware.JWT_AUTH)
 	//// basic apis
 	//apiRouter.GET("/feed/", controller.Feed)
-	//apiRouter.GET("/user/", controller.UserInfo)
-	//apiRouter.POST("/user/register/", controller.Register)
-	//apiRouter.POST("/user/login/", controller.Login)
+	apiRouter.GET("/user/", controller.UserInfo)
+	apiRouter.POST("/user/register/", controller.Register)
+	apiRouter.POST("/user/login/", controller.Login)
 	//apiRouter.POST("/publish/action/", controller.Publish)
 	//apiRouter.GET("/publish/list/", controller.PublishList)
 	//
@@ -56,17 +61,18 @@ func main() {
 	//apiRouter.GET("/comment/list/", controller.CommentList)
 	//
 	//// extra apis - II
-	apiRouter.POST("/relation/action/", handler.RelationAction)
+	jwtRouter.POST("/relation/action/", handler.RelationAction)
 	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
 	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
+
 	apiRouter.GET("/message/chat/", handler.MessageChat)
 	apiRouter.POST("/message/action/", handler.MessageAction)
 
-	// 视频相关结构
+	// 视频相关接口
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	apiRouter.POST("/publish/action/", handler.VideoSubmit)
-
+	apiRouter.GET("/feed/", handler.VideoFeed)
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
@@ -79,5 +85,5 @@ func main() {
 	if err != nil {
 		return
 	}
-	r.Run(":8080")
+	r.Run("0.0.0.0:8080")
 }

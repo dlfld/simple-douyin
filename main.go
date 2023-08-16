@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/douyin/controller"
 	"os"
 	"os/exec"
 	"runtime"
+
+	"github.com/douyin/common/middleware"
+	"github.com/douyin/controller"
 
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
@@ -42,6 +44,8 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	apiRouter := r.Group("/douyin")
+	jwtRouter := r.Group("/douyin")
+	jwtRouter.Use(middleware.JWT_AUTH)
 	//// basic apis
 	//apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.GET("/user/", controller.UserInfo)
@@ -57,7 +61,7 @@ func main() {
 	//apiRouter.GET("/comment/list/", controller.CommentList)
 	//
 	//// extra apis - II
-	apiRouter.POST("/relation/action/", handler.RelationAction)
+	jwtRouter.POST("/relation/action/", handler.RelationAction)
 	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
 	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
@@ -81,5 +85,5 @@ func main() {
 	if err != nil {
 		return
 	}
-	r.Run(":8080")
+	r.Run("0.0.0.0:8080")
 }

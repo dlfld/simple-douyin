@@ -2,10 +2,11 @@
 package convert
 
 import (
+	"log"
+
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/jinzhu/copier"
-	"log"
 )
 
 // VideoSliceBo2Dto
@@ -40,6 +41,7 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 func UserBo2Dto(user models.User) (*model.User, error) {
 	userDto := model.User{}
 	err := copier.Copy(&userDto, &user)
+	userDto.Id = int64(user.ID)
 	if err != nil {
 		log.Fatalln("user 类型转换失败")
 		return &userDto, err

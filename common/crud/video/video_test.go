@@ -33,7 +33,7 @@ func TestUploadVideo(t *testing.T) {
 }
 
 func TestGetVideoFeed(t *testing.T) {
-	feed, _ := GetVideoFeed(0, 2)
+	feed, _, _ := GetVideoFeed(0, 2)
 	for _, item := range feed {
 		fmt.Printf("%v\n", item)
 	}

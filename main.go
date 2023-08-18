@@ -66,8 +66,8 @@ func main() {
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
 	apiRouter.GET("/relation/friend/list/", handler.RelationFriendList)
 
-	apiRouter.GET("/message/chat/", handler.MessageChat)
-	apiRouter.POST("/message/action/", handler.MessageAction)
+	jwtRouter.GET("/message/chat/", handler.MessageChat)
+	jwtRouter.POST("/message/action/", handler.MessageAction)
 
 	// 视频相关接口
 	apiRouter.GET("/publish/list/", handler.PublishList)

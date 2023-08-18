@@ -1,4 +1,5 @@
+workdir=$(pwd)
 for serve in $(ls rpcServer)
 do
-echo $(go run rpcServer/$serve)
+`gnome-terminal -t "$serve" -e "bash -c 'cd $workdir/rpcServer/$serve; go run .'" `
 done

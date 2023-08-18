@@ -34,10 +34,6 @@ func ReleaseToken(user models.User) (string, error) {
 	return tokenString, nil
 }
 
-//token使用的加密协议。荷载，储存claims中的信息。前面两部分+jwtKey生成的一个哈希值
-//token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjMsImV4cCI6MTY4OTg1ODY3NywiaWF0IjoxNjg5MjUzODc3LCJpc3MiOiJsZWFybi50ZWNoIiwic3ViIjoidXNlciB0b2tlbiJ9.iUVSATejwhiVzW1z10Kc77pvNmff7Mo3_IMYC3LhNhA
-//echo eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9 | base64 -D 解密
-
 // ParseToken 解析tokenString
 func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	claims := &Claims{}

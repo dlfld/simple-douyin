@@ -32,8 +32,8 @@ func Register(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err := cli.UserRegister(context.Background(), req)
-	if err != nil {
+	resp, err2 := cli.UserRegister(context.Background(), req)
+	if err2 != nil {
 		panic(err)
 	}
 	// 5. gin返回给前端
@@ -63,8 +63,9 @@ func Login(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err := cli.UserLogin(context.Background(), req)
-	if err != nil {
+	resp, err2 := cli.UserLogin(context.Background(), req)
+	if err2 != nil {
+		c.JSON(http.StatusBadGateway, resp)
 		panic(err)
 	}
 	// 5. gin返回给前端
@@ -88,8 +89,8 @@ func UserInfo(c *gin.Context) {
 	}
 	// 2. 创建发生消息的请求实例
 	// req := relation.NewFollowerListRequest()
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	if err != nil {
+	userId, err2 := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	if err2 != nil {
 		panic(err)
 	}
 	token := c.Query("token")
@@ -97,9 +98,11 @@ func UserInfo(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err := cli.UserMsg(context.Background(), req)
-	c.Set("userId", resp.User.Id)
-	if err != nil {
+	resp, err3 := cli.UserMsg(context.Background(), req)
+	if resp.User != nil {
+		c.Set("userId", resp.User.Id)
+	}
+	if err3 != nil {
 		panic(err)
 	}
 	// 5. gin返回给前端

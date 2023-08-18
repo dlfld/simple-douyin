@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,20 +34,24 @@ func RelationAction(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	// 2. 创建发生消息的请求实例
-	req := relation.NewFollowActionRequest()
-	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBindJSON(req)
-	if err != nil {
-		panic(err)
+	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))
+	ActionType, _ := strconv.Atoi(c.Query("action_type"))
+	userID, has := c.Get("userID")
+	fmt.Println(userID, has)
+	req := relation.FollowActionRequest{
+		FromUserId: int64(c.GetUint("userID")),
+		ToUserId:   int64(ToUserID),
+		ActionType: int32(ActionType),
 	}
-	// 4. 发起RPC调用
-	resp, err := cli.FollowAction(context.Background(), req)
+	fmt.Println("req:", req)
+
+	// 发起RPC调用
+	resp, err := cli.FollowAction(context.Background(), &req)
 	if err != nil {
 		panic(err)
 	}
 	// defer relationCliPool.Put(cli)
-	// 5. gin返回给前端
+	// gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
 

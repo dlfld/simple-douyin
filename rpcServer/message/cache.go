@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/douyin/models"
+	"github.com/douyin/kitex_gen/model"
 	"github.com/go-redis/redis/v8"
 	"strconv"
 	"time"
@@ -26,8 +26,8 @@ func (ca *Cache) ZAdd(ctx context.Context, key string, score float64, member int
 }
 
 // ZRangeByScore 根据分数从缓存中查询记录
-func (ca *Cache) ZRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) []*models.Message {
-	res := make([]*models.Message, 0)
+func (ca *Cache) ZRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) []*model.Message {
+	res := make([]*model.Message, 0)
 	if err = ca.rdb.ZRangeByScore(ctx, key, opt).ScanSlice(&res); err != nil {
 		ca.err = err
 		return nil
@@ -44,12 +44,12 @@ func (ca *Cache) keepDataNum(ctx context.Context, key string) *Cache {
 	}
 	if num > maxCacheMessageNum {
 		// 默认按时间递增排序，移除下标0开始到maxCacheMessageNum/4的元素
-		records := make([]*models.Message, 0)
+		records := make([]*model.Message, 0)
 		if err = ca.rdb.ZRange(ctx, key, maxCacheMessageNum/2, maxCacheMessageNum/2).ScanSlice(&records); err != nil {
 			ca.err = err
 			return ca
 		}
-		if err = ca.rdb.ZRemRangeByScore(ctx, key, "-inf", strconv.FormatInt(records[0].CreatedTime, 10)).Err(); err != nil {
+		if err = ca.rdb.ZRemRangeByScore(ctx, key, "-inf", strconv.FormatInt(records[0].CreateTime, 10)).Err(); err != nil {
 			ca.err = err
 		}
 	}
@@ -59,12 +59,12 @@ func (ca *Cache) keepDataNum(ctx context.Context, key string) *Cache {
 
 // 得到缓存中最小的分数
 func (ca *Cache) getMinScore(ctx context.Context, key string) (int64, error) {
-	records := make([]*models.Message, 0)
+	records := make([]*model.Message, 0)
 	err = ca.rdb.ZRange(ctx, key, 0, 0).ScanSlice(&records)
 	if err != nil {
 		return 0, err
 	}
-	return records[0].CreatedTime, nil
+	return records[0].CreateTime, nil
 }
 
 // 得到缓存中记录的数量

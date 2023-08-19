@@ -27,16 +27,8 @@ func MessageAction(c *gin.Context) {
 	// 2. 创建发生消息的请求实例
 	req := message.NewMessageActionRequest()
 	// 3. 前端请求数据绑定到req中
-	_ = c.ShouldBind(&req)
-	atoi, err := strconv.Atoi(c.Query("action_type"))
-	req.ActionType = int32(atoi)
-	toUserId, err := strconv.Atoi(c.Query("to_user_id"))
-	req.ToUserId = int64(toUserId)
-	req.Content = c.Query("content")
-	//temUid, _ := strconv.Atoi(c.Query("userId"))
-	temUid := c.GetUint("userID")
-	uid := int64(temUid)
-	req.FromUserId = uid
+	err = c.ShouldBind(req)
+	req.FromUserId = int64(c.GetUint("userID"))
 	fmt.Printf("req = %+v\n", req)
 	// 4. 发起RPC调用
 	resp, err := cli.SendMessage(c, req)
@@ -65,9 +57,6 @@ func MessageChat(c *gin.Context) {
 	// 2. 创建请求实例
 	req := message.NewMessageChatRequest()
 	// 3. 前端请求数据绑定到req中
-	fmt.Println("userid")
-	fmt.Println(c.GetUint("userID"))
-
 	uid := c.GetUint("userID")
 	toUserID, _ := strconv.Atoi(c.Query("to_user_id"))
 	preMsgTime, _ := strconv.Atoi(c.Query("pre_msg_time"))

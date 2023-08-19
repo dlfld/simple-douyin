@@ -9,15 +9,12 @@ import (
 
 var rdb *redis.Client
 var once sync.Once
+var err error
 
 func NewRedisConn() (*redis.Client, error) {
-	var err error
 	once.Do(func() {
 		rdb = redis.NewClient(&redis.Options{Addr: conf.Redis.Addr, Password: conf.Redis.Password, DB: 0})
 		_, err = rdb.Ping(context.Background()).Result()
 	})
-	if err != nil {
-		return nil, err
-	}
 	return rdb, err
 }

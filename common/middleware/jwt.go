@@ -9,6 +9,9 @@ import (
 
 func JWT_AUTH(c *gin.Context) {
 	Token := c.Query("token")
+	if Token == "" {
+		Token = c.PostForm("token") // 请求体中获取
+	}
 	common.ParseToken(Token)
 	_, claims, err1 := common.ParseToken(Token)
 	if err1 != nil {

@@ -7,8 +7,8 @@ import (
 	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/message"
 	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/models"
 	"github.com/go-redis/redis/v8"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -19,70 +19,79 @@ type MessageServiceImpl struct{}
 // MessageList implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.MessageChatRequest) (resp *message.MessageChatResponse, err error) {
 	resp = message.NewMessageChatResponse()
-	messageList := make([]*model.Message, 0)
+	// 1. 数据库和缓存中读取消息
+	// req.FromUserId是当前用户id，req.ToUserId是对方用户id
+	// 得到当前用户发送给别人的消息
+	sendMes, err := getSenderToReceiverMes(ctx, req.FromUserId, req.ToUserId, req.PreMsgTime)
+	if err != nil {
+		logger.Infof("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s",
+			req.ToUserId, req.FromUserId, req.ToUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"))
+	}
+	// 得到当前用户接收的消息
+	receivedMsg, err := getSenderToReceiverMes(ctx, req.ToUserId, req.FromUserId, req.PreMsgTime)
+	if err != nil {
+		logger.Infof("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s",
+			req.ToUserId, req.ToUserId, req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"))
+	}
+	messageList := append(sendMes, receivedMsg...)
+	sort.Slice(messageList, func(i, j int) bool {
+		return messageList[i].CreateTime < messageList[j].CreateTime
+	})
+	// 2. 得到返回值
+	logger.Infof("user[%d] successfully queried %d messages sent from user[%d] b since %s",
+		req.ToUserId, len(messageList), req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"))
+	resp.MessageList = messageList
+	return resp, nil
+}
+
+// getSenderToReceiverMes 得到sender发送给receiver的消息
+func getSenderToReceiverMes(ctx context.Context, sender, receiver, preMsgTime int64) ([]*model.Message, error) {
 	// 1. 统计缓存中数据量
-	key := fmt.Sprintf("%s:%d:%d", messageCacheTable, req.ToUserId, req.FromUserId)
+	keyFrom := fmt.Sprintf("%s:%d:%d", messageCacheTable, sender, receiver)
 	var num int64
-	if err = cache.getRecordNum(ctx, key, &num).Err(); err != nil {
-		logger.Errorf("failed count cache number, err: %s", err.Error())
+	if err = cache.getRecordNum(ctx, keyFrom, &num).Err(); err != nil {
 		return nil, err
 	}
-	dbMessageList := make([]*models.Message, 0)
+	res := make([]*model.Message, 0)
 	// 2. 读取数据
 	switch num {
 	// 2.1 缓存中无数据，直接去mysql数据库中读取
 	case 0:
-		if err = db.Table((&models.Message{}).TableName()).
-			Where("from_user_id=? and to_user_id=? and created_time >= ?", req.ToUserId, req.FromUserId, req.PreMsgTime).
-			Scan(&dbMessageList).Error; err != nil {
-			logger.Errorf("query data when created_time >= %d failed, err: %s", req.PreMsgTime, err.Error())
+		if err = db.Table((&model.Message{}).TableName()).
+			Where("from_user_id=? and to_user_id=? and create_time > ?", sender, receiver, preMsgTime).
+			Scan(&res).Error; err != nil {
 			return nil, err
 		}
 	// 2.2 缓存中有数据，读缓存
 	default:
 		// 得到缓存中最小的时间分数
-		minScore, err := cache.getMinScore(ctx, key)
+		minScore, err := cache.getMinScore(ctx, keyFrom)
 		if err != nil {
 			logger.Errorf("get minimal score failed, err: %s", err.Error())
 			return nil, err
 		}
 		// 缓存数据无法cover全部要查询的数据，则需要去mysql查询没cover的那部分数据
-		mysqlRecords := make([]*models.Message, 0)
-		if minScore > req.PreMsgTime {
+		mysqlRecords := make([]*model.Message, 0)
+		if minScore > preMsgTime {
 			// 这里的req.ToUserId是对方用户id是指消息来自哪里，对应数据库消息记录的from_user_id
-			if err = db.Table((&models.Message{}).TableName()).
-				Where("from_user_id=? and to_user_id=? and created_time between ? and ? ", req.ToUserId, req.FromUserId, req.PreMsgTime, minScore-1).
+			if err = db.Table((&model.Message{}).TableName()).
+				Where("from_user_id=? and to_user_id=? and create_time > ? and create_time < ? ", sender, receiver, preMsgTime, minScore).
 				Scan(&mysqlRecords).Error; err != nil {
 				return nil, err
 			}
 		}
 		// 读取缓存中记录
-		cacheRecords := cache.ZRangeByScore(ctx, key, &redis.ZRangeBy{
-			Min: strconv.FormatInt(req.PreMsgTime, 10),
+		cacheRecordsFrom := cache.ZRangeByScore(ctx, keyFrom, &redis.ZRangeBy{
+			Min: strconv.FormatInt(preMsgTime+1, 10),
 			Max: "inf",
 		})
+
 		if cache.Err() != nil {
-			logger.Errorf("failed to query message list, err: %s", err.Error())
 			return nil, err
 		}
-		dbMessageList = append(dbMessageList, mysqlRecords...)
-		dbMessageList = append(dbMessageList, cacheRecords...)
+		res = append(mysqlRecords, cacheRecordsFrom...)
 	}
-	// 3. 解析得到返回值
-	for i := 0; i < len(dbMessageList); i++ {
-		strTime := time.Unix(dbMessageList[i].CreatedTime, 0).Format("2006-01-02 15:04:05")
-		messageList = append(messageList, &model.Message{
-			Id:         dbMessageList[i].Id,
-			ToUserId:   dbMessageList[i].ToUserID,
-			FromUserId: dbMessageList[i].FromUserID,
-			Content:    dbMessageList[i].Content,
-			CreateTime: &strTime,
-		})
-	}
-	logger.Infof("user[%d] successfully queried %d messages sent from user[%d] b since %s",
-		req.ToUserId, len(messageList), req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"))
-	resp.MessageList = messageList
-	return resp, nil
+	return res, nil
 }
 
 // SendMessage implements the MessageServiceImpl interface.
@@ -93,11 +102,11 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 		return resp, constant.ErrUnsupportedOperation
 	}
 	// 2. 转为存入数据库的消息记录，并添加时间戳
-	messageRecord := models.Message{
-		FromUserID:  req.FromUserId,
-		ToUserID:    req.ToUserId,
-		Content:     req.Content,
-		CreatedTime: time.Now().Unix(),
+	messageRecord := model.Message{
+		FromUserId: req.FromUserId,
+		ToUserId:   req.ToUserId,
+		Content:    req.Content,
+		CreateTime: time.Now().Unix(),
 	}
 	// 3. 存入mysql数据库表
 	if err = db.Create(&messageRecord).Error; err != nil {
@@ -105,20 +114,20 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 		return resp, constant.ErrSystemBusy
 	}
 	logger.Infof("The message from user[%d] to user[%d] was successfully stored in MySQL, content: %s",
-		messageRecord.FromUserID, messageRecord.ToUserID, messageRecord.Content)
+		messageRecord.FromUserId, messageRecord.ToUserId, messageRecord.Content)
 	// 4. 序列化后存入缓存
-	key := fmt.Sprintf("%s:%d:%d", messageCacheTable, req.ToUserId, req.FromUserId)
+	key := fmt.Sprintf("%s:%d:%d", messageCacheTable, req.FromUserId, req.ToUserId)
 	record, err := json.Marshal(messageRecord)
 	if err != nil {
 		logger.Errorf("failed to marshal, err: %s", err.Error())
 		return nil, constant.ErrSystemBusy
 	}
-	if err = cache.ZAdd(ctx, key, float64(messageRecord.CreatedTime), record, time.Hour*24*7).Err(); err != nil {
+	if err = cache.ZAdd(ctx, key, float64(messageRecord.CreateTime), record, time.Hour*24*7).Err(); err != nil {
 		logger.Errorf("create cache failed, err: %s", err.Error())
 		return nil, err
 	}
-	logger.Infof("The message from user[%d] to user[%s] was successfully stored in Redis, key: %s, content: %s",
-		messageRecord.FromUserID, messageRecord.ToUserID, key, messageRecord.Content)
+	logger.Infof("The message from user[%d] to user[%d] was successfully stored in Redis, key: %s, content: %s",
+		messageRecord.FromUserId, messageRecord.ToUserId, key, messageRecord.Content)
 	// 5. 缓存消息记录超过设定的阈值，就从缓存中删除5天之前的数据
 	go cache.keepDataNum(ctx, key)
 	return resp, nil

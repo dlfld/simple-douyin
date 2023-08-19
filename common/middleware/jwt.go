@@ -23,7 +23,6 @@ func JWT_AUTH(c *gin.Context) {
 		}
 		Token = tokenMap["token"]
 	}
->>>>>>> e435e2a12027b6b456edb9d9c0ce9bed270dbb32
 	_, claims, err1 := common.ParseToken(Token)
 	if err1 != nil {
 		c.JSON(http.StatusOK, invalidToken)

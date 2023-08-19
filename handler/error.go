@@ -9,7 +9,7 @@ const errService = "服务繁忙"
 func HandlerErr(resp interface{}, err error) {
 	e := reflect.ValueOf(resp).Elem()
 	code := int64(0)
-	msg := "操作成功"
+	msg := "success"
 	if err != nil {
 		code = 500
 		msg = errService

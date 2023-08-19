@@ -3,6 +3,7 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/apache/thrift/lib/go/thrift"
 	"strings"
@@ -2978,17 +2979,29 @@ func (p *Comment) Field4DeepEqual(src string) bool {
 }
 
 type Message struct {
-	Id         int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id"`
-	ToUserId   int64   `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
-	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id"`
+	Id         int64   `thrift:"id,1,required" frugal:"1,required,i64" json:"id" gorm:"primarykey""`
+	ToUserId   int64   `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id" gorm:"index:idx_userid_from"`
+	FromUserId int64   `thrift:"from_user_id,3,required" frugal:"3,required,i64" json:"from_user_id" gorm:"index:idx_userid_to"`
 	Content    string  `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
-	CreateTime *string `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty"`
+	CreateTime int64 `thrift:"create_time,5,optional" frugal:"5,optional,string" json:"create_time,omitempty" gorm:"column:create_time;index:idx_time""`
 }
 
 func NewMessage() *Message {
 	return &Message{}
 }
+func (m *Message) TableName() string {
+	return "messages"
+}
 
+// 序列化
+func (m *Message) MarshalBinary() (data []byte, err error) {
+	return json.Marshal(m)
+}
+
+// 反序列化
+func (m *Message) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, m)
+}
 func (p *Message) InitDefault() {
 	*p = Message{}
 }
@@ -3011,11 +3024,9 @@ func (p *Message) GetContent() (v string) {
 
 var Message_CreateTime_DEFAULT string
 
-func (p *Message) GetCreateTime() (v string) {
-	if !p.IsSetCreateTime() {
-		return Message_CreateTime_DEFAULT
-	}
-	return *p.CreateTime
+func (p *Message) GetCreateTime() (v int64) {
+
+	return p.CreateTime
 }
 func (p *Message) SetId(val int64) {
 	p.Id = val
@@ -3029,7 +3040,7 @@ func (p *Message) SetFromUserId(val int64) {
 func (p *Message) SetContent(val string) {
 	p.Content = val
 }
-func (p *Message) SetCreateTime(val *string) {
+func (p *Message) SetCreateTime(val int64) {
 	p.CreateTime = val
 }
 
@@ -3041,9 +3052,9 @@ var fieldIDToName_Message = map[int16]string{
 	5: "create_time",
 }
 
-func (p *Message) IsSetCreateTime() bool {
-	return p.CreateTime != nil
-}
+//func (p *Message) IsSetCreateTime() bool {
+//	return p.CreateTime != nil
+//}
 
 func (p *Message) Read(iprot thrift.TProtocol) (err error) {
 
@@ -3210,10 +3221,10 @@ func (p *Message) ReadField4(iprot thrift.TProtocol) error {
 }
 
 func (p *Message) ReadField5(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.CreateTime = &v
+		p.CreateTime = v
 	}
 	return nil
 }
@@ -3332,16 +3343,15 @@ WriteFieldEndError:
 }
 
 func (p *Message) writeField5(oprot thrift.TProtocol) (err error) {
-	if p.IsSetCreateTime() {
-		if err = oprot.WriteFieldBegin("create_time", thrift.STRING, 5); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteString(*p.CreateTime); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("create_time", thrift.STRING, 5); err != nil {
+		goto WriteFieldBeginError
+	}
+
+	if err := oprot.WriteI64(p.CreateTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -3409,14 +3419,9 @@ func (p *Message) Field4DeepEqual(src string) bool {
 	}
 	return true
 }
-func (p *Message) Field5DeepEqual(src *string) bool {
+func (p *Message) Field5DeepEqual(src int64) bool {
 
-	if p.CreateTime == src {
-		return true
-	} else if p.CreateTime == nil || src == nil {
-		return false
-	}
-	if strings.Compare(*p.CreateTime, *src) != 0 {
+	if p.CreateTime != src {
 		return false
 	}
 	return true

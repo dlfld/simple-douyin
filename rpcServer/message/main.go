@@ -7,7 +7,7 @@ import (
 	"github.com/douyin/common/mysql"
 	rdb "github.com/douyin/common/redis"
 	message "github.com/douyin/kitex_gen/message/messageservice"
-	"github.com/douyin/models"
+	"github.com/douyin/kitex_gen/model"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"log"
@@ -30,7 +30,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	if err = db.AutoMigrate(&models.Message{}); err != nil {
+	if err = db.AutoMigrate(&model.Message{}); err != nil {
 		panic(err)
 	}
 	// 3. 初始化redis缓存

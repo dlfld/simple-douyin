@@ -653,10 +653,10 @@ func (p *MessageChatResponse) Field3DeepEqual(src []*model.Message) bool {
 }
 
 type MessageActionRequest struct {
-	FromUserId int64  `thrift:"from_user_id,1,required" frugal:"1,required,i64" json:"from_user_id"`
-	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id"`
-	ActionType int32  `thrift:"action_type,3,required" frugal:"3,required,i32" json:"action_type"`
-	Content    string `thrift:"content,4,required" frugal:"4,required,string" json:"content"`
+	FromUserId int64  `thrift:"from_user_id,1,required" frugal:"1,required,i64" json:"from_user_id" form:"from_user_id"`
+	ToUserId   int64  `thrift:"to_user_id,2,required" frugal:"2,required,i64" json:"to_user_id" form:"to_user_id"`
+	ActionType int32  `thrift:"action_type,3,required" frugal:"3,required,i32" json:"action_type" form:"action_type"`
+	Content    string `thrift:"content,4,required" frugal:"4,required,string" json:"content" form:"content"`
 }
 
 func NewMessageActionRequest() *MessageActionRequest {

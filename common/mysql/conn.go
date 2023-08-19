@@ -9,10 +9,10 @@ import (
 
 var db *gorm.DB
 var once sync.Once
+var err error
 
 // NewMysqlConn 创建一个db数据库
 func NewMysqlConn() (*gorm.DB, error) {
-	var err error
 	once.Do(func() {
 		db, err = gorm.Open(mysql.Open(conf.Mysql.Login))
 		if conf.Mysql.Debug {

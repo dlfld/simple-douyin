@@ -1,14 +1,7 @@
-<div align=center>
-# Hi~ this is ***gophers*** :wave:
-# Let's see our ***Simple—douyin***~.
-  </div>
 
-## 目录
-- [背景](#背景)
-- [安装](#安装)
-- [使用](#使用)
-- [贡献](#贡献)
-- 
+# Hi~ this is *gophers* :wave:  
+# Let's see our ***Simple—douyin***~.</center>
+
 
 <!-- Introduction -->
 ## 目录
@@ -26,7 +19,7 @@
 ## 安装
 ###
 
-##使用
+## 使用
 ###
 
 ## 贡献

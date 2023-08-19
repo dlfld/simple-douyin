@@ -6,9 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="a7d6e3fc-4fd4-4f68-b4b3-4c7beec7139d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/common/crud/video/video_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/message.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/message.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/crud/video/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/crud/video/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common/middleware/jwt.go" beforeDir="false" afterPath="$PROJECT_DIR$/common/middleware/jwt.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/video.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rpcServer/video/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/rpcServer/video/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +56,9 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "ToolWindow运行.ShowToolbar": "false",
     "WebServerToolWindowFactoryState": "false",
+    "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "dlf",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
@@ -78,7 +84,7 @@
       <recent name="$PROJECT_DIR$/common/crud/video" />
     </key>
   </component>
-  <component name="RunManager" selected="Go 测试.github.com/douyin/common/crud/video 中的 TestGetVideoFeed">
+  <component name="RunManager" selected="Go 构建.go build github.com/douyin">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
@@ -106,13 +112,13 @@
       <filePath value="$PROJECT_DIR$/rpcServer/interaction/main.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build github.com/douyin/rpcServer/message" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/douyin/rpcServer/relation" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="simple-douyin" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/douyin/rpcServer/message" />
+      <package value="github.com/douyin/rpcServer/relation" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/rpcServer/message/main.go" />
+      <filePath value="$PROJECT_DIR$/rpcServer/relation/main.go" />
       <method v="2" />
     </configuration>
     <configuration name="go build github.com/douyin/rpcServer/video" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -122,6 +128,15 @@
       <package value="github.com/douyin/rpcServer/video" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/rpcServer/video/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build video.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="simple-douyin" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <package value="github.com/douyin" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/handler/video.go" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -134,25 +149,13 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
-    <configuration name="github.com/douyin/common/crud/video 中的 TestGetVideoFeed" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="simple-douyin" />
-      <working_directory value="$PROJECT_DIR$/common/crud/video" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/douyin/common/crud/video" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestGetVideoFeed\E$" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/video" />
-        <item itemvalue="Go 测试.github.com/douyin/common/crud/video 中的 TestGetVideoFeed" />
         <item itemvalue="Go 构建.go build github.com/douyin" />
+        <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/video" />
+        <item itemvalue="Go 构建.go build video.go" />
         <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/interaction" />
-        <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/message" />
+        <item itemvalue="Go 构建.go build github.com/douyin/rpcServer/relation" />
       </list>
     </recent_temporary>
   </component>

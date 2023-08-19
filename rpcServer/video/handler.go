@@ -9,10 +9,8 @@ import (
 	"github.com/douyin/kitex_gen/video"
 	"log"
 	"net/http"
+	"time"
 )
-
-// 视频类型
-const contentType = "application/mp4"
 
 // 视频播放链接url
 const videoUrlTemplate = "http://%s:9000/%s/%s"
@@ -37,19 +35,25 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 // PublishAction implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.PublishActionRequest) (resp *video.PublishActionResponse, err error) {
 	reader := bytes.NewReader(req.GetData())
+	fmt.Printf("data -> %+v\n", reader.Len())
 	// 上传文件的文件名
-	filename := req.GetTitle()
+	filename := fmt.Sprintf("user-%d-%d", req.UserId, time.Now().Unix())
 	userId := req.UserId
-	videoUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename)
+	log.Printf("userId --> %v\n", userId)
+	videoUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+".mp4")
+	imageUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+"-img.jpeg")
 	title := req.Title
 	dataLen := int64(len(req.GetData()))
 	//执行视频上传逻辑
-	err = video2.UploadVideo(reader, filename, contentType, videoUrl, dataLen, userId, title)
-	if err != nil {
-		return nil, err
-	}
-	statusMsg := "success"
-	resp = &video.PublishActionResponse{StatusCode: http.StatusOK, StatusMsg: &statusMsg}
+
+	go func() {
+		err = video2.UploadVideo(reader, filename, videoUrl, dataLen, userId, title, imageUrl)
+		if err != nil {
+			log.Fatalln("视频上传失败")
+		}
+	}()
+	statusMsg := "视频上传成功，后台上传完成之后便可查看"
+	resp = &video.PublishActionResponse{StatusCode: 0, StatusMsg: &statusMsg}
 	return resp, nil
 }
 

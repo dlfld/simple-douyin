@@ -16,8 +16,15 @@ import (
 	"io"
 	"log"
 	"strconv"
+	"strings"
 	"time"
 )
+
+// 视频类型
+const videoContentType = "application/mp4"
+
+// 图片类型
+const imageContentType = "image/png"
 
 //	userPublishVideoList
 //
@@ -101,15 +108,25 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @param videoUrl 视频url
 // @param dataLen 数据长度
 // @param userId 用户id
-func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataLen, userId int64, title string) error {
+func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId int64, title, imageUrl string) error {
 	service, _ := oss.GetOssService()
-	//
+	// 上传图片
+
 	//视频文件上传
-	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename, dataLen, contentType)
+	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename+".mp4", dataLen, videoContentType)
 	if err != nil {
 		log.Fatalln("OSS视频文件上传失败")
 		return err
 	}
+	//抽取第一帧图片,得先上传视频文件，然后获取到视频文件的播放链接
+	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
+	if err != nil {
+		log.Fatalln("视频封面图抽取失败！", err)
+		return err
+	}
+	imgReader := strings.NewReader(buffer.String())
+	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, filename+"-img.jpeg", int64(buffer.Len()), imageContentType)
+
 	video := models.Video{
 		Title:         title,
 		FavoriteCount: 0,
@@ -117,7 +134,7 @@ func UploadVideo(reader io.Reader, filename, contentType, videoUrl string, dataL
 		UpdatedAt:     time.Now(),
 		AuthorID:      userId,
 		PlayUrl:       videoUrl,
-		CoverUrl:      "抽取第一帧图片作为cover图片",
+		CoverUrl:      imageUrl,
 		CommentCount:  0,
 	}
 	//插入数据

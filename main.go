@@ -70,8 +70,8 @@ func main() {
 	jwtRouter.POST("/message/action/", handler.MessageAction)
 
 	// 视频相关接口
-	apiRouter.GET("/publish/list/", handler.PublishList)
-	apiRouter.POST("/publish/action/", handler.VideoSubmit)
+	jwtRouter.GET("/publish/list/", handler.PublishList)
+	jwtRouter.POST("/publish/action/", handler.VideoSubmit)
 	apiRouter.GET("/feed/", handler.VideoFeed)
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 

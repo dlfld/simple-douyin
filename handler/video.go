@@ -3,6 +3,8 @@ package handler
 
 import (
 	"context"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -35,6 +37,7 @@ func PublishList(c *gin.Context) {
 		UserId: int64(userId),
 		Token:  c.Query("token"),
 	}
+
 	// 发起RPC调用
 	resp, err := cli.PublishList(context.Background(), req)
 	if err != nil {
@@ -60,11 +63,17 @@ func VideoSubmit(c *gin.Context) {
 	}
 	// Token: c.Query("token"),
 	// 创建发生消息的请求实例 接收视频投稿信息
-	req := &video.PublishActionRequest{
-		UserId: 1, // todo: implement userid get
-		Title:  c.Query("title"),
-		Data:   []byte(c.Query("data")),
-	}
+
+	req := video.NewPublishActionRequest()
+	req.Title = c.PostForm("title")
+	//req.UserId = int64(c.GetUint("userID"))
+	log.Printf("userId in gin = %v\n", req.UserId)
+	req.UserId = int64(c.GetUint("userID"))
+	req.Data = []byte(c.PostForm("data"))
+	file, err := c.FormFile("data")
+	fileContent, _ := file.Open()
+	byteContainer, err := ioutil.ReadAll(fileContent)
+	req.Data = byteContainer
 
 	// 前端请求数据绑定到req中
 	// 发起RPC调用

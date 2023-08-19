@@ -57,7 +57,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		videoJsons, err := cache.LRange(context.Background(), userPublishVideoList(userId), 0, -1).Result()
 		log.Printf("videoJsons.len = %+v\n", len(videoJsons))
 		if err != nil {
-			panic(err)
+			log.Printf("%v\n", err)
 		}
 		// 将json解析为video对象
 		for _, videoJson := range videoJsons {
@@ -124,6 +124,7 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 		log.Fatalln("视频封面图抽取失败！", err)
 		return err
 	}
+	//将第一帧图片转为io.reader
 	imgReader := strings.NewReader(buffer.String())
 	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, filename+"-img.jpeg", int64(buffer.Len()), imageContentType)
 
@@ -150,6 +151,7 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 	}
 	// 将video数据放入redis中，
 	videoJson, _ := json.Marshal(video)
+	//将这个视频添加到当前用户的发布视频cache当中去
 	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
 	return nil
 }
@@ -163,12 +165,59 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 // @return error
 // @return int64 返回上一次最后一个元素的时间
 func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
+	cache, err := myRedis.NewRedisConn()
+	if err != nil {
+		log.Print("redis 客户端获取失败\n")
+	}
+	//缓存key
+	cacheKey := fmt.Sprintf("video_feed_%d", latestTime)
+	cacheLastTimeKey := "video_feed_latest_time"
+	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
+	// 最终返回的列表
+	resVideoList := make([]*model.Video, 0)
+	// 如果进入cache 这个flag就改为true，如果在cache执行的过程中有一个环节出错了，这个key就改为false。最后查询数据库
+	cacheFlag := false
+	var latestTimeRes int64 = 0
+	// 表示缓存存在
+	if errGet > 0 && latestTime != 0 {
+		cacheFlag = true
+		// 如果缓存存在，就直接从缓存中取数据返回
+		videoJsons, err := cache.LRange(context.Background(), cacheKey, 0, -1).Result()
+		log.Printf("videoJsons.len = %+v\n", len(videoJsons))
+		if err != nil {
+			log.Printf("%v\n", err)
+			cacheFlag = false
+		}
+		// 将json解析为Video列表
+		for _, videoJson := range videoJsons {
+			videoDto := model.Video{}
+			//将json字符串反序列化
+			err := json.Unmarshal([]byte(videoJson), &videoDto)
+			if err != nil {
+				log.Printf("JSON decode error!")
+				cacheFlag = false
+			}
+			resVideoList = append(resVideoList, &videoDto)
+		}
+		// 获取到当前对应列表的latest时间
+		result, err := cache.Get(context.Background(), cacheLastTimeKey).Result()
+		if err != nil {
+			log.Print("获取当前feed列表对应的latest时间")
+			cacheFlag = false
+		}
+		latestTimeRes, _ = strconv.ParseInt(result, 10, 64)
+	}
+	//如果走cache没有出错
+	if cacheFlag {
+		return resVideoList, nil, int64(latestTimeRes)
+	}
+	// 表示缓存不存在
 	//获取latestTime时间之前的 不包括last？
 	list, err := models.GetVideoFeedList(latestTime, nums)
 	if err != nil {
 		return nil, err, 0
 	}
-	resVideoList := make([]*model.Video, 0)
+
 	resVideoList, err = convert.VideoSliceBo2Dto(list)
 	if err != nil {
 		return nil, err, 0
@@ -188,5 +237,23 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 		userVideoMap[item.ID] = user
 		resVideoList[i].Author = user
 	}
-	return resVideoList, nil, list[len(list)-1].CreatedAt.UnixMilli()
+	//当前列表的时间
+	latestTimeRes = list[len(list)-1].CreatedAt.UnixMilli()
+
+	// 到这一步的时候就需要将从mysql中查询出来的信息写入到redis中
+	pipeline := cache.Pipeline()
+	defer pipeline.Close()
+	//依次对每一个视频对象进行序列化
+	for _, video := range resVideoList {
+		videoJson, _ := json.Marshal(video)
+		_, err = pipeline.LPush(context.Background(), cacheKey, string(videoJson)).Result()
+		if err != nil {
+			log.Print("写缓存失败")
+		}
+	}
+	// 将当前播放列表的latestTime写入到cache中
+	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 0)
+	// 执行缓存操作
+	_, err = pipeline.Exec(context.Background())
+	return resVideoList, nil, latestTimeRes
 }

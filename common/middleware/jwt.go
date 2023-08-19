@@ -8,14 +8,11 @@ import (
 )
 
 func JWT_AUTH(c *gin.Context) {
-<<<<<<< HEAD
 	Token, ok := c.GetQuery("token")
 	if !ok {
 		Token = c.PostForm("token")
 	}
 	common.ParseToken(Token)
-=======
-	Token := c.Query("token")
 	if Token == "" {
 		tokenMap := make(map[string]string, 0)
 		err := c.BindJSON(&tokenMap)

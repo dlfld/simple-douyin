@@ -1,9 +1,10 @@
                           
                                                                                                       
                                                                                                           
-```
-                                                                                                            
-                                                                                                            
+
+# Hi~ this is *gophers* :wave:  
+# Let's see our ***Simple—douyin***~.</center>
+```                                                                                                                                                              
 DDDDDDDDDDDDD                                                YYYYYYY       YYYYYYY  iiii                    
 D::::::::::::DDD                                             Y:::::Y       Y:::::Y i::::i                   
 D:::::::::::::::DD                                           Y:::::Y       Y:::::Y  iiii                    
@@ -19,17 +20,8 @@ DDD:::::DDDDD:::::D                                          Y::::::Y     Y:::::
 DDD:::::DDDDD:::::D  o:::::ooooo:::::ou:::::::::::::::uu            Y:::::Y       i::::::i  n::::n    n::::n
 D:::::::::::::::DD   o:::::::::::::::o u:::::::::::::::u         YYYY:::::YYYY    i::::::i  n::::n    n::::n
 D::::::::::::DDD      oo:::::::::::oo   uu::::::::uu:::u         Y:::::::::::Y    i::::::i  n::::n    n::::n
-DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY    iiiiiiii  nnnnnn    nnnnnn
-                                                                                                            
-                                                                                                            
-                                                                                                            
-                                                                                                            
-                                                                                                            
-                                                                                                            
-                                                                                                            
+DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY    iiiiiiii  nnnnnn    nnnnnn                                                                                                                                                                                                   
 ```    
-# Hi~ this is *gophers* :wave:  
-# Let's see our ***Simple—douyin***~.</center>
 
 <!-- Introduction -->
 ## 目录

@@ -1,9 +1,7 @@
                           
+                                                                                                      
                                                                                                           
-                                                                                                          
-# Hi~ this is *gophers* :wave:  
-# Let's see our ***Simple—douyin***~.</center>
-
+```
                                                                                                           
             dddddddd                                                                                      
             d::::::d                                                              iiii                    
@@ -26,7 +24,11 @@ d::::::ddddd::::::ddo:::::ooooo:::::ou:::::::::::::::uu        y:::::::y        
                                                             y:::::y                                       
                                                            y:::::y                                        
                                                           y:::::y                                         
-                                                         yyyyyyy                
+                                                         yyyyyyy
+```    
+# Hi~ this is *gophers* :wave:  
+# Let's see our ***Simple—douyin***~.</center>
+
 <!-- Introduction -->
 ## 目录
 - [背景介绍](#背景介绍)

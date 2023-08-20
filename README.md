@@ -1,4 +1,28 @@
-
+                                                                                                          
+            dddddddd                                                                                      
+            d::::::d                                                              iiii                    
+            d::::::d                                                             i::::i                   
+            d::::::d                                                              iiii                    
+            d:::::d                                                                                       
+    ddddddddd:::::d    ooooooooooo   uuuuuu    uuuuuu  yyyyyyy           yyyyyyyiiiiiii nnnn  nnnnnnnn    
+  dd::::::::::::::d  oo:::::::::::oo u::::u    u::::u   y:::::y         y:::::y i:::::i n:::nn::::::::nn  
+ d::::::::::::::::d o:::::::::::::::ou::::u    u::::u    y:::::y       y:::::y   i::::i n::::::::::::::nn 
+d:::::::ddddd:::::d o:::::ooooo:::::ou::::u    u::::u     y:::::y     y:::::y    i::::i nn:::::::::::::::n
+d::::::d    d:::::d o::::o     o::::ou::::u    u::::u      y:::::y   y:::::y     i::::i   n:::::nnnn:::::n
+d:::::d     d:::::d o::::o     o::::ou::::u    u::::u       y:::::y y:::::y      i::::i   n::::n    n::::n
+d:::::d     d:::::d o::::o     o::::ou::::u    u::::u        y:::::y:::::y       i::::i   n::::n    n::::n
+d:::::d     d:::::d o::::o     o::::ou:::::uuuu:::::u         y:::::::::y        i::::i   n::::n    n::::n
+d::::::ddddd::::::ddo:::::ooooo:::::ou:::::::::::::::uu        y:::::::y        i::::::i  n::::n    n::::n
+ d:::::::::::::::::do:::::::::::::::o u:::::::::::::::u         y:::::y         i::::::i  n::::n    n::::n
+  d:::::::::ddd::::d oo:::::::::::oo   uu::::::::uu:::u        y:::::y          i::::::i  n::::n    n::::n
+   ddddddddd   ddddd   ooooooooooo       uuuuuuuu  uuuu       y:::::y           iiiiiiii  nnnnnn    nnnnnn
+                                                             y:::::y                                      
+                                                            y:::::y                                       
+                                                           y:::::y                                        
+                                                          y:::::y                                         
+                                                         yyyyyyy                                          
+                                                                                                          
+                                                                                                          
 # Hi~ this is *gophers* :wave:  
 # Let's see our ***Simple—douyin***~.</center>
 

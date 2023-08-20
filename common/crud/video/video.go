@@ -170,7 +170,7 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 		log.Print("redis 客户端获取失败\n")
 	}
 	//缓存key
-	cacheKey := fmt.Sprintf("video_feed_%d", latestTime)
+	cacheKey := fmt.Sprintf("video_feed_aa_%d", latestTime)
 	cacheLastTimeKey := "video_feed_latest_time"
 	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
 	// 最终返回的列表
@@ -252,7 +252,7 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 		}
 	}
 	// 将当前播放列表的latestTime写入到cache中
-	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 0)
+	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 60)
 	// 执行缓存操作
 	_, err = pipeline.Exec(context.Background())
 	return resVideoList, nil, latestTimeRes

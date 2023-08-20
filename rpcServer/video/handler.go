@@ -20,7 +20,7 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 1)
+	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 30)
 
 	if err != nil {
 		log.Fatalln("视频流调用失败")

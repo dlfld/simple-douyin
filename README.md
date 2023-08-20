@@ -16,7 +16,7 @@
 
 
 ## 背景介绍
-1、项目介绍：第六届字节跳动青训营后端任务————实现一个简易版的抖音。要求使用Go语言编程、常用框架、数据库、对象存储等内容。我们组使用Golang实现基于Redis的安全高效RPC通信。
+1、项目介绍：第六届字节跳动青训营后端任务————实现一个简易版的抖音。要求使用Go语言编程、常用框架、数据库、对象存储等内容。我们组使用Golang实现基于Redis的安全高效RPC通信。  
 2、项目要求：
 <table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="500" style="width:375.0pt;border-collapse:collapse;mso-yfti-tbllook:1184">
  <tbody><tr style="mso-yfti-irow:0;mso-yfti-firstrow:yes;height:29.25pt">
@@ -182,7 +182,7 @@
 
 ## 安装方法
 1、克隆项目到本地  
-> https://github.com/dlfld/simple-douyin.git  
+ > <p>https://github.com/dlfld/simple-douyin.git <p>   
 2、进入项目目录  
 3、安装项目依赖  
 4、启动项目 
@@ -191,18 +191,16 @@
 
 ## 使用说明  
 1、注册或登录账号  
->在项目首页，点击"注册"按钮创建一个新账号，或者点击"登录"按钮使用已有账号登录。  
-2、编辑个人资料
-3、点赞和评论
-4、查看关注数和粉丝数
-5、浏览和投稿视频
+> <p>在项目首页，点击"注册"按钮创建一个新账号，或者点击"登录"按钮使用已有账号登录。 <p> 
+2、编辑个人资料  
+3、点赞和评论  
+4、查看关注数和粉丝数  
+5、浏览和投稿视频  
 <br>
 
 
 ## 贡献
-### 贡献者
-:tada:非常感谢这些人对该项目的付出~  
-
+:tada::tada::tada:非常感谢这些人对该项目的付出~  
 ![image](https://github.com/dlfld/simple-douyin/assets/140488203/42522702-5953-491a-b710-371d44274007)
 <br>
 

@@ -7,6 +7,7 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"gorm.io/gorm"
+	"log"
 )
 
 type mysql struct {
@@ -21,30 +22,52 @@ func NewMysql() *mysql {
 func (c *mysql) SearchFavoriteExist(m *models.FavoriteVideoRelation) (exist bool, err error) {
 	result := c.cli.Where("user_id = ? and video_id = ?", m.UserID, m.VideoID).First(m)
 	if result.Error != nil {
-		// TODO : log err
-		fmt.Println(result.Error)
-
+		log.Println(err)
 	}
 	return result.RowsAffected > 0, result.Error
 }
 
 func (c *mysql) InsertFavorite(m *models.FavoriteVideoRelation) (rows int64, err error) {
-
 	result := c.cli.Create(m)
 	if result.Error != nil {
-		// TODO : log err
-		fmt.Println(result.Error)
+		log.Println(err)
 	}
 	return result.RowsAffected, result.Error
 
 }
 
 func (c *mysql) CancelFavorite(m *models.FavoriteVideoRelation) (rows int64, err error) {
-
 	result := c.cli.Where("user_id = ? and video_id = ?", m.UserID, m.VideoID).Delete(m)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return result.RowsAffected, result.Error
 
 }
+
+// SearchFavoriteVideoIds 根据userId查询喜欢视频ids列表
+func (c *mysql) SearchFavoriteVideoIds(userId int64) (favoriteVideoIds []int64, err error) {
+	result := c.cli.Raw("SELECT video_id from user_favorite_videos WHERE user_id = ?", userId)
+	var t []int64
+	result.Scan(&t)
+	return t, result.Error
+}
+
+// SearchAuthorIdsByVideoIds 根据视频ids列表查询author列表
+func (c *mysql) SearchAuthorIdsByVideoIds(ids int64) (authorIds []int64, err error) {
+	result := c.cli.Raw("SELECT author_id from videos WHERE id in ?", ids)
+	var t []int64
+	result.Scan(&t)
+	return t, result.Error
+}
+
+func (c *mysql) SearchFavoriteVideoList(ids []int64) (favoriteVideoIds []int64, err error) {
+	result := c.cli.Raw("SELECT video_id from videos WHERE id in ?", ids)
+	var t []int64
+	result.Scan(&t)
+	return t, result.Error
+}
+
 func (c *mysql) SearchVideoListById(id int64) (videoList []*models.Video, err error) {
 	result := c.cli.Raw("SELECT * FROM videos WHERE id in (SELECT video_id from user_favorite_videos WHERE user_id = ?)", id)
 	var t []*models.Video
@@ -57,6 +80,13 @@ func (c *mysql) SearchUserById(id int64) (user *model.User, err error) {
 	var t model.User
 	result.Scan(&t)
 	return &t, err
+}
+
+func (c *mysql) SearchUserByIds(ids []int64) (userList []*model.User, err error) {
+	result := c.cli.Raw("SELECT * FROM users WHERE id in ?", ids)
+	var t []*model.User
+	result.Scan(&t)
+	return userList, result.Error
 }
 
 // 评论

@@ -6,6 +6,13 @@ import (
 	"testing"
 )
 
+func TestCreate(t *testing.T) {
+	c := NewMysql()
+	_ = c.cli.AutoMigrate(
+		models.Comment{},
+	)
+}
+
 func TestInsertFavorite(t *testing.T) {
 	c := NewMysql()
 	m := models.FavoriteVideoRelation{

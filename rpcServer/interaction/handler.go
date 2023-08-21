@@ -6,6 +6,7 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	d "github.com/douyin/rpcServer/interaction/dao"
+	"log"
 	"net/http"
 	"time"
 )
@@ -21,7 +22,13 @@ func InitDao() {
 	dao = d.NewDao()
 }
 
-// FavoriteAction implements the InteractionServiceImpl interface.
+func newFavoriteActionResp(code int32, msg string) *interaction.FavoriteActionResponse {
+	return &interaction.FavoriteActionResponse{
+		StatusCode: code,
+		StatusMsg:  &msg,
+	}
+}
+
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	resp = new(interaction.FavoriteActionResponse)
 	actionType := req.ActionType
@@ -31,62 +38,66 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		UserID:  req.UserId,
 	}
 	if actionType == 1 { // 点赞
-		exist, _ := dao.Mysql.SearchFavoriteExist(&m)
-		if exist {
-			resp.StatusCode = http.StatusOK
-			msg := "该记录已经存在"
-			resp.StatusMsg = &msg
-			return
+		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
+		if exists {
+			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), nil
 		}
 		_, err = dao.Mysql.InsertFavorite(&m)
 	} else if actionType == 2 { //取消点赞
+		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
+		if !exists {
+			return newFavoriteActionResp(-400, "操作失败: 您之前未点过赞, 无法取消点赞"), nil
+		}
 		_, err = dao.Mysql.CancelFavorite(&m)
 	} else {
-		resp.StatusCode = http.StatusInternalServerError
-		msg := "actionType 错误"
-		resp.StatusMsg = &msg
-		return
+		return newFavoriteActionResp(-400, "actionType 错误"), nil
 	}
 	if err != nil {
-		// TODO: log err
+		log.Println("FavoriteAction 执行错误")
+		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
-	resp.StatusCode = http.StatusOK
-	msg := "ok"
-	resp.StatusMsg = &msg
-	return
+	return newFavoriteActionResp(0, "操作成功"), nil
 }
 
-// FavoriteList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
 	resp = new(interaction.FavoriteListResponse)
+	//favoriteVideoIds, err := dao.Mysql.SearchFavoriteVideoIds(req.UserId)
+	if err != nil {
+		return new(interaction.FavoriteListResponse), err
+	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
 		return nil, err
 	}
-	videoList := make([]*model.Video, len(dbList))
+	authorIds := make([]int64, len(dbList))
 	for i := 0; i < len(dbList); i++ {
-		author, _ := dao.Mysql.SearchUserById(dbList[i].AuthorID)
-		m := models.FavoriteVideoRelation{
-			VideoID: dbList[i].ID,
-			UserID:  req.UserId,
-		}
-		isFavorite, _ := dao.Mysql.SearchFavoriteExist(&m)
+		authorIds[i] = dbList[i].AuthorID
+	}
+	authorList, _ := dao.Mysql.SearchUserByIds(authorIds)
+	videoList := make([]*model.Video, len(dbList))
+
+	for i := 0; i < len(dbList); i++ {
 		videoList[i] = &model.Video{
 			Id:            dbList[i].ID,
-			Author:        author,
+			Author:        authorList[i],
 			PlayUrl:       dbList[i].PlayUrl,
 			CoverUrl:      dbList[i].CoverUrl,
 			FavoriteCount: dbList[i].FavoriteCount,
 			CommentCount:  dbList[i].CommentCount,
-			IsFavorite:    isFavorite,
-			Title:         dbList[i].Title,
+			//IsFavorite:    true,
+			Title: dbList[i].Title,
 		}
 	}
 	resp.StatusCode = http.StatusOK
 	msg := "ok"
 	resp.StatusMsg = &msg
 	resp.VideoList = videoList
-	return
+
+	return &interaction.FavoriteListResponse{
+		StatusCode: 0,
+		StatusMsg:  nil,
+		VideoList:  nil,
+	}, nil
 }
 
 // CommentAction implements the InteractionServiceImpl interface.

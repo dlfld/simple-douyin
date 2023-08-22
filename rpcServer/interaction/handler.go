@@ -29,6 +29,14 @@ func newFavoriteActionResp(code int32, msg string) *interaction.FavoriteActionRe
 	}
 }
 
+func newFavoriteListResp(code int32, msg string, vlist []*model.Video) *interaction.FavoriteListResponse {
+	return &interaction.FavoriteListResponse{
+		StatusCode: code,
+		StatusMsg:  &msg,
+		VideoList:  vlist,
+	}
+}
+
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	resp = new(interaction.FavoriteActionResponse)
 	actionType := req.ActionType
@@ -60,22 +68,20 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 }
 
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
-	resp = new(interaction.FavoriteListResponse)
-	//favoriteVideoIds, err := dao.Mysql.SearchFavoriteVideoIds(req.UserId)
-	if err != nil {
-		return new(interaction.FavoriteListResponse), err
-	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
-		return nil, err
+		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
 	}
 	authorIds := make([]int64, len(dbList))
 	for i := 0; i < len(dbList); i++ {
 		authorIds[i] = dbList[i].AuthorID
 	}
-	authorList, _ := dao.Mysql.SearchUserByIds(authorIds)
-	videoList := make([]*model.Video, len(dbList))
+	authorList, err := dao.Mysql.SearchUserByIds(authorIds, req.UserId)
+	if err != nil || len(authorList) != len(dbList) {
+		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
+	}
 
+	videoList := make([]*model.Video, len(dbList))
 	for i := 0; i < len(dbList); i++ {
 		videoList[i] = &model.Video{
 			Id:            dbList[i].ID,
@@ -84,20 +90,12 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 			CoverUrl:      dbList[i].CoverUrl,
 			FavoriteCount: dbList[i].FavoriteCount,
 			CommentCount:  dbList[i].CommentCount,
-			//IsFavorite:    true,
-			Title: dbList[i].Title,
+			IsFavorite:    true,
+			Title:         dbList[i].Title,
 		}
 	}
-	resp.StatusCode = http.StatusOK
-	msg := "ok"
-	resp.StatusMsg = &msg
-	resp.VideoList = videoList
 
-	return &interaction.FavoriteListResponse{
-		StatusCode: 0,
-		StatusMsg:  nil,
-		VideoList:  nil,
-	}, nil
+	return newFavoriteListResp(0, "ok", videoList), err
 }
 
 // CommentAction implements the InteractionServiceImpl interface.
@@ -169,7 +167,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 			Id:         dbList[i].ID,
 			User:       user,
 			Content:    dbList[i].Content,
-			CreateDate: dbList[i].CreateTime.String(),
+			CreateDate: dbList[i].CreatedTime.String(),
 		}
 	}
 	resp = &interaction.CommentListResponse{

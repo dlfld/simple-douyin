@@ -82,11 +82,13 @@ func (c *mysql) SearchUserById(id int64) (user *model.User, err error) {
 	return &t, err
 }
 
-func (c *mysql) SearchUserByIds(ids []int64) (userList []*model.User, err error) {
-	result := c.cli.Raw("SELECT * FROM users WHERE id in ?", ids)
+func (c *mysql) SearchUserByIds(authorIds []int64, userId int64) (userList []*model.User, err error) {
+	result := c.cli.Raw("SELECT u.*, if(r.to_user_id is NULL,0, 1) as is_follow "+
+		"FROM users u left join relations r on u.id = r.user_id and r.to_user_id = ? "+
+		"WHERE u.id in ?", userId, authorIds)
 	var t []*model.User
 	result.Scan(&t)
-	return userList, result.Error
+	return t, result.Error
 }
 
 // 评论

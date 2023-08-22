@@ -64,12 +64,23 @@ func TestSearchCommentListSort(t *testing.T) {
 		return
 	}
 	fmt.Println("commentList: ", commentList)
-	fmt.Println("time: ", commentList[0].CreateTime.GoString())
+	fmt.Println("time: ", commentList[0].CreatedTime)
 }
 
 func TestSearchUserById(t *testing.T) {
 	c := NewMysql()
 	res, err := c.SearchUserById(1)
+	if err != nil {
+		return
+	}
+	fmt.Println("res: ", res)
+}
+
+func TestSearchUserByIds(t *testing.T) {
+	c := NewMysql()
+	authorIds := []int64{1, 2, 3}
+	userID := 2
+	res, err := c.SearchUserByIds(authorIds, int64(userID))
 	if err != nil {
 		return
 	}

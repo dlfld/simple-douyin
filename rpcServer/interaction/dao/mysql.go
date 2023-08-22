@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"fmt"
 	commysql "github.com/douyin/common/mysql"
 	_ "github.com/douyin/kitex_gen/interaction"
 	"github.com/douyin/kitex_gen/model"
@@ -81,6 +80,9 @@ func (c *mysql) SearchFavoriteVideoIds(userId int64) (favoriteVideoIds []int64, 
 	result := c.cli.Raw("SELECT video_id from user_favorite_videos WHERE user_id = ?", userId)
 	var t []int64
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return t, result.Error
 }
 
@@ -89,6 +91,9 @@ func (c *mysql) SearchAuthorIdsByVideoId(id int64) (authorId int64, err error) {
 	result := c.cli.Raw("SELECT author_id from videos WHERE id = ?", id)
 	var t int64
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return t, result.Error
 }
 
@@ -97,6 +102,9 @@ func (c *mysql) SearchAuthorIdsByVideoIds(ids int64) (authorIds []int64, err err
 	result := c.cli.Raw("SELECT author_id from videos WHERE id in ?", ids)
 	var t []int64
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return t, result.Error
 }
 
@@ -111,38 +119,73 @@ func (c *mysql) SearchVideoListById(id int64) (videoList []*models.Video, err er
 	result := c.cli.Raw("SELECT * FROM videos WHERE id in (SELECT video_id from user_favorite_videos WHERE user_id = ?)", id)
 	var t []*models.Video
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return t, nil
 }
 
-func (c *mysql) SearchUserById(id int64) (user *model.User, err error) {
+func (c *mysql) SearchUserById2(id int64) (user *model.User, err error) {
 	result := c.cli.Raw("SELECT * FROM users WHERE id = ?", id)
 	var t model.User
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return &t, err
 }
 
-func (c *mysql) SearchUserByIds(authorIds []int64, userId int64) (userList []*model.User, err error) {
-	result := c.cli.Raw("SELECT u.*, if(r.to_user_id is NULL,0, 1) as is_follow "+
-		"FROM users u left join relations r on u.id = r.user_id and r.to_user_id = ? "+
+func (c *mysql) SearchUserByUserId(userId int64) (user *model.User, err error) {
+	result := c.cli.Raw("SELECT * from users where id = ?", userId)
+	var t *model.User
+	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
+	return t, result.Error
+}
+
+func (c *mysql) SearchUserByAuthorId(authorId int64, userId int64) (user *model.User, err error) {
+	result := c.cli.Raw("SELECT u.*, user_name as name, if(r.user_id is NULL,0, 1) as is_follow "+
+		"FROM users u left join relations r on u.id = r.to_user_id and r.user_id = ? "+
+		"WHERE u.id = ?", userId, authorId)
+
+	var t *model.User
+	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
+	return t, result.Error
+}
+
+func (c *mysql) SearchUserByAuthorIds(authorIds []int64, userId int64) (userList []*model.User, err error) {
+	result := c.cli.Raw("SELECT u.*, user_name as name, if(r.user_id is NULL,0, 1) as is_follow "+
+		"FROM users u left join relations r on u.id = r.to_user_id and r.user_id = ? "+
 		"WHERE u.id in ?", userId, authorIds)
+
 	var t []*model.User
 	result.Scan(&t)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return t, result.Error
 }
 
 // 评论
 
-func (c *mysql) InsertComment(m *models.Comment) (rows int64, err error) {
+func (c *mysql) InsertComment(m *models.Comment) (ID int64, err error) {
 	result := c.cli.Create(m)
 	if result.Error != nil {
-		// TODO : log err
-		fmt.Println(result.Error)
+		log.Println(err)
 	}
-	return result.RowsAffected, result.Error
+	return m.ID, result.Error
 }
 
 func (c *mysql) DeleteComment(m *models.Comment) (rows int64, err error) {
-	result := c.cli.Where("id = ? and video_id = ?", m.ID, m.VideoID).Delete(m)
+	result := c.cli.Where("id = ?", m.ID).Delete(m)
+	if result.Error != nil {
+		log.Println(err)
+	}
 	return result.RowsAffected, result.Error
 }
 

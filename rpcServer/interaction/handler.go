@@ -22,21 +22,6 @@ func InitDao() {
 	dao = d.NewDao()
 }
 
-func newFavoriteActionResp(code int32, msg string) *interaction.FavoriteActionResponse {
-	return &interaction.FavoriteActionResponse{
-		StatusCode: code,
-		StatusMsg:  &msg,
-	}
-}
-
-func newFavoriteListResp(code int32, msg string, vlist []*model.Video) *interaction.FavoriteListResponse {
-	return &interaction.FavoriteListResponse{
-		StatusCode: code,
-		StatusMsg:  &msg,
-		VideoList:  vlist,
-	}
-}
-
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	m := models.FavoriteVideoRelation{
 		VideoID: req.VideoId,
@@ -67,7 +52,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, -1)
 		_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, -1)
 	} else {
-		return newFavoriteActionResp(-400, "actionType 错误"), nil
+		return newFavoriteActionResp(-400, "actionType 输入错误：1-点赞，2-取消点赞"), nil
 	}
 	if err != nil {
 		log.Println("FavoriteAction 执行错误")
@@ -86,7 +71,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	for i := 0; i < len(dbList); i++ {
 		authorIds[i] = dbList[i].AuthorID
 	}
-	authorList, err := dao.Mysql.SearchUserByIds(authorIds, req.UserId)
+	authorList, err := dao.Mysql.SearchUserByAuthorIds(authorIds, req.UserId)
 	if err != nil || len(authorList) != len(dbList) {
 		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
 	}
@@ -104,64 +89,51 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 			Title:         dbList[i].Title,
 		}
 	}
-
 	return newFavoriteListResp(0, "ok", videoList), err
 }
 
 // CommentAction implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
-	resp = new(interaction.CommentActionResponse)
 	actionType := req.ActionType
 	if actionType == 1 { // 增加评论
 		if req.CommentText == nil {
-			resp.StatusCode = http.StatusOK
-			msg := "增加评论时请输入评论内容"
-			resp.StatusMsg = &msg
-			return
+			return newCommentActionResponse(-500, "请输入评论内容", nil), err
 		}
 		m := models.Comment{
-			VideoID: req.VideoId,
-			UserID:  *req.UserId,
-			Content: *req.CommentText,
+			VideoID:     req.VideoId,
+			UserID:      *req.UserId,
+			Content:     *req.CommentText,
+			CreatedTime: time.Now(),
 		}
-		_, err = dao.Mysql.InsertComment(&m)
+		commentId, err := dao.Mysql.InsertComment(&m)
+		_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, 1)
+		user, _ := dao.Mysql.SearchUserByUserId(*req.UserId)
 		if err != nil {
-			// TODO log err
-			return
+			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
 		}
-		user, _ := dao.Mysql.SearchUserById(*req.UserId)
-		resp.Comment = &model.Comment{
-			Id:         0,
+		comment := &model.Comment{
+			Id:         commentId,
 			User:       user,
 			Content:    *req.CommentText,
-			CreateDate: time.Now().String(),
+			CreateDate: m.CreatedTime.Format("01-02"),
 		}
+		return newCommentActionResponse(0, "ok", comment), nil
 	} else if actionType == 2 { //删除评论
 		if req.CommentId == nil {
-			resp.StatusCode = http.StatusOK
-			msg := "删除评论时请输入评论ID"
-			resp.StatusMsg = &msg
-			return
+			return newCommentActionResponse(-500, "删除评论时请输入评论ID", nil), err
 		}
 		m := models.Comment{
-			VideoID: req.VideoId,
-			ID:      *req.CommentId,
+			ID: *req.CommentId,
 		}
 		_, err = dao.Mysql.DeleteComment(&m)
+		_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, -1)
+		if err != nil {
+			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
+		}
+		return newCommentActionResponse(0, "评论删除成功", nil), nil
 	} else {
-		resp.StatusCode = http.StatusOK
-		msg := "actionType 错误"
-		resp.StatusMsg = &msg
-		return
+		return newCommentActionResponse(-400, "actionType 输入错误: 1-发布评论，2-删除评论", nil), nil
 	}
-	if err != nil {
-		// TODO: log err
-	}
-	resp.StatusCode = http.StatusOK
-	msg := "ok"
-	resp.StatusMsg = &msg
-	return
-
 }
 
 // CommentList implements the InteractionServiceImpl interface.
@@ -172,7 +144,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	}
 	commentList := make([]*model.Comment, len(dbList))
 	for i := 0; i < len(dbList); i++ {
-		user, _ := dao.Mysql.SearchUserById(dbList[i].UserID)
+		user, _ := dao.Mysql.SearchUserByAuthorId(dbList[i].UserID, 2)
 		commentList[i] = &model.Comment{
 			Id:         dbList[i].ID,
 			User:       user,

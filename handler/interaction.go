@@ -41,20 +41,16 @@ func InteractionFavoriteAction(c *gin.Context) {
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteActionRequest{
-		//Token:      c.Query("token"),
 		VideoId:    videoId,
 		ActionType: int32(actionType),
 		UserId:     userId,
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.FavoriteAction(context.Background(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
 	}
 
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 
 }
@@ -68,20 +64,16 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Param request_body body interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
-
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteListRequest{
 		UserId: userId,
-		//Token:  c.Query("token"),
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.FavoriteList(context.Background(), req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+		c.JSON(http.StatusInternalServerError, err)
 	}
-	// 5. gin返回给前端
+
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -108,14 +100,10 @@ func InteractionCommentAction(c *gin.Context) {
 		CommentId:   &commentId,
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.CommentAction(context.Background(), req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+		c.JSON(http.StatusInternalServerError, err)
 	}
-
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -134,16 +122,12 @@ func InteractionCommentList(c *gin.Context) {
 	req := &interaction.CommentListRequest{
 		UserId:  &userId,
 		VideoId: videoId,
-		//Token:  c.Query("token"),
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.CommentList(context.Background(), req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+		c.JSON(http.StatusInternalServerError, err)
 	}
 
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }

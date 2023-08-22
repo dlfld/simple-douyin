@@ -60,10 +60,34 @@ func (c *mysql) VideoCommentCountIncr(videoId int64, num int64) (rows int64, err
 	return result.RowsAffected, result.Error
 }
 
+func (c *mysql) UserFavoriteCountIncr(userId int64, num int64) (rows int64, err error) {
+	result := c.cli.Exec("UPDATE users SET favorite_count = favorite_count + ? WHERE id = ?;", num, userId)
+	if result.Error != nil {
+		log.Println(err)
+	}
+	return result.RowsAffected, result.Error
+}
+
+func (c *mysql) UserTotalFavoritedCountIncr(userId int64, num int64) (rows int64, err error) {
+	result := c.cli.Exec("UPDATE users SET total_favorited = total_favorited + ? WHERE id = ?;", num, userId)
+	if result.Error != nil {
+		log.Println(err)
+	}
+	return result.RowsAffected, result.Error
+}
+
 // SearchFavoriteVideoIds 根据userId查询喜欢视频ids列表
 func (c *mysql) SearchFavoriteVideoIds(userId int64) (favoriteVideoIds []int64, err error) {
 	result := c.cli.Raw("SELECT video_id from user_favorite_videos WHERE user_id = ?", userId)
 	var t []int64
+	result.Scan(&t)
+	return t, result.Error
+}
+
+// SearchAuthorIdsByVideoId 根据视频ids查询author列表
+func (c *mysql) SearchAuthorIdsByVideoId(id int64) (authorId int64, err error) {
+	result := c.cli.Raw("SELECT author_id from videos WHERE id = ?", id)
+	var t int64
 	result.Scan(&t)
 	return t, result.Error
 }

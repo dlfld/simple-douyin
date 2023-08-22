@@ -38,13 +38,16 @@ func newFavoriteListResp(code int32, msg string, vlist []*model.Video) *interact
 }
 
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
-	resp = new(interaction.FavoriteActionResponse)
-	actionType := req.ActionType
-
 	m := models.FavoriteVideoRelation{
 		VideoID: req.VideoId,
 		UserID:  req.UserId,
 	}
+	authorId, err := dao.Mysql.SearchAuthorIdsByVideoId(req.VideoId)
+	if err != nil {
+		log.Println("FavoriteAction 执行错误")
+		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
+	}
+	actionType := req.ActionType
 	if actionType == 1 { // 点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if exists {
@@ -52,6 +55,8 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		}
 		_, err = dao.Mysql.InsertFavorite(&m)
 		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, 1)
+		_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, 1)
+		_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, 1)
 	} else if actionType == 2 { //取消点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if !exists {
@@ -59,6 +64,8 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		}
 		_, err = dao.Mysql.CancelFavorite(&m)
 		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, -1)
+		_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, -1)
+		_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, -1)
 	} else {
 		return newFavoriteActionResp(-400, "actionType 错误"), nil
 	}

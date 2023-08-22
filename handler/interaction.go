@@ -47,10 +47,12 @@ func InteractionFavoriteAction(c *gin.Context) {
 	}
 
 	resp, err := cli.FavoriteAction(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
-
 	c.JSON(http.StatusOK, resp)
 
 }
@@ -70,8 +72,11 @@ func InteractionFavoriteList(c *gin.Context) {
 	}
 
 	resp, err := cli.FavoriteList(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -101,8 +106,11 @@ func InteractionCommentAction(c *gin.Context) {
 	}
 
 	resp, err := cli.CommentAction(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -125,8 +133,11 @@ func InteractionCommentList(c *gin.Context) {
 	}
 
 	resp, err := cli.CommentList(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
 
 	c.JSON(http.StatusOK, resp)

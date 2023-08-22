@@ -7,7 +7,6 @@ import (
 	"github.com/douyin/models"
 	d "github.com/douyin/rpcServer/interaction/dao"
 	"log"
-	"net/http"
 	"time"
 )
 
@@ -71,7 +70,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	for i := 0; i < len(dbList); i++ {
 		authorIds[i] = dbList[i].AuthorID
 	}
-	authorList, err := dao.Mysql.SearchUserByAuthorIds(authorIds, req.UserId)
+	authorList, err := dao.Mysql.SearchUserByMids(authorIds, req.UserId)
 	if err != nil || len(authorList) != len(dbList) {
 		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
 	}
@@ -140,21 +139,28 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
 	dbList, err := dao.Mysql.SearchCommentListSort(req.VideoId)
 	if err != nil {
-		return nil, err
+		return newCommentListResponse(-500, "CommentList 失败", nil), err
+	}
+	commentUserIds := make([]int64, len(dbList))
+	for i := 0; i < len(dbList); i++ {
+		commentUserIds[i] = dbList[i].UserID
+	}
+	commentUserList, err := dao.Mysql.SearchUserByMids(commentUserIds, *req.UserId)
+	if err != nil {
+		return newCommentListResponse(-500, "CommentList 失败", nil), err
+	}
+	commentUserMap := make(map[int64]*model.User)
+	for _, v := range commentUserList {
+		commentUserMap[v.Id] = v
 	}
 	commentList := make([]*model.Comment, len(dbList))
 	for i := 0; i < len(dbList); i++ {
-		user, _ := dao.Mysql.SearchUserByAuthorId(dbList[i].UserID, 2)
 		commentList[i] = &model.Comment{
 			Id:         dbList[i].ID,
-			User:       user,
+			User:       commentUserMap[commentUserIds[i]],
 			Content:    dbList[i].Content,
-			CreateDate: dbList[i].CreatedTime.String(),
+			CreateDate: dbList[i].CreatedTime.Format("01-02"),
 		}
 	}
-	resp = &interaction.CommentListResponse{
-		StatusCode:  http.StatusOK,
-		CommentList: commentList,
-	}
-	return
+	return newCommentListResponse(0, "ok", commentList), nil
 }

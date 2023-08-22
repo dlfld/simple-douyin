@@ -158,10 +158,10 @@ func (c *mysql) SearchUserByAuthorId(authorId int64, userId int64) (user *model.
 	return t, result.Error
 }
 
-func (c *mysql) SearchUserByAuthorIds(authorIds []int64, userId int64) (userList []*model.User, err error) {
+func (c *mysql) SearchUserByMids(mids []int64, userId int64) (userList []*model.User, err error) {
 	result := c.cli.Raw("SELECT u.*, user_name as name, if(r.user_id is NULL,0, 1) as is_follow "+
 		"FROM users u left join relations r on u.id = r.to_user_id and r.user_id = ? "+
-		"WHERE u.id in ?", userId, authorIds)
+		"WHERE u.id in ?", userId, mids)
 
 	var t []*model.User
 	result.Scan(&t)
@@ -190,7 +190,6 @@ func (c *mysql) DeleteComment(m *models.Comment) (rows int64, err error) {
 }
 
 func (c *mysql) SearchCommentListSort(videoId int64) (videoList []*models.Comment, err error) {
-	//result := c.mysql.Raw("SELECT * from comments c join users u on c.user_id = u.id  WHERE video_id = 3 ORDER BY c.id DESC")
 	result := c.cli.Raw("SELECT * from comments where video_id = ? ORDER BY id DESC", videoId)
 	var t []*models.Comment
 	result.Scan(&t)

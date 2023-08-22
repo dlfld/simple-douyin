@@ -30,38 +30,29 @@ func InitInteractionCli() (err error) {
 // @Summary xxx
 // @Schemes
 // @Description xxx
-// @Tags 互动接口
+// @Tags 互动接口1
 // @Accept json
 // @Produce json
 // @Param request_body body interaction.FavoriteActionRequest true "request body"
 // @Router /douyin/favorite/action/ [POST]
 func InteractionFavoriteAction(c *gin.Context) {
-	// 1. 创建客户端连接
-	//err := initInteractionCli()
-	//if err != nil {
-	//	panic(err)
-	//}
 
-	// 2. 创建发生消息的请求实例
-	// 3. 前端请求数据绑定到req中
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteActionRequest{
-		//Token:      c.Query("token"),
 		VideoId:    videoId,
 		ActionType: int32(actionType),
 		UserId:     userId,
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.FavoriteAction(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
-
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 
 }
@@ -75,29 +66,19 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Param request_body body interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
-	//c.JSON(http.StatusOK, gin.H{"msg": "ok"})
-
-	// 1. 创建客户端连接
-	err := InitInteractionCli()
-	if err != nil {
-		panic(err)
-	}
-
-	// 2. 创建发生消息的请求实例
-	// 3. 前端请求数据绑定到req中
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	req := &interaction.FavoriteListRequest{
 		UserId: userId,
-		//Token:  c.Query("token"),
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.FavoriteList(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
-	// 5. gin返回给前端
+
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -110,13 +91,7 @@ func InteractionFavoriteList(c *gin.Context) {
 // @Param request_body body interaction.CommentActionRequest true "request body"
 // @Router /douyin/comment/action/ [POST]
 func InteractionCommentAction(c *gin.Context) {
-	err := InitInteractionCli()
-	if err != nil {
-		panic(err)
-	}
 
-	// 2. 创建发生消息的请求实例
-	// 3. 前端请求数据绑定到req中
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 32)
@@ -130,14 +105,13 @@ func InteractionCommentAction(c *gin.Context) {
 		CommentId:   &commentId,
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.CommentAction(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
-
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -150,29 +124,21 @@ func InteractionCommentAction(c *gin.Context) {
 // @Param request_body body interaction.CommentListRequest true "request body"
 // @Router /douyin/comment/list/ [GET]
 func InteractionCommentList(c *gin.Context) {
-	//// 1. 创建客户端连接
-	err := InitInteractionCli()
-	if err != nil {
-		panic(err)
-	}
 
-	// 2. 创建发生消息的请求实例
-	// 3. 前端请求数据绑定到req中
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	req := &interaction.CommentListRequest{
 		UserId:  &userId,
 		VideoId: videoId,
-		//Token:  c.Query("token"),
 	}
 
-	// 4. 发起RPC调用
 	resp, err := cli.CommentList(context.Background(), req)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		panic(err)
+	if err != nil || resp.StatusCode != 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": resp.StatusMsg,
+			"err": err,
+		})
 	}
 
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }

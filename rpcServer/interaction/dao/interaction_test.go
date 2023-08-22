@@ -6,6 +6,13 @@ import (
 	"testing"
 )
 
+func TestCreate(t *testing.T) {
+	c := NewMysql()
+	_ = c.cli.AutoMigrate(
+		models.Comment{},
+	)
+}
+
 func TestInsertFavorite(t *testing.T) {
 	c := NewMysql()
 	m := models.FavoriteVideoRelation{
@@ -28,9 +35,9 @@ func TestSearchVideoListById(t *testing.T) {
 	fmt.Println("videoList: ", videoList)
 }
 
-func TestSearchSearchUserById(t *testing.T) {
+func TestSearchUserById(t *testing.T) {
 	c := NewMysql()
-	user, err := c.SearchUserById(1)
+	user, err := c.SearchUserByAuthorId(1, 2)
 	if err != nil {
 		return
 	}
@@ -57,12 +64,14 @@ func TestSearchCommentListSort(t *testing.T) {
 		return
 	}
 	fmt.Println("commentList: ", commentList)
-	fmt.Println("time: ", commentList[0].CreateTime.GoString())
+	fmt.Println("time: ", commentList[0].CreatedTime)
 }
 
-func TestSearchUserById(t *testing.T) {
+func TestSearchUserByMids(t *testing.T) {
 	c := NewMysql()
-	res, err := c.SearchUserById(1)
+	authorIds := []int64{1, 2, 3}
+	userID := 2
+	res, err := c.SearchUserByMids(authorIds, int64(userID))
 	if err != nil {
 		return
 	}

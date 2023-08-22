@@ -51,12 +51,14 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), nil
 		}
 		_, err = dao.Mysql.InsertFavorite(&m)
+		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, 1)
 	} else if actionType == 2 { //取消点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if !exists {
 			return newFavoriteActionResp(-400, "操作失败: 您之前未点过赞, 无法取消点赞"), nil
 		}
 		_, err = dao.Mysql.CancelFavorite(&m)
+		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, -1)
 	} else {
 		return newFavoriteActionResp(-400, "actionType 错误"), nil
 	}
@@ -64,6 +66,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		log.Println("FavoriteAction 执行错误")
 		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
+
 	return newFavoriteActionResp(0, "操作成功"), nil
 }
 

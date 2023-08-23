@@ -72,14 +72,14 @@ func main() {
 	jwtRouter.POST("/message/action/", handler.MessageAction)
 
 	// 视频相关接口
-	jwtRouter.GET("/publish/list/", handler.PublishList)
+	apiRouter.GET("/publish/list/", handler.PublishList)
 	jwtRouter.POST("/publish/action/", handler.VideoSubmit)
 	apiRouter.GET("/feed/", handler.VideoFeed)
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
 	jwtRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
-	jwtRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
+	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
 	jwtRouter.POST("/comment/action/", handler.InteractionCommentAction)
 	jwtRouter.GET("/comment/list/", handler.InteractionCommentList)
 

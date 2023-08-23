@@ -9,6 +9,7 @@
 package models
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -19,7 +20,7 @@ type Comment struct {
 	ID          int64     `gorm:"primarykey"`
 	CreatedTime time.Time `json:"created_time"`
 	//UpdatedAt time.Time
-	//DeletedAt gorm.DeletedAt `gorm:"index"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
 	//Video   Video `gorm:"foreignkey:VideoID" json:"video,omitempty"`
 	VideoID int64 `gorm:"index:idx_videoid;not null" json:"video_id"`
 	//User       User           `gorm:"foreignkey:UserID" json:"user,omitempty"`

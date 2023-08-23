@@ -78,9 +78,9 @@ func main() {
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
-	jwtRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
+	apiRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
 	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
-	jwtRouter.POST("/comment/action/", handler.InteractionCommentAction)
+	apiRouter.POST("/comment/action/", handler.InteractionCommentAction)
 	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
 	err := handler.InitInteractionCli()

@@ -86,7 +86,6 @@ func (c *mysql) SearchFavoriteVideoIds(userId int64) (favoriteVideoIds []int64, 
 	return t, result.Error
 }
 
-// SearchAuthorIdsByVideoId 根据视频ids查询author列表
 func (c *mysql) SearchAuthorIdsByVideoId(id int64) (authorId int64, err error) {
 	result := c.cli.Raw("SELECT author_id from videos WHERE id = ?", id)
 	var t int64

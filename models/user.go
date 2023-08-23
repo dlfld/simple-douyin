@@ -84,7 +84,7 @@ func ChangeModel(u User) *model.User {
 	BackgroundImage := u.BackgroundImage
 	Signature := u.Signature
 	TotalFavorited := int64(u.TotalFavorited)
-	WorkCount := int64(u.TotalFavorited)
+	WorkCount := int64(u.WorkCount)
 	FavoriteCount := int64(u.FavoriteCount)
 
 	user := model.User{

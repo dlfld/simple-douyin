@@ -39,9 +39,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
-	// userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	userId := c.GetUint("userID")
-	// fmt.Println("interaction userId:", userId)
+	userId := int64(c.GetUint("userID"))
 	req := &interaction.FavoriteActionRequest{
 		VideoId:    videoId,
 		ActionType: int32(actionType),
@@ -68,7 +66,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Param request_body body interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	userId := int64(c.GetUint("userID"))
 	req := &interaction.FavoriteListRequest{
 		UserId: userId,
 	}
@@ -96,7 +94,7 @@ func InteractionCommentAction(c *gin.Context) {
 
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 32)
+	userId := int64(c.GetUint("userID"))
 	commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
 	commentText := c.Query("comment_text")
 	req := &interaction.CommentActionRequest{
@@ -127,7 +125,7 @@ func InteractionCommentAction(c *gin.Context) {
 // @Router /douyin/comment/list/ [GET]
 func InteractionCommentList(c *gin.Context) {
 
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	userId := int64(c.GetUint("userID"))
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	req := &interaction.CommentListRequest{
 		UserId:  &userId,

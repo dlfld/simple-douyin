@@ -46,6 +46,8 @@ func main() {
 	apiRouter := r.Group("/douyin")
 	jwtRouter := r.Group("/douyin")
 	jwtRouter.Use(middleware.JWT_AUTH)
+	// 只用来解析token不做拦截
+	apiRouter.Use(middleware.JWT_PARSE)
 	//// basic apis
 	//apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.GET("/user/", controller.UserInfo)
@@ -76,9 +78,9 @@ func main() {
 	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
-	apiRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
+	jwtRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
 	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
-	apiRouter.POST("/comment/action/", handler.InteractionCommentAction)
+	jwtRouter.POST("/comment/action/", handler.InteractionCommentAction)
 	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
 	err := handler.InitInteractionCli()

@@ -112,6 +112,7 @@ func VideoFeed(c *gin.Context) {
 	//封装feed
 	feedRequest := &video.FeedRequest{}
 	feedRequest.LatestTime = &timestamp
+	feedRequest.UserId = int64(c.GetUint("userID"))
 	resp, err := cli.Feed(context.Background(), feedRequest)
 	if err != nil {
 		panic(err)

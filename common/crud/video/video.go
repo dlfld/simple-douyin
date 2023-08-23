@@ -7,17 +7,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/douyin/common/conf"
-	"github.com/douyin/common/crud/video/convert"
-	"github.com/douyin/common/oss"
-	myRedis "github.com/douyin/common/redis"
-	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/models"
 	"io"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
+	"github.com/douyin/common/crud/video/convert"
+	"github.com/douyin/common/oss"
+	myRedis "github.com/douyin/common/redis"
+	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
 )
 
 // 视频类型
@@ -32,7 +34,7 @@ const imageContentType = "image/png"
 // @param userId
 // @return string
 func userPublishVideoList(userId int) string {
-	return fmt.Sprintf("user_video_publish_%d", userId)
+	return fmt.Sprintf("video:feed:publish:%d", userId)
 }
 
 //	FindVideoListById
@@ -76,7 +78,12 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			return nil, err
 		}
 		// 对kitex对象和model对象进行转换
+		crud, _ := crud.NewCachedCRUD()
+		author, _ := crud.GetAuthor(uint(userId), uint(userId))
 		resVideoList, err = convert.VideoSliceBo2Dto(videoList)
+		for _, video := range resVideoList {
+			video.Author = author
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -164,14 +171,14 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 // @return []*models.Video
 // @return error
 // @return int64 返回上一次最后一个元素的时间
-func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
+func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, error, int64) {
 	cache, err := myRedis.NewRedisConn()
 	if err != nil {
 		log.Print("redis 客户端获取失败\n")
 	}
 	//缓存key
-	cacheKey := fmt.Sprintf("video_feed_%d", latestTime)
-	cacheLastTimeKey := "video_feed_latest_time"
+	cacheKey := fmt.Sprintf("video:feed:list:%d", latestTime)
+	cacheLastTimeKey := "video:feed:latest_time"
 	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
 	// 最终返回的列表
 	resVideoList := make([]*model.Video, 0)
@@ -217,13 +224,13 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 	if err != nil {
 		return nil, err, 0
 	}
-
 	resVideoList, err = convert.VideoSliceBo2Dto(list)
 	if err != nil {
 		return nil, err, 0
 	}
 
 	userVideoMap := map[int64]*model.User{}
+	crud, _ := crud.NewCachedCRUD()
 	for i, item := range list {
 		//如果这条视频已经查询过user了
 		if v, ok := userVideoMap[item.ID]; ok {
@@ -231,8 +238,9 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 			continue
 		}
 		//这一个还没被查询过
-		userBo, _ := models.GetUserById(item.AuthorID)
-		user, _ := convert.UserBo2Dto(*userBo)
+		// userBo, _ := models.GetUserById(item.AuthorID)
+		// user, _ := convert.UserBo2Dto(*userBo)
+		user, _ := crud.GetAuthor(userID, uint(item.AuthorID))
 		//缓存
 		userVideoMap[item.ID] = user
 		resVideoList[i].Author = user

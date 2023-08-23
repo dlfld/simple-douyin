@@ -9,8 +9,9 @@
 package models
 
 import (
-	"github.com/douyin/common/mysql"
 	"time"
+
+	"github.com/douyin/common/mysql"
 
 	"gorm.io/gorm"
 )
@@ -85,7 +86,7 @@ func GetVideoFeedList(latestTime int64, nums int) ([]*Video, error) {
 		conn.Order("id desc").Limit(nums).Find(&videos)
 	} else {
 		//	返回latestTime前的30条视频
-		conn.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), nums).Scan(&videos)
+		conn.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), nums).Find(&videos)
 	}
 	if len(videos) == 0 {
 		conn.Order("id desc").Limit(nums).Find(&videos)

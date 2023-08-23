@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/douyin/common/conf"
 	video2 "github.com/douyin/common/crud/video"
 	"github.com/douyin/kitex_gen/video"
-	"log"
-	"net/http"
-	"time"
 )
 
 // 视频播放链接url
@@ -20,7 +20,7 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 30)
+	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 30, uint(req.UserId))
 
 	if err != nil {
 		log.Fatalln("视频流调用失败")
@@ -66,6 +66,6 @@ func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishLi
 		return nil, err
 	}
 	// 封装返回结果
-	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: http.StatusOK}
+	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: 0}
 	return resp, err
 }

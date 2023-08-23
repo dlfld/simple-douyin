@@ -70,16 +70,21 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	for i := 0; i < len(dbList); i++ {
 		authorIds[i] = dbList[i].AuthorID
 	}
+
 	authorList, err := dao.Mysql.SearchUserByMids(authorIds, req.UserId)
-	if err != nil || len(authorList) != len(dbList) {
+	if err != nil {
 		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
+	}
+	authorMap := make(map[int64]*model.User)
+	for _, v := range authorList {
+		authorMap[v.Id] = v
 	}
 
 	videoList := make([]*model.Video, len(dbList))
 	for i := 0; i < len(dbList); i++ {
 		videoList[i] = &model.Video{
 			Id:            dbList[i].ID,
-			Author:        authorList[i],
+			Author:        authorMap[authorIds[i]],
 			PlayUrl:       dbList[i].PlayUrl,
 			CoverUrl:      dbList[i].CoverUrl,
 			FavoriteCount: dbList[i].FavoriteCount,

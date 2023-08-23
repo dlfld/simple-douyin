@@ -39,11 +39,13 @@ func InteractionFavoriteAction(c *gin.Context) {
 
 	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
-	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	// userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	userId := c.GetUint("userID")
+	// fmt.Println("interaction userId:", userId)
 	req := &interaction.FavoriteActionRequest{
 		VideoId:    videoId,
 		ActionType: int32(actionType),
-		UserId:     userId,
+		UserId:     int64(userId),
 	}
 
 	resp, err := cli.FavoriteAction(context.Background(), req)

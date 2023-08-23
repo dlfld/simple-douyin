@@ -36,8 +36,10 @@ func JWT_AUTH(c *gin.Context) {
 }
 
 func JWT_PARSE(c *gin.Context) {
-	Token, _ := c.GetQuery("token")
-
+	Token, ok := c.GetQuery("token")
+	if !ok {
+		Token = c.PostForm("token")
+	}
 	if Token == "" && c.Request.Method == "POST" {
 		tokenMap := make(map[string]string, 0)
 		err := c.ShouldBindJSON(&tokenMap)

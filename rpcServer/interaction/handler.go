@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"gorm.io/gorm"
 	"log"
 	"time"
 
@@ -39,19 +40,25 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		if exists {
 			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), nil
 		}
-		_, err = dao.Mysql.InsertFavorite(&m)
-		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, 1)
-		_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, 1)
-		_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, 1)
+		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
+			_, err = dao.Mysql.InsertFavorite(&m)
+			_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, 1)
+			_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, 1)
+			_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, 1)
+			return err
+		})
 	} else if actionType == 2 { //取消点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if !exists {
 			return newFavoriteActionResp(-400, "操作失败: 您之前未点过赞, 无法取消点赞"), nil
 		}
-		_, err = dao.Mysql.CancelFavorite(&m)
-		_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, -1)
-		_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, -1)
-		_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, -1)
+		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
+			_, err = dao.Mysql.CancelFavorite(&m)
+			_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, -1)
+			_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, -1)
+			_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, -1)
+			return err
+		})
 	} else {
 		return newFavoriteActionResp(-400, "actionType 输入错误：1-点赞，2-取消点赞"), nil
 	}
@@ -112,8 +119,12 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			Content:     *req.CommentText,
 			CreatedTime: time.Now(),
 		}
-		commentId, err := dao.Mysql.InsertComment(&m)
-		_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, 1)
+		var commentId int64
+		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
+			commentId, err = dao.Mysql.InsertComment(&m)
+			_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, 1)
+			return err
+		})
 		user, _ := dao.Mysql.SearchUserByUserId(*req.UserId)
 		if err != nil {
 			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
@@ -132,8 +143,11 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		m := models.Comment{
 			ID: *req.CommentId,
 		}
-		_, err = dao.Mysql.DeleteComment(&m)
-		_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, -1)
+		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
+			_, err = dao.Mysql.DeleteComment(&m)
+			_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, -1)
+			return err
+		})
 		if err != nil {
 			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
 		}

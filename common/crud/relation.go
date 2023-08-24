@@ -3,6 +3,7 @@ package crud
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -374,4 +375,13 @@ func LoadUserCache(userID uint) (err error) {
 
 	_, err = pipline.Exec(context.Background())
 	return err
+}
+
+// IsFavorite 判断是否点赞
+func IsFavorite(self uint, videoId uint) (isFavorite bool, err error) {
+	result := crud.mysql.Raw("select 1 from user_favorite_videos WHERE user_id = 1 AND video_id = 1 LIMIT 1", self, videoId)
+	if result.Error != nil {
+		log.Println(err)
+	}
+	return result.RowsAffected > 0, result.Error
 }

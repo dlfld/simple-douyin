@@ -18,6 +18,10 @@ func NewMysql() *mysql {
 	return &mysql{cli: conn}
 }
 
+func (c *mysql) GetCli() *gorm.DB {
+	return c.cli
+}
+
 func (c *mysql) SearchFavoriteExist(m *models.FavoriteVideoRelation) (exist bool, err error) {
 	result := c.cli.Where("user_id = ? and video_id = ?", m.UserID, m.VideoID).First(m)
 	if result.Error != nil {

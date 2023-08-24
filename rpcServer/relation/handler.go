@@ -79,7 +79,7 @@ func friendUsersToKitex(friendUsers []*models.User) (kitexList []*model.FriendUs
 func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.FollowActionRequest) (resp *relation.FollowActionResponse, err error) {
 	// TODO: Your code here...
 	var msg string
-	crud, _ := crud.NewCachedCRUD()
+	// crud, _ := crud.NewCachedCRUD()
 	resp = new(relation.FollowActionResponse)
 	resp.StatusMsg = &msg
 	userId := uint(req.FromUserId)
@@ -112,7 +112,7 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
-	crud, _ := crud.NewCachedCRUD()
+	// crud, _ := crud.NewCachedCRUD()
 	// userList, _ := models.GetFollowList(uint(req.UserId))
 	userList, _ := crud.RelationGetFollows(uint(req.UserId))
 	kitexList := usersToKitex(userList)
@@ -124,7 +124,7 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
-	crud, _ := crud.NewCachedCRUD()
+	// crud, _ := crud.NewCachedCRUD()
 	// var kitexList []*model.User
 	// userList, _ := models.GetFollowerList(uint(req.UserId))
 	userList, _ := crud.RelationGetFollowers(uint(req.UserId))
@@ -137,7 +137,7 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
-	crud, _ := crud.NewCachedCRUD()
+	// crud, _ := crud.NewCachedCRUD()
 	userList, _ := crud.RelationGetFriends(uint(req.UserId))
 	// userList, _ := models.GetFriendList(uint(req.UserId))
 	// var kitexList []*model.FriendUser

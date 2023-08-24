@@ -13,15 +13,16 @@ import (
 	"github.com/u2takey/go-utils/pointer"
 )
 
-// var crud *CachedCRUD
+var crud *CachedCRUD
 
-//	func init() {
-//		var err error
-//		crud, err = NewCachedCRUD()
-//		if err != nil {
-//			panic(err)
-//		}
-//	}
+func init() {
+	var err error
+	crud, err = NewCachedCRUD()
+	if err != nil {
+		panic(err)
+	}
+}
+
 func userRelationFollowKey(userID uint) string {
 	return fmt.Sprintf("relation:follow:%d", userID)
 }
@@ -30,10 +31,13 @@ func userRelationFollowerKey(userID uint) string {
 }
 
 // RelationFollow 在缓存中建立关注关系
-func (crud *CachedCRUD) RelationFollow(userID, toUserID uint) (err error) {
-
+func RelationFollow(userID, toUserID uint) (err error) {
+	if userID == toUserID {
+		return
+	}
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
+	models.Follow(userID, toUserID)
 	// 将被关注用户添加到关注列表
 	res := pipline.SAdd(context.Background(), userRelationFollowKey(userID), toUserID)
 	if res.Err() != nil {
@@ -45,16 +49,19 @@ func (crud *CachedCRUD) RelationFollow(userID, toUserID uint) (err error) {
 	if res.Err() != nil {
 		return res.Err()
 	}
-	go models.Follow(userID, toUserID)
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
 	return err
 }
 
 // RelationUnFollow 在缓存中取消关注关系
-func (crud *CachedCRUD) RelationUnFollow(userID, toUserID uint) (err error) {
+func RelationUnFollow(userID, toUserID uint) (err error) {
+	if userID == toUserID {
+		return
+	}
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
+	models.Unfollow(userID, toUserID)
 
 	// 从关注列表中移除被取消关注用户
 	res := pipline.SRem(context.Background(), userRelationFollowKey(userID), toUserID)
@@ -67,20 +74,19 @@ func (crud *CachedCRUD) RelationUnFollow(userID, toUserID uint) (err error) {
 	if res.Err() != nil {
 		return res.Err()
 	}
-	go models.Unfollow(userID, toUserID)
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
 	return err
 }
 
 // RelationGetFollows 获取用户关注列表
-func (crud *CachedCRUD) RelationGetFollows(userID uint) (userList []*models.User, err error) {
+func RelationGetFollows(userID uint) (userList []*models.User, err error) {
 	ex := crud.redis.Exists(context.Background(), userRelationFollowKey(userID))
 	if ex.Val() == 0 {
 		var users []*models.User
 		users, err = models.GetFollowList(userID)
-		go crud.CacheRelationFollows(userID, users)
-		go crud.CacheUsersInfo(users)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
 		return users, err
 	}
 	// 获取用户关注列表
@@ -90,11 +96,11 @@ func (crud *CachedCRUD) RelationGetFollows(userID uint) (userList []*models.User
 	}
 	// 获取关注用户信息
 	var ids = res.Val()
-	userList, err = crud.GetUsersByID(ids)
+	userList, err = GetUsersByID(ids)
 	return userList, err
 }
 
-func (crud *CachedCRUD) CacheRelationFollows(userID uint, follows []*models.User) {
+func CacheRelationFollows(userID uint, follows []*models.User) {
 
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
@@ -105,7 +111,7 @@ func (crud *CachedCRUD) CacheRelationFollows(userID uint, follows []*models.User
 	pipline.Exec(context.Background())
 }
 
-func (crud *CachedCRUD) CacheRelationFollowers(userID uint, followers []*models.User) {
+func CacheRelationFollowers(userID uint, followers []*models.User) {
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
 
@@ -119,20 +125,20 @@ func (crud *CachedCRUD) CacheRelationFollowers(userID uint, followers []*models.
 }
 
 // RelationGetFollowers 获取用户的粉丝列表
-func (crud *CachedCRUD) RelationGetFollowers(userID uint) (userList []*models.User, err error) {
+func RelationGetFollowers(userID uint) (userList []*models.User, err error) {
 	ex := crud.redis.Exists(context.Background(), userRelationFollowerKey(userID))
 	if ex.Val() == 0 {
 		var users []*models.User
-		users, err = models.GetFollowerList(userID)
-		crud.CacheRelationFollowers(userID, users)
-		crud.CacheUsersInfo(users)
+		users, _ = models.GetFollowerList(userID)
+		CacheRelationFollowers(userID, users)
+		CacheUsersInfo(users)
 	}
 	ex = crud.redis.Exists(context.Background(), userRelationFollowKey(userID))
 	if ex.Val() == 0 {
 		var users []*models.User
-		users, err = models.GetFollowList(userID)
-		crud.CacheRelationFollows(userID, users)
-		crud.CacheUsersInfo(users)
+		users, _ = models.GetFollowList(userID)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
 	}
 	// 获取用户的粉丝列表
 	res := crud.redis.SMembers(context.Background(), userRelationFollowerKey(userID))
@@ -141,18 +147,18 @@ func (crud *CachedCRUD) RelationGetFollowers(userID uint) (userList []*models.Us
 	}
 	var ids = res.Val()
 	// 获取粉丝用户信息
-	userList, err = crud.GetUsersByID(ids)
+	userList, err = GetUsersByID(ids)
 	return userList, err
 }
 
 // RelationGetFriends 获取用户的好友列表
-func (crud *CachedCRUD) RelationGetFriends(userID uint) (userList []*models.User, err error) {
+func RelationGetFriends(userID uint) (userList []*models.User, err error) {
 	ex := crud.redis.Exists(context.Background(), userRelationFollowerKey(userID))
 	if ex.Val() == 0 {
 		var users []*models.User
 		users, err = models.GetFollowerList(userID)
-		go crud.CacheRelationFollowers(userID, users)
-		go crud.CacheUsersInfo(users)
+		CacheRelationFollowers(userID, users)
+		CacheUsersInfo(users)
 		return users, err
 	}
 	// 获取交集，即用户的好友列表
@@ -162,12 +168,12 @@ func (crud *CachedCRUD) RelationGetFriends(userID uint) (userList []*models.User
 	}
 	var ids = res.Val()
 	// 获取好友用户信息
-	userList, err = crud.GetUsersByID(ids)
+	userList, err = GetUsersByID(ids)
 	return userList, err
 }
 
 // CacheUserInfo 将用户信息存入缓存
-func (crud *CachedCRUD) CacheUserInfo(user *models.User) (err error) {
+func CacheUserInfo(user *models.User) (err error) {
 	// 序列化用户信息
 	data, err := sonic.Marshal(user)
 	if err != nil {
@@ -183,7 +189,7 @@ func (crud *CachedCRUD) CacheUserInfo(user *models.User) (err error) {
 }
 
 // CacheUsersInfo 批量将用户信息存入缓存
-func (crud *CachedCRUD) CacheUsersInfo(users []*models.User) (err error) {
+func CacheUsersInfo(users []*models.User) (err error) {
 	pipline := crud.redis.Pipeline()
 	// 序列化用户信息
 	for _, v := range users {
@@ -208,8 +214,8 @@ func (crud *CachedCRUD) CacheUsersInfo(users []*models.User) (err error) {
 }
 
 // GetAuthor 获取用户信息
-func (crud *CachedCRUD) GetAuthor(self uint, UserID uint) (user *model.User, err error) {
-	ormmodel, _ := crud.GetUserInfo(strconv.Itoa(int(UserID)))
+func GetAuthor(self uint, UserID uint) (user *model.User, err error) {
+	ormmodel, _ := GetUserInfo(strconv.Itoa(int(UserID)))
 	user = &model.User{
 		Id:              int64(ormmodel.ID),
 		Name:            ormmodel.UserName,
@@ -226,7 +232,7 @@ func (crud *CachedCRUD) GetAuthor(self uint, UserID uint) (user *model.User, err
 }
 
 // GetUserInfo 从缓存或数据库中获取用户信息
-func (crud *CachedCRUD) GetUserInfo(userID string) (user *models.User, err error) {
+func GetUserInfo(userID string) (user *models.User, err error) {
 	// 查询缓存中是否存在用户信息
 	exist := crud.redis.HExists(context.Background(), "UserInfoCache", userID)
 	if exist.Val() {
@@ -250,25 +256,28 @@ func (crud *CachedCRUD) GetUserInfo(userID string) (user *models.User, err error
 		return nil, err
 	}
 	// 将用户信息添加到缓存
-	err = crud.CacheUserInfo(user)
+	err = CacheUserInfo(user)
 	return
 }
 
 // IsFollow 判断用户是否关注了某个用户
 func (crud *CachedCRUD) IsFollow(userID, toUserID uint) bool {
+	if userID == toUserID {
+		return true
+	}
 	ex := crud.redis.Exists(context.Background(), userRelationFollowKey(userID))
 	if ex.Val() == 0 {
 		var users []*models.User
 		users, _ = models.GetFollowList(userID)
-		crud.CacheRelationFollows(userID, users)
-		crud.CacheUsersInfo(users)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
 	}
 	ret := crud.redis.SIsMember(context.Background(), userRelationFollowKey(userID), toUserID).Val()
 	return ret
 }
 
 // GetUsersByID 根据用户ID列表从缓存或数据库中批量获取用户信息
-func (crud *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, err error) {
+func GetUsersByID(userIDs []string) (users []*models.User, err error) {
 	var data string
 	var user *models.User
 	var r redis.Cmder
@@ -310,13 +319,13 @@ func (crud *CachedCRUD) GetUsersByID(userIDs []string) (users []*models.User, er
 			users[uncached_users_pos[i]] = v
 		}
 		// 存入缓存
-		go crud.CacheUsersInfo(mysql_users)
+		go CacheUsersInfo(mysql_users)
 	}
 	return users, err
 }
 
 // 用户成功登录后将其信息加载到redis缓存中
-func (crud *CachedCRUD) LoadUserCache(userID uint) (err error) {
+func LoadUserCache(userID uint) (err error) {
 
 	var relations []*models.FollowRelation
 	// 在关系表中查询当前用户关注的对象

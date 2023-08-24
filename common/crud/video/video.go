@@ -50,7 +50,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		log.Print("redis 客户端获取失败\n")
 		return nil, err
 	}
-	errGet, err := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
+	errGet, _ := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
 	//最终返回的video列表
 	//var resVideoList []*model.Video = nil
 	resVideoList := make([]*model.Video, 0)
@@ -78,7 +78,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			return nil, err
 		}
 		// 对kitex对象和model对象进行转换
-		crud, _ := crud.NewCachedCRUD()
+		// crud, _ := crud.NewCachedCRUD()
 		author, _ := crud.GetAuthor(uint(userId), uint(userId))
 		resVideoList, err = convert.VideoSliceBo2Dto(videoList)
 		for _, video := range resVideoList {
@@ -98,7 +98,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			}
 		}
 		// 执行缓存操作
-		_, err = pipeline.Exec(context.Background())
+		pipeline.Exec(context.Background())
 	}
 	return resVideoList, nil
 }
@@ -179,7 +179,7 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 	//缓存key
 	cacheKey := fmt.Sprintf("video:feed:list:%d", latestTime)
 	cacheLastTimeKey := "video:feed:latest_time"
-	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
+	errGet, _ := cache.Exists(context.Background(), cacheKey).Result()
 	// 最终返回的列表
 	resVideoList := make([]*model.Video, 0)
 	// 如果进入cache 这个flag就改为true，如果在cache执行的过程中有一个环节出错了，这个key就改为false。最后查询数据库
@@ -230,7 +230,7 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 	}
 
 	userVideoMap := map[int64]*model.User{}
-	crud, _ := crud.NewCachedCRUD()
+	// crud, _ := crud.NewCachedCRUD()
 	for i, item := range list {
 		//如果这条视频已经查询过user了
 		if v, ok := userVideoMap[item.ID]; ok {
@@ -262,6 +262,6 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 	// 将当前播放列表的latestTime写入到cache中
 	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 0)
 	// 执行缓存操作
-	_, err = pipeline.Exec(context.Background())
+	pipeline.Exec(context.Background())
 	return resVideoList, nil, latestTimeRes
 }

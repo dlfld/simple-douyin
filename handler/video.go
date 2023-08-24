@@ -3,7 +3,7 @@ package handler
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -66,13 +66,13 @@ func VideoSubmit(c *gin.Context) {
 
 	req := video.NewPublishActionRequest()
 	req.Title = c.PostForm("title")
-	//req.UserId = int64(c.GetUint("userID"))
+	req.UserId = int64(c.GetUint("userID"))
 	log.Printf("userId in gin = %v\n", req.UserId)
 	req.UserId = int64(c.GetUint("userID"))
 	req.Data = []byte(c.PostForm("data"))
 	file, err := c.FormFile("data")
 	fileContent, _ := file.Open()
-	byteContainer, err := ioutil.ReadAll(fileContent)
+	byteContainer, err := io.ReadAll(fileContent)
 	req.Data = byteContainer
 
 	// 前端请求数据绑定到req中

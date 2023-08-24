@@ -81,7 +81,7 @@ func main() {
 	jwtRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)
 	apiRouter.GET("/favorite/list/", handler.InteractionFavoriteList)
 	jwtRouter.POST("/comment/action/", handler.InteractionCommentAction)
-	jwtRouter.GET("/comment/list/", handler.InteractionCommentList)
+	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
 	err := handler.InitInteractionCli()
 	if err != nil {

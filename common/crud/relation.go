@@ -231,6 +231,33 @@ func GetAuthor(self uint, UserID uint) (user *model.User, err error) {
 	return
 }
 
+func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err error) {
+	userIDStrs := make([]string, len(UserIDs))
+	for i, v := range UserIDs {
+		userIDStrs[i] = strconv.Itoa(int(v))
+	}
+	user_list, err := GetUsersByID(userIDStrs)
+	if err != nil {
+		return
+	}
+	users = make(map[int64]*model.User, 0)
+	for _, v := range user_list {
+		users[int64(v.ID)] = &model.User{
+			Id:              int64(v.ID),
+			Name:            v.UserName,
+			FollowCount:     pointer.Int64Ptr(int64(v.FollowingCount)),
+			FollowerCount:   pointer.Int64Ptr(int64(v.FollowerCount)),
+			Avatar:          pointer.StringPtr(v.Avatar),
+			IsFollow:        crud.IsFollow(uint(self), v.ID),
+			BackgroundImage: pointer.StringPtr(v.BackgroundImage),
+			FavoriteCount:   pointer.Int64Ptr(int64(v.FavoriteCount)),
+			TotalFavorited:  pointer.Int64Ptr(int64(v.TotalFavorited)),
+			WorkCount:       pointer.Int64Ptr(int64(v.WorkCount)),
+		}
+	}
+	return
+}
+
 // GetUserInfo 从缓存或数据库中获取用户信息
 func GetUserInfo(userID string) (user *models.User, err error) {
 	// 查询缓存中是否存在用户信息

@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"log"
+	"time"
+
+	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/interaction"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	d "github.com/douyin/rpcServer/interaction/dao"
-	"log"
-	"time"
 )
 
 var dao *d.Dao
@@ -71,14 +73,15 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 		authorIds[i] = dbList[i].AuthorID
 	}
 
-	authorList, err := dao.Mysql.SearchUserByMids(authorIds, req.UserId)
-	if err != nil {
-		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
-	}
-	authorMap := make(map[int64]*model.User)
-	for _, v := range authorList {
-		authorMap[v.Id] = v
-	}
+	// authorList, err := dao.Mysql.SearchUserByMids(authorIds, req.UserId)
+	// if err != nil {
+	// 	return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
+	// }
+	// authorMap := make(map[int64]*model.User)
+	// for _, v := range authorList {
+	// 	authorMap[v.Id] = v
+	// }
+	authorMap, err := crud.GetAuthors(req.UserId, authorIds)
 
 	videoList := make([]*model.Video, len(dbList))
 	for i := 0; i < len(dbList); i++ {

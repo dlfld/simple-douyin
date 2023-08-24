@@ -241,9 +241,11 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 		// userBo, _ := models.GetUserById(item.AuthorID)
 		// user, _ := convert.UserBo2Dto(*userBo)
 		user, _ := crud.GetAuthor(userID, uint(item.AuthorID))
+		isFavorite, _ := crud.IsFavorite(userID, uint(item.ID)) //TODO 没加缓存
 		//缓存
 		userVideoMap[item.ID] = user
 		resVideoList[i].Author = user
+		resVideoList[i].IsFavorite = isFavorite
 	}
 	//当前列表的时间
 	latestTimeRes = list[len(list)-1].CreatedAt.UnixMilli()

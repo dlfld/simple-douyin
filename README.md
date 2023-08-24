@@ -31,7 +31,7 @@ DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY  
 - [使用说明](#使用说明)
 - [贡献](#贡献)
 - [许可证](#许可证)
-- [联系方式](#联系方式)
+<!-- - [联系方式](#联系方式)-->
 <br>
 
 
@@ -229,7 +229,4 @@ DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY  
 <br>
 
 
-## 联系方式
-###如果您有任何疑问或问题，可以通过以下方式联系我们：
-> 💌 邮箱：123456789@163.com
 

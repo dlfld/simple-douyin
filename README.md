@@ -1,7 +1,27 @@
+                          
+                                                                                                      
+                                                                                                          
 
 # Hi~ this is *gophers* :wave:  
 # Let's see our ***Simple—douyin***~.</center>
-
+```                                                                                                                                                              
+DDDDDDDDDDDDD                                                YYYYYYY       YYYYYYY  iiii                    
+D::::::::::::DDD                                             Y:::::Y       Y:::::Y i::::i                   
+D:::::::::::::::DD                                           Y:::::Y       Y:::::Y  iiii                    
+DDD:::::DDDDD:::::D                                          Y::::::Y     Y::::::Y                          
+  D:::::D    D:::::D    ooooooooooo   uuuuuu    uuuuuu       YYY:::::Y   Y:::::YYYiiiiiii nnnn  nnnnnnnn    
+  D:::::D     D:::::D oo:::::::::::oo u::::u    u::::u          Y:::::Y Y:::::Y   i:::::i n:::nn::::::::nn  
+  D:::::D     D:::::Do:::::::::::::::ou::::u    u::::u           Y:::::Y:::::Y     i::::i n::::::::::::::nn 
+  D:::::D     D:::::Do:::::ooooo:::::ou::::u    u::::u            Y:::::::::Y      i::::i nn:::::::::::::::n
+  D:::::D     D:::::Do::::o     o::::ou::::u    u::::u             Y:::::::Y       i::::i   n:::::nnnn:::::n
+  D:::::D     D:::::Do::::o     o::::ou::::u    u::::u              Y:::::Y        i::::i   n::::n    n::::n
+  D:::::D     D:::::Do::::o     o::::ou::::u    u::::u              Y:::::Y        i::::i   n::::n    n::::n
+  D:::::D    D:::::D o::::o     o::::ou:::::uuuu:::::u              Y:::::Y        i::::i   n::::n    n::::n
+DDD:::::DDDDD:::::D  o:::::ooooo:::::ou:::::::::::::::uu            Y:::::Y       i::::::i  n::::n    n::::n
+D:::::::::::::::DD   o:::::::::::::::o u:::::::::::::::u         YYYY:::::YYYY    i::::::i  n::::n    n::::n
+D::::::::::::DDD      oo:::::::::::oo   uu::::::::uu:::u         Y:::::::::::Y    i::::::i  n::::n    n::::n
+DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY    iiiiiiii  nnnnnn    nnnnnn                                                                                                                                                                                                   
+```    
 
 <!-- Introduction -->
 ## 目录
@@ -11,7 +31,7 @@
 - [使用说明](#使用说明)
 - [贡献](#贡献)
 - [许可证](#许可证)
-- [联系方式](#联系方式)
+<!-- - [联系方式](#联系方式)-->
 <br>
 
 
@@ -209,7 +229,4 @@
 <br>
 
 
-## 联系方式
-###如果您有任何疑问或问题，可以通过以下方式联系我们：
-> 💌 邮箱：123456789@163.com
 

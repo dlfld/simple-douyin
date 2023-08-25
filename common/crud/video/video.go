@@ -5,19 +5,21 @@ package video
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"github.com/douyin/common/conf"
-	"github.com/douyin/common/crud/video/convert"
-	"github.com/douyin/common/oss"
-	myRedis "github.com/douyin/common/redis"
-	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/models"
 	"io"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/bytedance/sonic"
+	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
+	"github.com/douyin/common/crud/video/convert"
+	"github.com/douyin/common/oss"
+	myRedis "github.com/douyin/common/redis"
+	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
 )
 
 // 视频类型
@@ -32,7 +34,7 @@ const imageContentType = "image/png"
 // @param userId
 // @return string
 func userPublishVideoList(userId int) string {
-	return fmt.Sprintf("user_video_publish_%d", userId)
+	return fmt.Sprintf("video:feed:publish:%d", userId)
 }
 
 //	FindVideoListById
@@ -48,9 +50,8 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		log.Print("redis 客户端获取失败\n")
 		return nil, err
 	}
-	errGet, err := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
+	errGet, _ := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
 	//最终返回的video列表
-	//var resVideoList []*model.Video = nil
 	resVideoList := make([]*model.Video, 0)
 	if errGet > 0 {
 		// 缓存存在，直接从缓存中取出数据返回
@@ -62,7 +63,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		// 将json解析为video对象
 		for _, videoJson := range videoJsons {
 			videoDto := model.Video{}
-			err := json.Unmarshal([]byte(videoJson), &videoDto)
+			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Fatalln("JSON decode error!")
 			}
@@ -76,7 +77,11 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			return nil, err
 		}
 		// 对kitex对象和model对象进行转换
+		author, _ := crud.GetAuthor(uint(userId), uint(userId))
 		resVideoList, err = convert.VideoSliceBo2Dto(videoList)
+		for _, video := range resVideoList {
+			video.Author = author
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -84,14 +89,14 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		defer pipeline.Close()
 		//依次对每一个视频对象进行序列化
 		for _, video := range resVideoList {
-			videoJson, _ := json.Marshal(video)
+			videoJson, _ := sonic.Marshal(video)
 			_, err = pipeline.LPush(context.Background(), userPublishVideoList(userId), string(videoJson)).Result()
 			if err != nil {
 				return nil, err
 			}
 		}
 		// 执行缓存操作
-		_, err = pipeline.Exec(context.Background())
+		pipeline.Exec(context.Background())
 	}
 	return resVideoList, nil
 }
@@ -150,7 +155,7 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 		return err
 	}
 	// 将video数据放入redis中，
-	videoJson, _ := json.Marshal(video)
+	videoJson, _ := sonic.Marshal(video)
 	//将这个视频添加到当前用户的发布视频cache当中去
 	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
 	return nil
@@ -164,15 +169,21 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 // @return []*models.Video
 // @return error
 // @return int64 返回上一次最后一个元素的时间
-func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
+func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, error, int64) {
 	cache, err := myRedis.NewRedisConn()
 	if err != nil {
 		log.Print("redis 客户端获取失败\n")
 	}
 	//缓存key
+<<<<<<< HEAD
 	cacheKey := fmt.Sprintf("video_feed_aa_%d", latestTime)
 	cacheLastTimeKey := "video_feed_latest_time"
 	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
+=======
+	cacheKey := fmt.Sprintf("video:feed:list:%d", latestTime)
+	cacheLastTimeKey := "video:feed:latest_time"
+	errGet, _ := cache.Exists(context.Background(), cacheKey).Result()
+>>>>>>> 13928d25328df7e7a99c00972cdb5b3727439685
 	// 最终返回的列表
 	resVideoList := make([]*model.Video, 0)
 	// 如果进入cache 这个flag就改为true，如果在cache执行的过程中有一个环节出错了，这个key就改为false。最后查询数据库
@@ -192,7 +203,7 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 		for _, videoJson := range videoJsons {
 			videoDto := model.Video{}
 			//将json字符串反序列化
-			err := json.Unmarshal([]byte(videoJson), &videoDto)
+			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Printf("JSON decode error!")
 				cacheFlag = false
@@ -217,13 +228,13 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 	if err != nil {
 		return nil, err, 0
 	}
-
 	resVideoList, err = convert.VideoSliceBo2Dto(list)
 	if err != nil {
 		return nil, err, 0
 	}
 
 	userVideoMap := map[int64]*model.User{}
+	// crud, _ := crud.NewCachedCRUD()
 	for i, item := range list {
 		//如果这条视频已经查询过user了
 		if v, ok := userVideoMap[item.ID]; ok {
@@ -231,11 +242,15 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 			continue
 		}
 		//这一个还没被查询过
-		userBo, _ := models.GetUserById(item.AuthorID)
-		user, _ := convert.UserBo2Dto(*userBo)
+		// userBo, _ := models.GetUserById(item.AuthorID)
+		// user, _ := convert.UserBo2Dto(*userBo)
+		user, _ := crud.GetAuthor(userID, uint(item.AuthorID))
+		isFavorite, _ := crud.IsFavorite(userID, uint(item.ID)) //TODO 没加缓存
+		fmt.Println("isFavorite", isFavorite)
 		//缓存
 		userVideoMap[item.ID] = user
 		resVideoList[i].Author = user
+		resVideoList[i].IsFavorite = isFavorite
 	}
 	//当前列表的时间
 	latestTimeRes = list[len(list)-1].CreatedAt.UnixMilli()
@@ -245,15 +260,16 @@ func GetVideoFeed(latestTime int64, nums int) ([]*model.Video, error, int64) {
 	defer pipeline.Close()
 	//依次对每一个视频对象进行序列化
 	for _, video := range resVideoList {
-		videoJson, _ := json.Marshal(video)
+		videoJson, _ := sonic.Marshal(video)
 		_, err = pipeline.LPush(context.Background(), cacheKey, string(videoJson)).Result()
 		if err != nil {
 			log.Print("写缓存失败")
 		}
 	}
+	latestTimeRes = 123456
 	// 将当前播放列表的latestTime写入到cache中
 	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 60)
 	// 执行缓存操作
-	_, err = pipeline.Exec(context.Background())
+	pipeline.Exec(context.Background())
 	return resVideoList, nil, latestTimeRes
 }

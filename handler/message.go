@@ -59,7 +59,11 @@ func MessageChat(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	uid := c.GetUint("userID")
 	toUserID, _ := strconv.Atoi(c.Query("to_user_id"))
-	preMsgTime, _ := strconv.Atoi(c.Query("pre_msg_time"))
+	pre_msg_time := c.Query("pre_msg_time")
+	preMsgTime, _ := strconv.Atoi(pre_msg_time)
+	if len(pre_msg_time) > 10 {
+		preMsgTime, _ = strconv.Atoi(pre_msg_time[:10])
+	}
 	req.FromUserId = int64(uid)
 	req.ToUserId = int64(toUserID)
 	req.PreMsgTime = int64(preMsgTime)

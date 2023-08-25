@@ -1,12 +1,13 @@
-package controller
+package handler
 
 import (
 	"context"
+	"net/http"
+	"strconv"
+
 	"github.com/douyin/kitex_gen/user"
 	"github.com/douyin/rpcClient/userRpc"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 // Register @Summary 用户注册

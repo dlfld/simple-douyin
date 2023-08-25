@@ -32,21 +32,37 @@ func (FollowRelation) TableName() string {
 
 func Follow(userID, toUserID uint) (err error) {
 	db, _ := mysql.NewMysqlConn()
+
 	// cache, _ := redis.NewRedisConn()
-	var user User
+	var user, toUser User
 
 	relation := FollowRelation{
 		UserID:   userID,
 		ToUserID: toUserID,
 	}
-	var n int64
-	db.Find(&user, toUserID).Count(&n)
-	if n == 0 {
+
+	db.Take(&user, userID)
+	db.Take(&toUser, toUserID)
+	if user.ID != userID || toUser.ID != toUserID {
 		err = errors.New("user not found")
 		return
 	}
-	err = db.Where("to_user_id=? and user_id = ?", toUserID, userID).FirstOrCreate(&relation).Error
-
+	err = db.Transaction(func(tx *gorm.DB) (err error) {
+		// 更新关注数
+		err = tx.Model(&user).Update("following_count", gorm.Expr("following_count + ?", 1)).Error
+		if err != nil {
+			return nil
+		}
+		err = tx.Model(&toUser).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error
+		if err != nil {
+			return nil
+		}
+		err = tx.Where("to_user_id=? and user_id = ?", toUserID, userID).FirstOrCreate(&relation).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 	return
 }
 
@@ -56,26 +72,43 @@ func Follow(userID, toUserID uint) (err error) {
 func Unfollow(userID, toUserID uint) (err error) {
 	db, _ := mysql.NewMysqlConn()
 	// cache,_:=redis.NewRedisConn()
-	var toUser User
+	var toUser, user User
 
 	relation := FollowRelation{
 		UserID:   userID,
 		ToUserID: toUserID,
 	}
-	var n int64
-
-	db.Find(&toUser, toUserID).Count(&n)
-	if n == 0 {
+	db.Take(&user, userID)
+	db.Take(&toUser, toUserID)
+	if user.ID != userID || toUser.ID != toUserID {
 		err = errors.New("user not found")
 		return
 	}
-	// 查询redis中是否有user_id的关注缓存
+	db.Transaction(func(tx *gorm.DB) (err error) {
+		// 更新关注数
+		err = tx.Model(&user).Update("following_count", gorm.Expr("following_count - ?", 1)).Error
+		if err != nil {
+			return nil
+		}
+		err = tx.Model(&toUser).Update("follower_count", gorm.Expr("follower_count - ?", 1)).Error
+		if err != nil {
+			return nil
+		}
+		err = tx.Where("to_user_id=? and user_id = ?", toUserID, userID).Delete(&relation).Error
+		if err != nil {
+			return nil
+		}
+		return nil
+	})
 
-	err = db.Where("to_user_id=? and user_id = ?", toUserID, userID).Delete(&relation).Error
 	return
 }
 
 func GetFollowList(userID uint) (userList []*User, err error) {
+	if userID <= 0 {
+		err = errors.New("user id is null")
+		return
+	}
 	var relations []*FollowRelation
 	db, _ := mysql.NewMysqlConn()
 
@@ -91,6 +124,10 @@ func GetFollowList(userID uint) (userList []*User, err error) {
 }
 
 func GetFollowerList(userID uint) (userList []*User, err error) {
+	if userID <= 0 {
+		err = errors.New("user id is null")
+		return
+	}
 	var relations []*FollowRelation
 	db, _ := mysql.NewMysqlConn()
 
@@ -106,6 +143,10 @@ func GetFollowerList(userID uint) (userList []*User, err error) {
 }
 
 func GetFriendList(userID uint) (userList []*User, err error) {
+	if userID <= 0 {
+		err = errors.New("user id is null")
+		return
+	}
 	var relations []*FollowRelation
 	db, _ := mysql.NewMysqlConn()
 	// redis, _ := redis.NewRedisConn()

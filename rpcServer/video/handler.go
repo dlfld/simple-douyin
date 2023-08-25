@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
+	"time"
+
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
 	video2 "github.com/douyin/common/crud/video"
 	"github.com/douyin/kitex_gen/video"
-	"log"
-	"net/http"
-	"time"
 )
 
 // 视频播放链接url
@@ -20,15 +21,17 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 30)
-
+	// feed, err, lastTime := video2.GetVideoFeed(*req.LatestTime, 30, uint(req.UserId))
+	feed, err := crud.GetUserFeed(req.UserId, *req.LatestTime)
 	if err != nil {
 		log.Fatalln("视频流调用失败")
 	}
 	statusMsg := "Success"
+	*req.LatestTime = *req.LatestTime + 1
 	//resp =
 	//fmt.Printf("%+v\n", resp)
-	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &lastTime}, nil
+	// nextTime := pointer.Int64Ptr(time.Now().Unix())
+	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: req.LatestTime}, nil
 
 }
 
@@ -66,6 +69,6 @@ func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishLi
 		return nil, err
 	}
 	// 封装返回结果
-	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: http.StatusOK}
+	resp = &video.PublishListResponse{VideoList: videoList, StatusCode: 0}
 	return resp, err
 }

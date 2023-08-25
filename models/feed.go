@@ -9,8 +9,9 @@
 package models
 
 import (
-	"github.com/douyin/common/mysql"
 	"time"
+
+	"github.com/douyin/common/mysql"
 
 	"gorm.io/gorm"
 )
@@ -64,7 +65,19 @@ func InsertVideo(video *Video) error {
 	if err != nil {
 		return err
 	}
-	conn.Create(video)
+	conn.Transaction(func(tx *gorm.DB) (err error) {
+		err = tx.Model(&User{}).Where("id = ?", video.AuthorID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
+		if err != nil {
+			return
+		}
+		err = tx.Create(video).Error
+		if err != nil {
+			return
+		}
+		return
+	})
+
+	// conn.Create(video)
 	return nil
 }
 
@@ -85,7 +98,7 @@ func GetVideoFeedList(latestTime int64, nums int) ([]*Video, error) {
 		conn.Order("id desc").Limit(nums).Find(&videos)
 	} else {
 		//	返回latestTime前的30条视频
-		conn.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), nums).Scan(&videos)
+		conn.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), nums).Find(&videos)
 	}
 	//if len(videos) == 0 {
 	//	conn.Order("id desc").Limit(nums).Find(&videos)

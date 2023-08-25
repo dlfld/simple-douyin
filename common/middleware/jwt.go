@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"fmt"
+	"net/http"
+
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func JWT_AUTH(c *gin.Context) {
@@ -12,12 +12,11 @@ func JWT_AUTH(c *gin.Context) {
 	if !ok {
 		Token = c.PostForm("token")
 	}
-	common.ParseToken(Token)
-	if Token == "" {
+	if Token == "" && c.Request.Method == "POST" {
 		tokenMap := make(map[string]string, 0)
-		err := c.BindJSON(&tokenMap)
+		err := c.ShouldBindJSON(&tokenMap)
 		if err != nil {
-			c.JSON(http.StatusOK, noToken)
+			c.JSON(http.StatusForbidden, noToken)
 			c.Abort()
 			return
 		}
@@ -25,13 +24,33 @@ func JWT_AUTH(c *gin.Context) {
 	}
 	_, claims, err1 := common.ParseToken(Token)
 	if err1 != nil {
-		c.JSON(http.StatusOK, invalidToken)
+		c.JSON(http.StatusForbidden, invalidToken)
 		c.Abort()
 	}
 	useridClaims := claims.UserId
-	fmt.Println("jwt:", useridClaims)
 	c.Set("userID", useridClaims)
 	c.Next()
+}
+
+func JWT_PARSE(c *gin.Context) {
+	Token, ok := c.GetQuery("token")
+	if !ok {
+		Token = c.PostForm("token")
+	}
+	if Token == "" && c.Request.Method == "POST" {
+		tokenMap := make(map[string]string, 0)
+		err := c.ShouldBindJSON(&tokenMap)
+		if err != nil {
+			return
+		}
+		Token = tokenMap["token"]
+	}
+	_, claims, err1 := common.ParseToken(Token)
+	if err1 != nil {
+		return
+	}
+	useridClaims := claims.UserId
+	c.Set("userID", useridClaims)
 }
 
 type resp struct {

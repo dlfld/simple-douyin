@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"log"
+
+	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/user"
 	"github.com/douyin/models"
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/douyin/rpcServer/user/util"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -107,7 +109,8 @@ func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequ
 		resp = &user.UserLoginResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
 		return resp, nil
 	}
-
+	// crud, _ := crud.NewCachedCRUD()
+	crud.CacheUserInfo(userL)
 	//返回结果
 	statusMsg := "登录成功"
 	resp = &user.UserLoginResponse{StatusCode: 0, StatusMsg: &statusMsg, UserId: int64(userL.ID), Token: token}
@@ -128,8 +131,10 @@ func (s *UserServiceImpl) UserMsg(ctx context.Context, req *user.UserRequest) (r
 		resp = &user.UserResponse{StatusCode: -1, StatusMsg: &statusMsg, User: &model.User{}}
 		return resp, nil
 	}
-
+	// crud, _ := crud.NewCachedCRUD()
+	// crud.GetUserInfo(strconv.Itoa(int(userId)))
 	userI, qerr := models.GetUserByUserId(userId)
+	crud.CacheUserInfo(userI)
 	if qerr != nil {
 		statusMsg := "用户不存在"
 		resp = &user.UserResponse{StatusCode: -1, StatusMsg: &statusMsg, User: &model.User{}}

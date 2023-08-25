@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/relation"
 	"github.com/douyin/models"
@@ -85,16 +86,16 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 
 	switch req.ActionType {
 	case 1:
-		err = models.Follow(userId, uint(req.ToUserId))
-		// err = crud.RelationFollow(userId, uint(req.ToUserId))
+		// err = models.Follow(userId, uint(req.ToUserId))
+		err = crud.RelationFollow(userId, uint(req.ToUserId))
 		if err != nil {
 			msg = err.Error()
 		} else {
 			msg = "follow ok"
 		}
 	case 2:
-		err = models.Unfollow(userId, uint(req.ToUserId))
-		// err = crud.RelationUnFollow(userId, uint(req.ToUserId))
+		// err = models.Unfollow(userId, uint(req.ToUserId))
+		err = crud.RelationUnFollow(userId, uint(req.ToUserId))
 		if err != nil {
 			msg = err.Error()
 		} else {
@@ -112,8 +113,8 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
-	userList, _ := models.GetFollowList(uint(req.UserId))
-	// userList, _ := crud.RelationGetFollows(uint(req.UserId))
+	// userList, _ := models.GetFollowList(uint(req.UserId))
+	userList, _ := crud.RelationGetFollows(uint(req.UserId))
 	kitexList := usersToKitex(userList)
 
 	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
@@ -125,8 +126,8 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	// var kitexList []*model.User
-	userList, _ := models.GetFollowerList(uint(req.UserId))
-	// userList, _ := crud.RelationGetFollowers(uint(req.UserId))
+	// userList, _ := models.GetFollowerList(uint(req.UserId))
+	userList, _ := crud.RelationGetFollowers(uint(req.UserId))
 	kitexList := usersToKitex(userList)
 
 	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
@@ -137,8 +138,8 @@ func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.Rela
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
-	// userList, _ := crud.RelationGetFriends(uint(req.UserId))
-	userList, _ := models.GetFriendList(uint(req.UserId))
+	userList, _ := crud.RelationGetFriends(uint(req.UserId))
+	// userList, _ := models.GetFriendList(uint(req.UserId))
 	// var kitexList []*model.FriendUser
 	kitexList := friendUsersToKitex(userList)
 

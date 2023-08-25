@@ -2,11 +2,10 @@
 package convert
 
 import (
-	"log"
-
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/jinzhu/copier"
+	"github.com/u2takey/go-utils/pointer"
 )
 
 // VideoSliceBo2Dto
@@ -24,6 +23,8 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 		err := copier.Copy(&videoDto, &videoBo)
 		// 两个结构体还有这个变量是不同名的
 		videoDto.Id = videoBo.ID
+		videoDto.Author.Id = videoBo.AuthorID
+		videoDto.FavoriteCount = videoBo.FavoriteCount
 		if err != nil {
 			return nil, err
 		}
@@ -40,11 +41,15 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 // @return error
 func UserBo2Dto(user models.User) (*model.User, error) {
 	userDto := model.User{}
-	err := copier.Copy(&userDto, &user)
+	// err := copier.Copy(&userDto, &user)
 	userDto.Id = int64(user.ID)
-	if err != nil {
-		log.Fatalln("user 类型转换失败")
-		return &userDto, err
-	}
-	return &userDto, err
+	userDto.FollowCount = pointer.Int64Ptr(int64(user.FollowingCount))
+	userDto.FollowerCount = pointer.Int64Ptr(int64(user.FollowerCount))
+	userDto.Avatar = pointer.StringPtr(user.Avatar)
+	// userDto.Nickname = pointer.StringPtr(user.Nickname)
+	// if err != nil {
+	// 	log.Fatalln("user 类型转换失败")
+	// 	return &userDto, err
+	// }
+	return &userDto, nil
 }

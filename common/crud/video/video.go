@@ -5,7 +5,6 @@ package video
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -13,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/crud"
 	"github.com/douyin/common/crud/video/convert"
@@ -52,7 +52,6 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 	}
 	errGet, _ := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
 	//最终返回的video列表
-	//var resVideoList []*model.Video = nil
 	resVideoList := make([]*model.Video, 0)
 	if errGet > 0 {
 		// 缓存存在，直接从缓存中取出数据返回
@@ -64,7 +63,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		// 将json解析为video对象
 		for _, videoJson := range videoJsons {
 			videoDto := model.Video{}
-			err := json.Unmarshal([]byte(videoJson), &videoDto)
+			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Fatalln("JSON decode error!")
 			}
@@ -78,7 +77,6 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			return nil, err
 		}
 		// 对kitex对象和model对象进行转换
-		// crud, _ := crud.NewCachedCRUD()
 		author, _ := crud.GetAuthor(uint(userId), uint(userId))
 		resVideoList, err = convert.VideoSliceBo2Dto(videoList)
 		for _, video := range resVideoList {
@@ -91,7 +89,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 		defer pipeline.Close()
 		//依次对每一个视频对象进行序列化
 		for _, video := range resVideoList {
-			videoJson, _ := json.Marshal(video)
+			videoJson, _ := sonic.Marshal(video)
 			_, err = pipeline.LPush(context.Background(), userPublishVideoList(userId), string(videoJson)).Result()
 			if err != nil {
 				return nil, err
@@ -157,7 +155,7 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 		return err
 	}
 	// 将video数据放入redis中，
-	videoJson, _ := json.Marshal(video)
+	videoJson, _ := sonic.Marshal(video)
 	//将这个视频添加到当前用户的发布视频cache当中去
 	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
 	return nil
@@ -199,7 +197,7 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 		for _, videoJson := range videoJsons {
 			videoDto := model.Video{}
 			//将json字符串反序列化
-			err := json.Unmarshal([]byte(videoJson), &videoDto)
+			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Printf("JSON decode error!")
 				cacheFlag = false
@@ -256,12 +254,13 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 	defer pipeline.Close()
 	//依次对每一个视频对象进行序列化
 	for _, video := range resVideoList {
-		videoJson, _ := json.Marshal(video)
+		videoJson, _ := sonic.Marshal(video)
 		_, err = pipeline.LPush(context.Background(), cacheKey, string(videoJson)).Result()
 		if err != nil {
 			log.Print("写缓存失败")
 		}
 	}
+	latestTimeRes = 123456
 	// 将当前播放列表的latestTime写入到cache中
 	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 0)
 	// 执行缓存操作

@@ -52,7 +52,6 @@ func RelationUnFollow(userID, toUserID uint) (err error) {
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
 	models.Unfollow(userID, toUserID)
-
 	// 从关注列表中移除被取消关注用户
 	res := pipline.SRem(context.Background(), userRelationFollowKey(userID), toUserID)
 	if res.Err() != nil {

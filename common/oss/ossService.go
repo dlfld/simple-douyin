@@ -1,9 +1,10 @@
 package oss
 
 import (
-	"github.com/douyin/common/oss/minioService"
 	"io"
 	"sync"
+
+	"github.com/douyin/common/oss/minioService"
 )
 
 // OssInterface Oss 服务接口
@@ -29,19 +30,24 @@ type Service struct {
 
 // TODO 用这个结构体实现具体的方法？
 // 通过反射获取当前包下具体的实现软件，然后拉进来？
-//然后使用可配置的方式配置具体的对象存储软件？
+// 然后使用可配置的方式配置具体的对象存储软件？
+var once sync.Once
+var service *Service
+var minioCase *minioService.MinioService
+
+func init() {
+	GetOssService()
+}
 
 //	GetOssService
 //
 // @Description: 获取OSS服务端
 // @return *Service
+
 // @return error
 func GetOssService() (*Service, error) {
-	var once sync.Once
-	var service *Service
 	var err error
 	once.Do(func() {
-		var minioCase *minioService.MinioService
 		//TODO 获取Minio实例 这里涉及到了调用具体的minio的方法，（后面看看能否改为反射的方式）
 		minioCase, err = minioService.GetMinio()
 		service = &Service{}

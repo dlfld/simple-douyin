@@ -7,7 +7,6 @@ import (
 	"runtime"
 
 	"github.com/douyin/common/middleware"
-	"github.com/douyin/controller"
 
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
@@ -48,21 +47,11 @@ func main() {
 	jwtRouter.Use(middleware.JWT_AUTH)
 	// 只用来解析token不做拦截
 	apiRouter.Use(middleware.JWT_PARSE)
-	//// basic apis
-	//apiRouter.GET("/feed/", controller.Feed)
-	apiRouter.GET("/user/", controller.UserInfo)
-	apiRouter.POST("/user/register/", controller.Register)
-	apiRouter.POST("/user/login/", controller.Login)
-	//apiRouter.POST("/publish/action/", controller.Publish)
-	//apiRouter.GET("/publish/list/", controller.PublishList)
-	//
-	//// extra apis - I
-	//apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-	//apiRouter.GET("/favorite/list/", controller.FavoriteList)
-	//apiRouter.POST("/comment/action/", controller.CommentAction)
-	//apiRouter.GET("/comment/list/", controller.CommentList)
-	//
-	//// extra apis - II
+
+	apiRouter.GET("/user/", handler.UserInfo)
+	apiRouter.POST("/user/register/", handler.Register)
+	apiRouter.POST("/user/login/", handler.Login)
+
 	jwtRouter.POST("/relation/action/", handler.RelationAction)
 	apiRouter.GET("/relation/follow/list/", handler.RelationFollowList)
 	apiRouter.GET("/relation/follower/list/", handler.RelationFollowerList)
@@ -75,7 +64,6 @@ func main() {
 	apiRouter.GET("/publish/list/", handler.PublishList)
 	jwtRouter.POST("/publish/action/", handler.VideoSubmit)
 	apiRouter.GET("/feed/", handler.VideoFeed)
-	// apiRouter.GET("/t/ ", handler.RelationFollowerList)
 
 	//互动interaction
 	jwtRouter.POST("/favorite/action/", handler.InteractionFavoriteAction)

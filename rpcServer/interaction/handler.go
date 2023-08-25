@@ -71,6 +71,9 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 }
 
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
+	if videoList, err := s.dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
+		return newFavoriteListResp(0, "ok", videoList), nil
+	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
 		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
@@ -103,6 +106,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 			Title:         dbList[i].Title,
 		}
 	}
+	_ = s.dao.Redis.SaveFavoriteVideoListByUserId(req.UserId, videoList)
 	return newFavoriteListResp(0, "ok", videoList), err
 }
 

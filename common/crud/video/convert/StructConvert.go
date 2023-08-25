@@ -24,6 +24,7 @@ func VideoSliceBo2Dto(boSlice []*models.Video) ([]*model.Video, error) {
 		// 两个结构体还有这个变量是不同名的
 		videoDto.Id = videoBo.ID
 		videoDto.Author.Id = videoBo.AuthorID
+		videoDto.FavoriteCount = videoBo.FavoriteCount
 		if err != nil {
 			return nil, err
 		}

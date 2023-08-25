@@ -299,6 +299,16 @@ func GetUsersByID(userIDs []string) (users []*models.User, err error) {
 	var r redis.Cmder
 	var i int
 	users = make([]*models.User, len(userIDs))
+	// 修复缓存清除后的bug
+	if crud.redis.Exists(context.Background(), "UserInfoCache").Val() != 1 {
+		var mysql_users []*models.User
+		err = crud.mysql.Where("id in ?", userIDs).Find(&mysql_users).Error
+		if err == nil {
+			CacheUsersInfo(mysql_users)
+		}
+		return mysql_users, err
+	}
+
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
 	// 遍历用户ID列表，批量查询缓存

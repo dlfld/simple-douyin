@@ -175,15 +175,9 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 		log.Print("redis 客户端获取失败\n")
 	}
 	//缓存key
-<<<<<<< HEAD
 	cacheKey := fmt.Sprintf("video_feed_aa_%d", latestTime)
 	cacheLastTimeKey := "video_feed_latest_time"
 	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
-=======
-	cacheKey := fmt.Sprintf("video:feed:list:%d", latestTime)
-	cacheLastTimeKey := "video:feed:latest_time"
-	errGet, _ := cache.Exists(context.Background(), cacheKey).Result()
->>>>>>> 13928d25328df7e7a99c00972cdb5b3727439685
 	// 最终返回的列表
 	resVideoList := make([]*model.Video, 0)
 	// 如果进入cache 这个flag就改为true，如果在cache执行的过程中有一个环节出错了，这个key就改为false。最后查询数据库

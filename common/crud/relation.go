@@ -14,16 +14,6 @@ import (
 	"github.com/u2takey/go-utils/pointer"
 )
 
-var crud *CachedCRUD
-
-func init() {
-	var err error
-	crud, err = NewCachedCRUD()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func userRelationFollowKey(userID uint) string {
 	return fmt.Sprintf("relation:follow:%d", userID)
 }
@@ -223,7 +213,7 @@ func GetAuthor(self uint, UserID uint) (user *model.User, err error) {
 		FollowCount:     pointer.Int64Ptr(int64(ormmodel.FollowingCount)),
 		FollowerCount:   pointer.Int64Ptr(int64(ormmodel.FollowerCount)),
 		Avatar:          pointer.StringPtr(ormmodel.Avatar),
-		IsFollow:        crud.IsFollow(self, UserID),
+		IsFollow:        IsFollow(self, UserID),
 		BackgroundImage: pointer.StringPtr(ormmodel.BackgroundImage),
 		FavoriteCount:   pointer.Int64Ptr(int64(ormmodel.FavoriteCount)),
 		TotalFavorited:  pointer.Int64Ptr(int64(ormmodel.TotalFavorited)),
@@ -249,7 +239,7 @@ func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err e
 			FollowCount:     pointer.Int64Ptr(int64(v.FollowingCount)),
 			FollowerCount:   pointer.Int64Ptr(int64(v.FollowerCount)),
 			Avatar:          pointer.StringPtr(v.Avatar),
-			IsFollow:        crud.IsFollow(uint(self), v.ID),
+			IsFollow:        IsFollow(uint(self), v.ID),
 			BackgroundImage: pointer.StringPtr(v.BackgroundImage),
 			FavoriteCount:   pointer.Int64Ptr(int64(v.FavoriteCount)),
 			TotalFavorited:  pointer.Int64Ptr(int64(v.TotalFavorited)),
@@ -289,7 +279,7 @@ func GetUserInfo(userID string) (user *models.User, err error) {
 }
 
 // IsFollow 判断用户是否关注了某个用户
-func (crud *CachedCRUD) IsFollow(userID, toUserID uint) bool {
+func IsFollow(userID, toUserID uint) bool {
 	if userID == toUserID {
 		return true
 	}
@@ -347,7 +337,7 @@ func GetUsersByID(userIDs []string) (users []*models.User, err error) {
 			users[uncached_users_pos[i]] = v
 		}
 		// 存入缓存
-		go CacheUsersInfo(mysql_users)
+		CacheUsersInfo(mysql_users)
 	}
 	return users, err
 }

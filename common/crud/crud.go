@@ -13,6 +13,7 @@ import (
 
 var once sync.Once
 var g *CachedCRUD
+var crud *CachedCRUD
 
 type CachedCRUD struct {
 	redis *redis.Client
@@ -44,4 +45,12 @@ func NewCachedCRUD() (*CachedCRUD, error) {
 	)
 
 	return g, e
+}
+
+func init() {
+	var err error
+	crud, err = NewCachedCRUD()
+	if err != nil {
+		panic(err)
+	}
 }

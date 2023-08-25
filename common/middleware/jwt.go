@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/douyin/rpcServer/user/common"
@@ -13,7 +12,6 @@ func JWT_AUTH(c *gin.Context) {
 	if !ok {
 		Token = c.PostForm("token")
 	}
-	// common.ParseToken(Token)
 	if Token == "" && c.Request.Method == "POST" {
 		tokenMap := make(map[string]string, 0)
 		err := c.ShouldBindJSON(&tokenMap)
@@ -30,7 +28,6 @@ func JWT_AUTH(c *gin.Context) {
 		c.Abort()
 	}
 	useridClaims := claims.UserId
-	fmt.Println("jwt:", useridClaims)
 	c.Set("userID", useridClaims)
 	c.Next()
 }
@@ -44,21 +41,16 @@ func JWT_PARSE(c *gin.Context) {
 		tokenMap := make(map[string]string, 0)
 		err := c.ShouldBindJSON(&tokenMap)
 		if err != nil {
-			// c.Next()
 			return
 		}
 		Token = tokenMap["token"]
 	}
 	_, claims, err1 := common.ParseToken(Token)
 	if err1 != nil {
-		// c.Next()
 		return
 	}
 	useridClaims := claims.UserId
-	fmt.Println("jwt:", useridClaims)
 	c.Set("userID", useridClaims)
-	// c.Next()
-
 }
 
 type resp struct {

@@ -66,9 +66,13 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Param request_body body interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
-	userId := int64(c.GetUint("userID"))
+	// userId := int64(c.GetUint("userID"))
+	userId, err := strconv.Atoi(c.Query("user_id"))
+	if err != nil {
+		return
+	}
 	req := &interaction.FavoriteListRequest{
-		UserId: userId,
+		UserId: int64(userId),
 	}
 
 	resp, err := cli.FavoriteList(context.Background(), req)

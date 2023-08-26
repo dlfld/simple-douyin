@@ -26,8 +26,9 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 	if req.PreMsgTime == 0 {
 		sendMes, err := getSenderToReceiverMes(ctx, req.FromUserId, req.ToUserId, req.PreMsgTime)
 		if err != nil {
-			logger.Infof("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s, err: %s",
-				req.ToUserId, req.FromUserId, req.ToUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"), err.Error())
+			logCollector.Error(fmt.Sprintf("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s, err=%s",
+				req.ToUserId, req.FromUserId, req.ToUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"), err.Error()),
+			)
 			constant.HandlerErr(constant.ErrSystemBusy, resp)
 			return resp, nil
 		}
@@ -40,8 +41,10 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 	// 得到当前用户接收的消息
 	receivedMsg, err := getSenderToReceiverMes(ctx, req.ToUserId, req.FromUserId, req.PreMsgTime)
 	if err != nil {
-		logger.Infof("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s, err: %s",
-			req.ToUserId, req.ToUserId, req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"), err.Error())
+		logCollector.Error(
+			fmt.Sprintf("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s, err=%s",
+				req.ToUserId, req.FromUserId, req.ToUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"), err.Error(),
+			))
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return resp, nil
 	}
@@ -50,8 +53,9 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 		return messageList[i].CreateTime < messageList[j].CreateTime
 	})
 	// 2. 得到返回值
-	logger.Infof("user[%d] successfully queried %d messages sent from user[%d] b since %s",
-		req.ToUserId, len(messageList), req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"))
+	logCollector.Info(fmt.Sprintf("user[%d] successfully queried %d messages sent from user[%d] b since %s",
+		req.ToUserId, len(messageList), req.FromUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05")),
+	)
 	resp.MessageList = messageList
 	return resp, nil
 }
@@ -61,7 +65,7 @@ func getSenderToReceiverMes(ctx context.Context, sender, receiver, preMsgTime in
 	// 1. 统计缓存中数据量
 	keyFrom := fmt.Sprintf("%s:%d:%d", messageCacheTable, sender, receiver)
 	var num int64
-	if err = cache.getRecordNum(ctx, keyFrom, &num).Err(); err != nil {
+	if err := cache.getRecordNum(ctx, keyFrom, &num).Err(); err != nil {
 		return nil, err
 	}
 	res := make([]*model.Message, 0)
@@ -69,7 +73,7 @@ func getSenderToReceiverMes(ctx context.Context, sender, receiver, preMsgTime in
 	switch num {
 	// 2.1 缓存中无数据，直接去mysql数据库中读取
 	case 0:
-		if err = db.Table((&model.Message{}).TableName()).
+		if err := db.Table((&model.Message{}).TableName()).
 			Where("from_user_id=? and to_user_id=? and create_time > ?", sender, receiver, preMsgTime).
 			Scan(&res).Error; err != nil {
 			return nil, err
@@ -122,27 +126,31 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 	}
 	// 3. 存入mysql数据库表
 	if err = db.Create(&messageRecord).Error; err != nil {
-		logger.Errorf("failed to create message record in mysql, err: %s", err.Error())
+		logCollector.Error(
+			fmt.Sprintf("failed to create message record in mysql, err=%s", err.Error()),
+		)
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return resp, nil
 	}
-	logger.Infof("The message from user[%d] to user[%d] was successfully stored in MySQL, content: %s",
-		messageRecord.FromUserId, messageRecord.ToUserId, messageRecord.Content)
+	logCollector.Info(fmt.Sprintf("The message from user[%d] to user[%d] was successfully stored in MySQL, content: %s",
+		messageRecord.FromUserId, messageRecord.ToUserId, messageRecord.Content),
+	)
 	// 4. 序列化后存入缓存
 	key := fmt.Sprintf("%s:%d:%d", messageCacheTable, req.FromUserId, req.ToUserId)
 	record, err := json.Marshal(messageRecord)
 	if err != nil {
-		logger.Errorf("failed to marshal, err: %s", err.Error())
+		logCollector.Error(fmt.Sprintf("failed to marshal, err: %s", err.Error()))
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return resp, nil
 	}
 	if err = cache.ZAdd(ctx, key, float64(messageRecord.CreateTime), record, time.Hour*24*7).Err(); err != nil {
-		logger.Errorf("create cache failed, err: %s", err.Error())
+		logCollector.Error(fmt.Sprintf("failed to create cache, err: %s", err.Error()))
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return nil, err
 	}
-	logger.Infof("The message from user[%d] to user[%d] was successfully stored in Redis, key: %s, content: %s",
-		messageRecord.FromUserId, messageRecord.ToUserId, key, messageRecord.Content)
+	logCollector.Info(fmt.Sprintf("The message from user[%d] to user[%d] was successfully stored in Redis, key: %s, content: %s",
+		messageRecord.FromUserId, messageRecord.ToUserId, key, messageRecord.Content),
+	)
 	// 5. 缓存消息记录超过设定的阈值，就从缓存中删除5天之前的数据
 	go cache.keepDataNum(ctx, key)
 	return resp, nil

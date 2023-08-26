@@ -15,11 +15,11 @@ type Cache struct {
 
 // ZAdd 添加数据放入缓存
 func (ca *Cache) ZAdd(ctx context.Context, key string, score float64, member interface{}, expireTime time.Duration) *Cache {
-	if err = ca.rdb.ZAdd(ctx, key, &redis.Z{Score: score, Member: member}).Err(); err != nil {
+	if err := ca.rdb.ZAdd(ctx, key, &redis.Z{Score: score, Member: member}).Err(); err != nil {
 		ca.err = err
 		return ca
 	}
-	if err = ca.rdb.Expire(ctx, key, expireTime).Err(); err != nil {
+	if err := ca.rdb.Expire(ctx, key, expireTime).Err(); err != nil {
 		ca.err = err
 	}
 	return ca
@@ -28,7 +28,7 @@ func (ca *Cache) ZAdd(ctx context.Context, key string, score float64, member int
 // ZRangeByScore 根据分数从缓存中查询记录
 func (ca *Cache) ZRangeByScore(ctx context.Context, key string, opt *redis.ZRangeBy) []*model.Message {
 	res := make([]*model.Message, 0)
-	if err = ca.rdb.ZRangeByScore(ctx, key, opt).ScanSlice(&res); err != nil {
+	if err := ca.rdb.ZRangeByScore(ctx, key, opt).ScanSlice(&res); err != nil {
 		ca.err = err
 		return nil
 	}
@@ -60,7 +60,7 @@ func (ca *Cache) keepDataNum(ctx context.Context, key string) *Cache {
 // 得到缓存中最小的分数
 func (ca *Cache) getMinScore(ctx context.Context, key string) (int64, error) {
 	records := make([]*model.Message, 0)
-	err = ca.rdb.ZRange(ctx, key, 0, 0).ScanSlice(&records)
+	err := ca.rdb.ZRange(ctx, key, 0, 0).ScanSlice(&records)
 	if err != nil {
 		return 0, err
 	}

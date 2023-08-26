@@ -42,3 +42,8 @@ type interactionServiceConfig struct {
 	Name string
 	Addr string
 }
+
+type kafkaConfig struct {
+	Addr string
+	Port int
+}

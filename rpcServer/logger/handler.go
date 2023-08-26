@@ -23,8 +23,8 @@ func init() {
 }
 
 func handler() {
+	fmt.Println("准备读取消息：")
 	for {
-		fmt.Println("准备读取消息：")
 		serviceName, log, err := consumer.ReadLogFromKafka()
 		if err != nil {
 			fmt.Println(err.Error())
@@ -40,7 +40,6 @@ func handler() {
 		case logger.LevelError:
 			loggerMap[serviceName].Error(log.Value)
 		}
-		fmt.Printf("key: %s  log: %v\n", serviceName, log)
 	}
 }
 

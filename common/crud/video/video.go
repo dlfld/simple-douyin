@@ -110,19 +110,26 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @param reader 视频文件的io流
 // @param filename 文件名
 // @param contentType 文件类型
-// @param videoUrl 视频url
 // @param dataLen 数据长度
 // @param userId 用户id
-func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId int64, title, imageUrl string) error {
+func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	service, _ := oss.GetOssService()
-	// 上传图片
-
+	snowId, _ := GenSnowId()
+	//生成文件名
+	filename := fmt.Sprintf("%s-%d", snowId, userId)
+	// 视频文件名
+	videoName := fmt.Sprintf("%s.mp4", filename)
+	// 第一帧图片名
+	imageName := fmt.Sprintf("%s.png", filename)
 	//视频文件上传
-	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename+".mp4", dataLen, videoContentType)
+	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, videoName, dataLen, videoContentType)
 	if err != nil {
 		log.Fatalln("OSS视频文件上传失败")
 		return err
 	}
+	// 获取到视频播放链接
+	videoUrl, _ := service.GetPlayUrl(videoName)
+	// 如果视频文件上传成功，那就获取视频文件url
 	//抽取第一帧图片,得先上传视频文件，然后获取到视频文件的播放链接
 	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
 	if err != nil {
@@ -131,8 +138,10 @@ func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId in
 	}
 	//将第一帧图片转为io.reader
 	imgReader := strings.NewReader(buffer.String())
-	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, filename+"-img.jpeg", int64(buffer.Len()), imageContentType)
-
+	// 上传第一帧图片
+	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, imageName, int64(buffer.Len()), imageContentType)
+	// 获取第一帧图片的链接
+	imageUrl, _ := service.GetPlayUrl(imageName)
 	video := models.Video{
 		Title:         title,
 		FavoriteCount: 0,

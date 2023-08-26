@@ -36,7 +36,7 @@ func DeleteUserWatched(userID int64) (err error) {
 	return
 }
 
-// 获取用户没有看过的videoID
+// GetUserUnWatched 获取用户没有看过的videoID
 func GetUserUnWatched(userID int64) (videoIDs []int, err error) {
 	// 加载所有视频id到集合
 	if crud.redis.Exists(context.Background(), totalVideo()).Val() != 1 {
@@ -61,7 +61,7 @@ func GetUserUnWatched(userID int64) (videoIDs []int, err error) {
 	return
 }
 
-// TODO 缓存Video对象 避免反复查询数据库
+// GetUserFeed TODO 缓存Video对象 避免反复查询数据库
 // 返回当前用户的视频流
 func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, err error) {
 	// 查询当前用户没有看过的视频记录
@@ -99,6 +99,8 @@ func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, err err
 	}
 	//TODO 批量处理isFavourite
 	// isFavs=GetFavourites(userID,videoIDs)
+	//fmt.Printf("UserId = %d,autherIDS = %d", UserID, autherIDs)
+
 	authors, _ := GetAuthors(UserID, autherIDs)
 	for i, v := range DBModels {
 		videos[i].Author = authors[v.AuthorID]

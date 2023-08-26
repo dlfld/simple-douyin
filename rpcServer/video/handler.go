@@ -4,13 +4,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
-	"time"
-
-	"github.com/douyin/common/conf"
 	"github.com/douyin/common/crud"
 	video2 "github.com/douyin/common/crud/video"
 	"github.com/douyin/kitex_gen/video"
+	"log"
 )
 
 // 视频播放链接url
@@ -40,17 +37,17 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	reader := bytes.NewReader(req.GetData())
 	fmt.Printf("data -> %+v\n", reader.Len())
 	// 上传文件的文件名
-	filename := fmt.Sprintf("user-%d-%d", req.UserId, time.Now().Unix())
+	//filename := fmt.Sprintf("user-%d-%d", req.UserId, time.Now().Unix())
 	userId := req.UserId
 	log.Printf("userId --> %v\n", userId)
-	videoUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+".mp4")
-	imageUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+"-img.jpeg")
+	//videoUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+".mp4")
+	//imageUrl := fmt.Sprintf(videoUrlTemplate, conf.MinioConfig.IP, conf.MinioConfig.VideoBucketName, filename+"-img.jpeg")
 	title := req.Title
 	dataLen := int64(len(req.GetData()))
 	//执行视频上传逻辑
 
 	go func() {
-		err = video2.UploadVideo(reader, filename, videoUrl, dataLen, userId, title, imageUrl)
+		err = video2.UploadVideo(reader, dataLen, userId, title)
 		if err != nil {
 			log.Fatalln("视频上传失败")
 		}

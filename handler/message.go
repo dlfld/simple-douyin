@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/douyin/common/constant"
 	"net/http"
 	"strconv"
 
@@ -22,21 +23,26 @@ func MessageAction(c *gin.Context) {
 	// 1. 创建客户端连接
 	cli, err := messageRpc.NewRpcMessageClient()
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
+		return
 	}
 	// 2. 创建发生消息的请求实例
 	req := message.NewMessageActionRequest()
 	// 3. 前端请求数据绑定到req中
 	err = c.ShouldBind(req)
+	if req.Content == "" {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrEmptyMessage))
+		return
+	}
+	if len(req.Content) > 1000 {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrMsgTooLong))
+		return
+	}
 	req.FromUserId = int64(c.GetUint("userID"))
 	fmt.Printf("req = %+v\n", req)
 	// 4. 发起RPC调用
 	resp, err := cli.SendMessage(c, req)
 	// 5. 处理错误返回响应
-	if resp == nil {
-		resp = message.NewMessageActionResponse()
-	}
-	HandlerErr(resp, err)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -52,23 +58,21 @@ func MessageChat(c *gin.Context) {
 	// 1. 创建客户端连接
 	cli, err := messageRpc.NewRpcMessageClient()
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
+		return
 	}
 	// 2. 创建请求实例
 	req := message.NewMessageChatRequest()
 	// 3. 前端请求数据绑定到req中
 	uid := c.GetUint("userID")
 	toUserID, _ := strconv.Atoi(c.Query("to_user_id"))
-	preMsgTime, _ := strconv.Atoi(c.Query("pre_msg_time"))
+	timeStr := c.Query("pre_msg_time")
+	preMsgTime, _ := strconv.Atoi(timeStr)
 	req.FromUserId = int64(uid)
 	req.ToUserId = int64(toUserID)
 	req.PreMsgTime = int64(preMsgTime)
 	// 4. 发起RPC调用
 	resp, err := cli.MessageList(c, req)
-	if resp == nil {
-		resp = message.NewMessageChatResponse()
-	}
 	// 5. 处理错误返回响应
-	HandlerErr(resp, err)
 	c.JSON(http.StatusOK, resp)
 }

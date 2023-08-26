@@ -20,7 +20,7 @@ var err error
 var logger *logrus.Logger
 
 const messageCacheTable = "message"
-const maxCacheMessageNum = 6
+const maxCacheMessageNum = 200
 
 func init() {
 	// 1. 初始化日志

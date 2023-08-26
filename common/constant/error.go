@@ -1,6 +1,8 @@
 package constant
 
-import "reflect"
+import (
+	"reflect"
+)
 
 const (
 	Success      = 0
@@ -37,7 +39,8 @@ func HandlerErr(errCode int32, resp interface{}) {
 	}
 	e := reflect.ValueOf(resp).Elem()
 	e.FieldByName("StatusCode").SetInt(int64(errCode))
-	e.FieldByName("StatusMsg").SetString(errMap[errCode])
+	msg := errMap[errCode]
+	e.FieldByName("StatusMsg").Set(reflect.ValueOf(&msg))
 }
 
 type Response struct {

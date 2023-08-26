@@ -48,3 +48,10 @@ var MinioConfig = minioConfig{
 func GetAllServiceName() []string {
 	return []string{UserService.Name, RelationService.Name, MessageService.Name, VideoService.Name, InteractionService.Name}
 }
+
+var CosConfig = cosConfig{
+	Url:       "https://douyin-1300206677.cos.ap-shanghai.myqcloud.com",
+	SecretID:  "AKIDMdjfAWtCTvFcw794sgP2UvEOMrMgtz11",
+	SecretKey: "6JRWbdZKzhW7TabR7eCcv1uc9hCcpxX6",
+	ReginUrl:  "https://cos.COS_REGION.myqcloud.com",
+}

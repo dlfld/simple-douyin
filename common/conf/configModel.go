@@ -22,6 +22,13 @@ type minioConfig struct {
 	BackgroundImageBucketName string // 存背景图片桶名字
 }
 
+// cosConfig 访问各 API 所需的基础 URL
+type cosConfig struct {
+	Url       string //url
+	SecretID  string
+	SecretKey string
+	ReginUrl  string
+}
 type userServiceConfig struct {
 	Name string
 	Addr string

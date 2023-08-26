@@ -5,9 +5,9 @@ package oss
 
 import (
 	"fmt"
-	"testing"
 	"log"
 	"os"
+	"testing"
 )
 
 func TestService_CreateBucket(t *testing.T) {
@@ -38,7 +38,6 @@ func TestService_DeleteBucket(t *testing.T) {
 //     }
 // }
 
-
 // 上传头像图片
 func TestUploadAvatar(t *testing.T) {
 	// 创建一个新的 Service 实例
@@ -53,14 +52,13 @@ func TestUploadAvatar(t *testing.T) {
 	}
 }
 
-
 // 上传头像图片(传入字节流)
 // 从用户上传的 HTTP 请求中获取 io.Reader 对象和文件的名字和大小
 // file io.Reader
 // fileInfo.Name() string
 // fileInfo.Size() int64
 func TestUploadAvatarWithBytestream(t *testing.T) {
-    // 创建一个新的 Service 实例
+	// 创建一个新的 Service 实例
 	service, _ := GetOssService()
 
 	// 打开图片文件
@@ -86,10 +84,9 @@ func TestUploadAvatarWithBytestream(t *testing.T) {
 
 }
 
-
 // 上传封面图片
 func TestUploadCover(t *testing.T) {
-    // 创建一个新的 Service 实例
+	// 创建一个新的 Service 实例
 	service, _ := GetOssService()
 
 	var err error
@@ -106,7 +103,7 @@ func TestUploadCover(t *testing.T) {
 // fileInfo.Name() string
 // fileInfo.Size() int64
 func TestUploadCoverWithBytestream(t *testing.T) {
-    // 创建一个新的 Service 实例
+	// 创建一个新的 Service 实例
 	service, _ := GetOssService()
 
 	// 打开图片文件
@@ -122,7 +119,6 @@ func TestUploadCoverWithBytestream(t *testing.T) {
 		log.Fatalf("获取图片信息失败: %v", err)
 	}
 
-
 	// 上传图片
 	err = service.UploadFileWithBytestream("test", file, fileInfo.Name(), fileInfo.Size(), "image/jpeg")
 	if err != nil {
@@ -133,10 +129,9 @@ func TestUploadCoverWithBytestream(t *testing.T) {
 
 }
 
-
 // 上传视频
 func TestUploadVideo(t *testing.T) {
-    // 创建一个新的 Service 实例
+	// 创建一个新的 Service 实例
 	service, _ := GetOssService()
 
 	err := service.UploadFile("test", "./minioService/data_test/bear.mp4", "video/mp4")
@@ -145,18 +140,17 @@ func TestUploadVideo(t *testing.T) {
 	}
 }
 
-
 // 上传头像图片(传入字节流)
 // 从用户上传的 HTTP 请求中获取 io.Reader 对象和文件的名字和大小
 // file io.Reader
 // fileInfo.Name() string
 // fileInfo.Size() int64
 func TestUploadVideoWithBytestream(t *testing.T) {
-    // 创建一个新的 Service 实例
+	// 创建一个新的 Service 实例
 	service, _ := GetOssService()
 
 	// 打开图片文件
-	file, err := os.Open("./minioService/data_test/bear.mp4")
+	file, err := os.Open("./minioService/data_test/test.mp4")
 	if err != nil {
 		log.Fatalf("打开视频失败: %v", err)
 	}
@@ -173,7 +167,7 @@ func TestUploadVideoWithBytestream(t *testing.T) {
 	if err != nil {
 		log.Fatalf("视频上传失败: %v", err)
 	}
+	url, err := service.GetPlayUrl(fileInfo.Name())
 
-	log.Println("视频上传成功")
-
+	log.Printf("视频上传成功,播放链接为:%s", url)
 }

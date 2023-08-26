@@ -15,9 +15,10 @@ var (
 	KafkaAddr    = fmt.Sprintf("%s:%d", conf.Kafka.Addr, conf.Kafka.Port)
 )
 
+// LogRecord 一条日志记录
 type LogRecord struct {
-	Type  logger.Level
-	Value string
+	Type  logger.Level // 日志类型
+	Value string       // 日志信息
 }
 
 func init() {

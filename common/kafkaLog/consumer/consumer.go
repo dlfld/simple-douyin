@@ -28,7 +28,8 @@ func init() {
 	)
 }
 
-func ReadLogFromKafka() (key string, log *kafkaLog.LogRecord, err error) {
+// ReadLogFromKafka 从kafka中读取日志信息
+func ReadLogFromKafka() (serviceName string, log *kafkaLog.LogRecord, err error) {
 	msg, err := kr.ReadMessage(context.Background())
 	if err != nil {
 		kafkaLog.KafkaLogger.Errorf("failed read kafka, err=%s", err.Error())

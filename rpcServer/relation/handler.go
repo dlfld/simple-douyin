@@ -13,13 +13,13 @@ import (
 // RelationServiceImpl implements the last service interface defined in the IDL.
 type RelationServiceImpl struct{}
 
-func usersToKitex(users []*models.User) (kitexList []*model.User) {
+func usersToKitex(self uint, users []*models.User) (kitexList []*model.User) {
 	for _, v := range users {
 		Id := v.ID
 		Name := v.UserName
 		FollowCount := int64(v.FollowingCount)
 		FollowerCount := int64(v.FollowerCount)
-		IsFollow := true
+		IsFollow := crud.IsFollow(self, v.ID)
 		Avatar := v.Avatar
 		BackgroundImage := v.BackgroundImage
 		Signature := v.Signature
@@ -115,7 +115,7 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 	// crud, _ := crud.NewCachedCRUD()
 	// userList, _ := models.GetFollowList(uint(req.UserId))
 	userList, _ := crud.RelationGetFollows(uint(req.UserId))
-	kitexList := usersToKitex(userList)
+	kitexList := usersToKitex(uint(req.UserId), userList)
 
 	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
 }
@@ -128,7 +128,7 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 	// var kitexList []*model.User
 	// userList, _ := models.GetFollowerList(uint(req.UserId))
 	userList, _ := crud.RelationGetFollowers(uint(req.UserId))
-	kitexList := usersToKitex(userList)
+	kitexList := usersToKitex(uint(req.UserId), userList)
 
 	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
 }

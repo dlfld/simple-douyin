@@ -8,10 +8,12 @@ require (
 	github.com/bytedance/sonic v1.10.0-rc3
 	github.com/cloudwego/kitex v0.6.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-co-op/gocron v1.31.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jinzhu/copier v0.3.5
+	github.com/juju/ratelimit v1.0.2
 	github.com/minio/minio-go/v7 v7.0.61
 	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/files v1.0.1

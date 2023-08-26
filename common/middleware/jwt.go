@@ -1,10 +1,9 @@
 package middleware
 
 import (
-	"net/http"
-
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func JWT_AUTH(c *gin.Context) {

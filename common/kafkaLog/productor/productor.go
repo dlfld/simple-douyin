@@ -55,6 +55,8 @@ func (l *LogCollector) Error(logValue string) {
 	writeLogToKafka(l.ServiceName, logger.LevelError, logValue)
 }
 
+// NewLogCollector new 日志收集器，通过收集器的方法可以异步的将日志写入kafka
+// serviceName: 是当前微服务的名称，需要和conf保持一致
 func NewLogCollector(serviceName string) (*LogCollector, error) {
 	if _, ok := servicesMap[serviceName]; !ok {
 		return nil, errors.New(fmt.Sprintf("服务名[%s]非法", serviceName))

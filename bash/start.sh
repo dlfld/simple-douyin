@@ -29,12 +29,8 @@ projects=(
 function start_project {
   local project=$1
   local log_file=$2
-  local project_dir=$(dirname "$project")
-  local project_name=$(basename "$project" .go)
 
-  echo "Starting $project_name..."
-  cd "$project_dir"
-  nohup go run "$project" > "$log_file" 2>&1 &
+  nohup go run "$project" 2>&1 | ts '[%Y-%m-%d %H:%M:%S]' >> "$log_file" &
 }
 
 # 循环启动每个项目

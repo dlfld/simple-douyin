@@ -11,13 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// var relationCliPool = sync.Pool{
-// 	New: func() any {
-// 		cli, _ := relationRpc.NewRpcRelationClient()
-// 		return cli
-// 	},
-// }
-
 // @Summary 关系操作
 // @Schemes
 // @Description 登录用户对其他用户进行关注或取消关注。

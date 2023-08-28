@@ -9,14 +9,23 @@ import (
 	internal_opentracing "github.com/kitex-contrib/tracer-opentracing"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
-	jaegercfg "github.com/uber/jaeger-client-go/config"
+	"github.com/uber/jaeger-client-go/config"
 )
 
 // InitJaeger ...
 func InitJaeger(service string) (client.Suite, io.Closer) {
-	cfg, _ := jaegercfg.FromEnv()
-	cfg.ServiceName = service
-	tracer, closer, err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
+	cfg := config.Configuration{
+		ServiceName: service,
+		Sampler: &config.SamplerConfig{
+			Type:  "remote",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:           false,
+			LocalAgentHostPort: "42.192.46.30:6831", // 远程Jaeger代理的地址
+		},
+	}
+	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}
@@ -25,9 +34,18 @@ func InitJaeger(service string) (client.Suite, io.Closer) {
 }
 
 func InitJaegerServer(service string) (server.Suite, io.Closer) {
-	cfg, _ := jaegercfg.FromEnv()
-	cfg.ServiceName = service
-	tracer, closer, err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
+	cfg := config.Configuration{
+		ServiceName: service,
+		Sampler: &config.SamplerConfig{
+			Type:  "remote",
+			Param: 1,
+		},
+		Reporter: &config.ReporterConfig{
+			LogSpans:           false,
+			LocalAgentHostPort: "42.192.46.30:6831", // 远程Jaeger代理的地址
+		},
+	}
+	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {
 		panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 	}

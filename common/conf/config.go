@@ -8,6 +8,9 @@ var Redis = redisConfig{
 	Addr:     "42.192.46.30:6379",
 	Password: "abc123456",
 }
+
+//TODO ip改成远端地址
+
 var UserService = userServiceConfig{
 	Name: "userService",
 	Addr: "127.0.0.1:8081",

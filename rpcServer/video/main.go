@@ -12,6 +12,7 @@ package main
 import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/etcd"
 	video "github.com/douyin/kitex_gen/video/videoservice"
 	"log"
 	"net"
@@ -25,4 +26,5 @@ func main() {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	etcd.RegisterService(conf.VideoService.Name, conf.VideoService.Addr)
 }

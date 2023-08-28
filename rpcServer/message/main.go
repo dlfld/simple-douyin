@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/common/mysql"
 	rdb "github.com/douyin/common/redis"
@@ -53,4 +54,5 @@ func main() {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	etcd.RegisterService(conf.MessageService.Name, conf.MessageService.Addr)
 }

@@ -12,6 +12,7 @@ package main
 import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/etcd"
 	"github.com/douyin/kitex_gen/user/userservice"
 	"log"
 	"net"
@@ -27,4 +28,5 @@ func main() {
 	//if err != nil {
 	//	log.Println(err.Error())
 	//}
+	etcd.RegisterService(conf.UserService.Name, conf.UserService.Addr)
 }

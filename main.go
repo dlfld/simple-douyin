@@ -79,9 +79,7 @@ func main() {
 	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
 	limitTestRouter.GET("/test", handler.BucketLimit)
-	err := handler.InitInteractionCli()
-	if err != nil {
-		return
-	}
+
+	handler.InitRpcCli()
 	r.Run("0.0.0.0:8080")
 }

@@ -6,11 +6,13 @@ import (
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/etcd"
 	interaction "github.com/douyin/kitex_gen/interaction/interactionservice"
 )
 
 func main() {
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
+
 	if err != nil {
 		log.Printf("addr获取失败：%+v\n", err)
 	}
@@ -20,7 +22,8 @@ func main() {
 
 	err = svr.Run()
 	if err != nil {
-		log.Printf("rpc服务启动失败：%+v\n", err)
+		panic(err)
 	}
+	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
 
 }

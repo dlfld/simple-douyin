@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/douyin/kitex_gen/relation"
-	"github.com/douyin/rpcClient/relationRpc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,11 +28,11 @@ import (
 func RelationAction(c *gin.Context) {
 	// 1. 创建客户端连接
 	// cli := relationCliPool.Get().(relationservice.Client)
-	cli, err := relationRpc.NewRpcRelationClient()
+	//cli, err := relationRpc.NewRpcRelationClient()
 
-	if err != nil {
-		panic(err)
-	}
+	//if err != nil {
+	//	panic(err)
+	//}
 	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))
 	ActionType, _ := strconv.Atoi(c.Query("action_type"))
 	userID, has := c.Get("userID")
@@ -46,7 +45,7 @@ func RelationAction(c *gin.Context) {
 	fmt.Println("req:", req)
 
 	// 发起RPC调用
-	resp, err := cli.FollowAction(context.Background(), &req)
+	resp, err := rpcCli.relationCli.FollowAction(context.Background(), &req)
 	if err != nil {
 		panic(err)
 	}
@@ -66,10 +65,10 @@ func RelationAction(c *gin.Context) {
 // @Router /douyin/relation/follow/list/  [GET]
 func RelationFollowList(c *gin.Context) {
 	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := relationRpc.NewRpcRelationClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	// cli := relationCliPool.Get().(relationservice.Client)
 	// 2. 创建发生消息的请求实例
 	// req := relation.NewFollowingListRequest()
@@ -85,7 +84,7 @@ func RelationFollowList(c *gin.Context) {
 	// _ = c.ShouldBindQuery(req)
 
 	// 4. 发起RPC调用
-	resp, err := cli.FollowList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FollowList(context.Background(), req)
 	if err != nil {
 		panic(err)
 	}
@@ -105,10 +104,10 @@ func RelationFollowList(c *gin.Context) {
 // @Router /douyin/relation/follower/list/  [GET]
 func RelationFollowerList(c *gin.Context) {
 	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := relationRpc.NewRpcRelationClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	// 2. 创建发生消息的请求实例
 	// req := relation.NewFollowerListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
@@ -122,7 +121,7 @@ func RelationFollowerList(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err := cli.FollowerList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FollowerList(context.Background(), req)
 	if err != nil {
 		panic(err)
 	}
@@ -141,10 +140,10 @@ func RelationFollowerList(c *gin.Context) {
 // @Router /douyin/relation/friend/list/  [GET]
 func RelationFriendList(c *gin.Context) {
 	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := relationRpc.NewRpcRelationClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	// 2. 创建发生消息的请求实例
 	// req := relation.NewRelationFriendListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
@@ -159,7 +158,7 @@ func RelationFriendList(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err := cli.FriendList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FriendList(context.Background(), req)
 	if err != nil {
 		panic(err)
 	}

@@ -2,12 +2,12 @@ package handler
 
 import (
 	"fmt"
-	"github.com/douyin/common/constant"
+
 	"net/http"
 	"strconv"
 
+	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/message"
-	"github.com/douyin/rpcClient/messageRpc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,15 +21,15 @@ import (
 // @Router /douyin/message/action/ [POST]
 func MessageAction(c *gin.Context) {
 	// 1. 创建客户端连接
-	cli, err := messageRpc.NewRpcMessageClient()
-	if err != nil {
-		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
-		return
-	}
+	//cli, err := messageRpc.NewRpcMessageClient()
+	//if err != nil {
+	//	c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
+	//	return
+	//}
 	// 2. 创建发生消息的请求实例
 	req := message.NewMessageActionRequest()
 	// 3. 前端请求数据绑定到req中
-	err = c.ShouldBind(req)
+	_ = c.ShouldBind(req)
 	if req.Content == "" {
 		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrEmptyMessage))
 		return
@@ -41,7 +41,7 @@ func MessageAction(c *gin.Context) {
 	req.FromUserId = int64(c.GetUint("userID"))
 	fmt.Printf("req = %+v\n", req)
 	// 4. 发起RPC调用
-	resp, err := cli.SendMessage(c, req)
+	resp, _ := rpcCli.messageCli.SendMessage(c, req)
 	// 5. 处理错误返回响应
 	c.JSON(http.StatusOK, resp)
 }
@@ -56,11 +56,11 @@ func MessageAction(c *gin.Context) {
 // @Router /douyin/message/chat/ [POST]
 func MessageChat(c *gin.Context) {
 	// 1. 创建客户端连接
-	cli, err := messageRpc.NewRpcMessageClient()
-	if err != nil {
-		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
-		return
-	}
+	//cli, err := messageRpc.NewRpcMessageClient()
+	//if err != nil {
+	//	c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
+	//	return
+	//}
 	// 2. 创建请求实例
 	req := message.NewMessageChatRequest()
 	// 3. 前端请求数据绑定到req中
@@ -72,7 +72,7 @@ func MessageChat(c *gin.Context) {
 	req.ToUserId = int64(toUserID)
 	req.PreMsgTime = int64(preMsgTime)
 	// 4. 发起RPC调用
-	resp, err := cli.MessageList(c, req)
+	resp, _ := rpcCli.messageCli.MessageList(c, req)
 	// 5. 处理错误返回响应
 	c.JSON(http.StatusOK, resp)
 }

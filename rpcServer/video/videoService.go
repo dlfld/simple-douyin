@@ -1,25 +1,24 @@
 // Package video Package crud @author:戴林峰
 // @date:2023/8/4
 // @node:
-package video
+package main
 
 import (
 	"context"
 	"fmt"
+	"github.com/bytedance/sonic"
+	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
+	"github.com/douyin/common/oss"
+	myRedis "github.com/douyin/common/redis"
+	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
+	"github.com/douyin/rpcServer/video/convert"
 	"io"
 	"log"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bytedance/sonic"
-	"github.com/douyin/common/conf"
-	"github.com/douyin/common/crud"
-	"github.com/douyin/common/crud/video/convert"
-	"github.com/douyin/common/oss"
-	myRedis "github.com/douyin/common/redis"
-	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/models"
 )
 
 // 视频类型
@@ -48,6 +47,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 	cache, err := myRedis.NewRedisConn()
 	if err != nil {
 		log.Print("redis 客户端获取失败\n")
+		LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to get redis client in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return nil, err
 	}
 	errGet, _ := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
@@ -66,6 +66,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Fatalln("JSON decode error!")
+				LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to Unmarshal data  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 			}
 			resVideoList = append(resVideoList, &videoDto)
 		}
@@ -83,6 +84,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			video.Author = author
 		}
 		if err != nil {
+			LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to convert bo to dto  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 			return nil, err
 		}
 		pipeline := cache.Pipeline()
@@ -92,6 +94,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			videoJson, _ := sonic.Marshal(video)
 			_, err = pipeline.LPush(context.Background(), userPublishVideoList(userId), string(videoJson)).Result()
 			if err != nil {
+				LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to execute redis cache  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 				return nil, err
 			}
 		}
@@ -125,6 +128,7 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, videoName, dataLen, videoContentType)
 	if err != nil {
 		log.Fatalln("OSS视频文件上传失败")
+		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to upload video to cos in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
 	// 获取到视频播放链接
@@ -134,6 +138,7 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
 	if err != nil {
 		log.Fatalln("视频封面图抽取失败！", err)
+		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to get the first frame in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
 	//将第一帧图片转为io.reader

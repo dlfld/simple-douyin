@@ -1,7 +1,7 @@
 // @author:戴林峰
 // @date:2023/8/5
 // @node:
-package video
+package main
 
 import (
 	"fmt"

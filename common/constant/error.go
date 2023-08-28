@@ -16,6 +16,8 @@ const (
 	ErrUnsupportedOperation
 	ErrEmptyMessage
 	ErrMsgTooLong
+	ErrFeedErr
+	ErrPublishList
 )
 
 var errMap = map[int32]string{
@@ -30,6 +32,8 @@ var errMap = map[int32]string{
 	ErrUnsupportedOperation: "不支持的操作",
 	ErrEmptyMessage:         "消息不能为空",
 	ErrMsgTooLong:           "消息过长",
+	ErrFeedErr:              "视频获取失败",
+	ErrPublishList:          "获取已发布视频列表失败",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

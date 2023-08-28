@@ -5,9 +5,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"time"
 
 	"github.com/douyin/common/middleware"
-
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	"github.com/gin-gonic/gin"
@@ -42,11 +42,18 @@ func main() {
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	//对桶进行设置
+	bucket := middleware.RateLimitMiddleware(1*time.Second, 1000, 10)
 	apiRouter := r.Group("/douyin")
 	jwtRouter := r.Group("/douyin")
-	jwtRouter.Use(middleware.JWT_AUTH)
+	limitTestRouter := r.Group("/douyin")
+
+	jwtRouter.Use(middleware.JWT_AUTH, bucket)
+	limitTestRouter.Use(bucket)
+	// 添加中间件
+	//jwtRouter.Use(middleware.MaxAllowed)
 	// 只用来解析token不做拦截
-	apiRouter.Use(middleware.JWT_PARSE)
+	apiRouter.Use(middleware.JWT_PARSE, bucket)
 
 	apiRouter.GET("/user/", handler.UserInfo)
 	apiRouter.POST("/user/register/", handler.Register)
@@ -71,6 +78,7 @@ func main() {
 	jwtRouter.POST("/comment/action/", handler.InteractionCommentAction)
 	apiRouter.GET("/comment/list/", handler.InteractionCommentList)
 
+	limitTestRouter.GET("/test", handler.BucketLimit)
 	err := handler.InitInteractionCli()
 	if err != nil {
 		return

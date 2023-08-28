@@ -29,6 +29,11 @@ var InteractionService = interactionServiceConfig{
 	Addr: "127.0.0.1:8085",
 }
 
+var Kafka = kafkaConfig{
+	Addr: "42.192.46.30",
+	Port: 9092,
+}
+
 var MinioConfig = minioConfig{
 	IP:                        "42.192.46.30",
 	EndPoint:                  "42.192.46.30:9000",
@@ -38,4 +43,15 @@ var MinioConfig = minioConfig{
 	VideoBucketName:           "video",
 	AvatarBucketName:          "avatar",
 	BackgroundImageBucketName: "bgi",
+}
+
+func GetAllServiceName() []string {
+	return []string{UserService.Name, RelationService.Name, MessageService.Name, VideoService.Name, InteractionService.Name}
+}
+
+var CosConfig = cosConfig{
+	Url:       "https://douyin-1300206677.cos.ap-shanghai.myqcloud.com",
+	SecretID:  "AKIDMdjfAWtCTvFcw794sgP2UvEOMrMgtz11",
+	SecretKey: "6JRWbdZKzhW7TabR7eCcv1uc9hCcpxX6",
+	ReginUrl:  "https://cos.COS_REGION.myqcloud.com",
 }

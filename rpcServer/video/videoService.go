@@ -1,25 +1,24 @@
 // Package video Package crud @author:戴林峰
 // @date:2023/8/4
 // @node:
-package video
+package main
 
 import (
 	"context"
 	"fmt"
+	"github.com/bytedance/sonic"
+	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
+	"github.com/douyin/common/oss"
+	myRedis "github.com/douyin/common/redis"
+	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/models"
+	"github.com/douyin/rpcServer/video/convert"
 	"io"
 	"log"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bytedance/sonic"
-	"github.com/douyin/common/conf"
-	"github.com/douyin/common/crud"
-	"github.com/douyin/common/crud/video/convert"
-	"github.com/douyin/common/oss"
-	myRedis "github.com/douyin/common/redis"
-	"github.com/douyin/kitex_gen/model"
-	"github.com/douyin/models"
 )
 
 // 视频类型
@@ -48,6 +47,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 	cache, err := myRedis.NewRedisConn()
 	if err != nil {
 		log.Print("redis 客户端获取失败\n")
+		LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to get redis client in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return nil, err
 	}
 	errGet, _ := cache.Exists(context.Background(), userPublishVideoList(userId)).Result()
@@ -66,6 +66,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
 				log.Fatalln("JSON decode error!")
+				LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to Unmarshal data  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 			}
 			resVideoList = append(resVideoList, &videoDto)
 		}
@@ -83,6 +84,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			video.Author = author
 		}
 		if err != nil {
+			LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to convert bo to dto  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 			return nil, err
 		}
 		pipeline := cache.Pipeline()
@@ -92,6 +94,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			videoJson, _ := sonic.Marshal(video)
 			_, err = pipeline.LPush(context.Background(), userPublishVideoList(userId), string(videoJson)).Result()
 			if err != nil {
+				LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to execute redis cache  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 				return nil, err
 			}
 		}
@@ -110,29 +113,40 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @param reader 视频文件的io流
 // @param filename 文件名
 // @param contentType 文件类型
-// @param videoUrl 视频url
 // @param dataLen 数据长度
 // @param userId 用户id
-func UploadVideo(reader io.Reader, filename, videoUrl string, dataLen, userId int64, title, imageUrl string) error {
+func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	service, _ := oss.GetOssService()
-	// 上传图片
-
+	snowId, _ := GenSnowId()
+	//生成文件名
+	filename := fmt.Sprintf("%s-%d", snowId, userId)
+	// 视频文件名
+	videoName := fmt.Sprintf("%s.mp4", filename)
+	// 第一帧图片名
+	imageName := fmt.Sprintf("%s.png", filename)
 	//视频文件上传
-	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, filename+".mp4", dataLen, videoContentType)
+	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, videoName, dataLen, videoContentType)
 	if err != nil {
 		log.Fatalln("OSS视频文件上传失败")
+		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to upload video to cos in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
+	// 获取到视频播放链接
+	videoUrl, _ := service.GetPlayUrl(videoName)
+	// 如果视频文件上传成功，那就获取视频文件url
 	//抽取第一帧图片,得先上传视频文件，然后获取到视频文件的播放链接
 	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
 	if err != nil {
 		log.Fatalln("视频封面图抽取失败！", err)
+		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to get the first frame in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
 	//将第一帧图片转为io.reader
 	imgReader := strings.NewReader(buffer.String())
-	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, filename+"-img.jpeg", int64(buffer.Len()), imageContentType)
-
+	// 上传第一帧图片
+	_ = service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, imgReader, imageName, int64(buffer.Len()), imageContentType)
+	// 获取第一帧图片的链接
+	imageUrl, _ := service.GetPlayUrl(imageName)
 	video := models.Video{
 		Title:         title,
 		FavoriteCount: 0,
@@ -175,9 +189,9 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 		log.Print("redis 客户端获取失败\n")
 	}
 	//缓存key
-	cacheKey := fmt.Sprintf("video:feed:list:%d", latestTime)
-	cacheLastTimeKey := "video:feed:latest_time"
-	errGet, _ := cache.Exists(context.Background(), cacheKey).Result()
+	cacheKey := fmt.Sprintf("video_feed_aa_%d", latestTime)
+	cacheLastTimeKey := "video_feed_latest_time"
+	errGet, err := cache.Exists(context.Background(), cacheKey).Result()
 	// 最终返回的列表
 	resVideoList := make([]*model.Video, 0)
 	// 如果进入cache 这个flag就改为true，如果在cache执行的过程中有一个环节出错了，这个key就改为false。最后查询数据库
@@ -262,7 +276,7 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 	}
 	latestTimeRes = 123456
 	// 将当前播放列表的latestTime写入到cache中
-	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 0)
+	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 60)
 	// 执行缓存操作
 	pipeline.Exec(context.Background())
 	return resVideoList, nil, latestTimeRes

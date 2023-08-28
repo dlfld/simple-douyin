@@ -1,6 +1,7 @@
 package oss
 
 import (
+	"github.com/douyin/common/oss/cosService"
 	"io"
 	"sync"
 
@@ -21,6 +22,8 @@ type OssInterface interface {
 	UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error
 	// RemoveObject 删除对象
 	RemoveObject(bulkName, objectName string) error
+	// GetPlayUrl 获取播放url
+	GetPlayUrl(key string) (string, error)
 }
 
 // Service OssService结构体
@@ -34,6 +37,7 @@ type Service struct {
 var once sync.Once
 var service *Service
 var minioCase *minioService.MinioService
+var cosCase *cosService.CosService
 
 func init() {
 	GetOssService()
@@ -49,9 +53,10 @@ func GetOssService() (*Service, error) {
 	var err error
 	once.Do(func() {
 		//TODO 获取Minio实例 这里涉及到了调用具体的minio的方法，（后面看看能否改为反射的方式）
-		minioCase, err = minioService.GetMinio()
+		//minioCase, err = minioService.GetMinio()
+		cosCase, err = cosService.GetCos()
 		service = &Service{}
-		service.ossService = minioCase
+		service.ossService = cosCase
 
 	})
 	if err != nil {
@@ -68,7 +73,8 @@ func GetOssService() (*Service, error) {
 // @return error
 func (service *Service) GetClient() (interface{}, error) {
 	//TODO 这里涉及到了调用具体的minio的方法，（后面看看能否改为反射的方式）
-	return service.ossService.(*minioService.MinioService).Client, nil
+	//return service.ossService.(*minioService.MinioService).Client, nil
+	return service.ossService.(*cosService.CosService).Client, nil
 }
 
 //	CreateBucket
@@ -78,7 +84,8 @@ func (service *Service) GetClient() (interface{}, error) {
 // @param bucketName
 // @return error
 func (service *Service) CreateBucket(bucketName string) error {
-	return service.ossService.(*minioService.MinioService).CreateBucket(bucketName)
+	//return service.ossService.(*minioService.MinioService).CreateBucket(bucketName)
+	return service.ossService.(*cosService.CosService).CreateBucket(bucketName)
 }
 
 //	DeleteBucket
@@ -88,7 +95,8 @@ func (service *Service) CreateBucket(bucketName string) error {
 // @param bucketName
 // @return error
 func (service *Service) DeleteBucket(bucketName string) error {
-	return service.ossService.(*minioService.MinioService).DeleteBucket(bucketName)
+	//return service.ossService.(*minioService.MinioService).DeleteBucket(bucketName)
+	return service.ossService.(*cosService.CosService).DeleteBucket(bucketName)
 }
 
 // UploadFile
@@ -99,7 +107,7 @@ func (service *Service) DeleteBucket(bucketName string) error {
 // @param contentType  文件类型(image/jpeg video/mp4)
 // @return error
 func (service *Service) UploadFile(bucketName string, filePath string, contentType string) error {
-	return service.ossService.(*minioService.MinioService).UploadFile(bucketName, filePath, contentType)
+	return service.ossService.(*cosService.CosService).UploadFile(bucketName, filePath, contentType)
 }
 
 // UploadFileWithBytestream
@@ -111,7 +119,7 @@ func (service *Service) UploadFile(bucketName string, filePath string, contentTy
 // @param contentType 文件类型(image/jpeg video/mp4)
 // @return error
 func (service *Service) UploadFileWithBytestream(bucketName string, reader io.Reader, fileName string, fileSize int64, contentType string) error {
-	return service.ossService.(*minioService.MinioService).UploadFileWithBytestream(bucketName, reader, fileName, fileSize, contentType)
+	return service.ossService.(*cosService.CosService).UploadFileWithBytestream(bucketName, reader, fileName, fileSize, contentType)
 }
 
 // RemoveObject
@@ -121,5 +129,15 @@ func (service *Service) UploadFileWithBytestream(bucketName string, reader io.Re
 // @param objectName 对象名
 // @return error
 func (service *Service) RemoveObject(bulkName, objectName string) error {
-	return service.ossService.(*minioService.MinioService).RemoveObject(bulkName, objectName)
+	return service.ossService.(*cosService.CosService).RemoveObject(bulkName, objectName)
+}
+
+//	GetPlayUrl
+//
+// @Description:	获取播放链接
+// @param key
+// @return string
+// @return error
+func (service *Service) GetPlayUrl(key string) (string, error) {
+	return service.ossService.(*cosService.CosService).GetPlayUrl(key)
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/bytedance/gopkg/util/logger"
 	"github.com/douyin/common/comLogger"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/crud"
 	"github.com/douyin/common/kafkaLog/consumer"
 	"github.com/sirupsen/logrus"
 	"os"
@@ -30,6 +31,11 @@ func handler() {
 			fmt.Println(err.Error())
 			return
 		}
+
+		//set to mongodb
+		crud.SetLog(serviceName, log)
+		fmt.Println(serviceName, log)
+
 		switch log.Type {
 		case logger.LevelDebug:
 			loggerMap[serviceName].Debug(log.Value)
@@ -40,6 +46,11 @@ func handler() {
 		case logger.LevelError:
 			loggerMap[serviceName].Error(log.Value)
 		}
+
+		//fmt.Println("-------------------------------------")
+		//fmt.Println("-------------------------------------")
+		//fmt.Println("-------------------------------------")
+		//crud.GetLog(serviceName)
 	}
 }
 
@@ -54,4 +65,5 @@ func main() {
 	<-sigs
 	fmt.Println("收到退出信号")
 	time.Sleep(time.Second * 5)
+
 }

@@ -2,15 +2,17 @@ package main
 
 import (
 	"context"
-	"log"
-
+	"fmt"
+	"github.com/douyin/common/conf"
 	"github.com/douyin/common/crud"
+	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/user"
 	"github.com/douyin/models"
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/douyin/rpcServer/user/util"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -22,15 +24,23 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	username := req.GetUsername()
 	password := req.GetPassword()
 
+	logCollector, err := productor.NewLogCollector(conf.UserService.Name)
+	if err != nil {
+		panic(err)
+	}
+
 	//密码不为空且小于32位
-	if len(password) > 32 || len(password) <= 0 {
+	if len(password) > 32 || len(password) <= 5 {
 		statusMsg := "密码必须小于32位且不为空"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with illegal password[%s]",
+			req.Username, req.Password))
 		return resp, nil
 	}
 	if len(username) > 32 {
 		statusMsg := "用户名必须小于32位"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+		logCollector.Error(fmt.Sprintf("Failed to regist with illegal username[%s]", req.Username))
 		return resp, nil
 	}
 	//如果name为空
@@ -43,6 +53,8 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	if userR != nil {
 		statusMsg := "username exist"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+
+		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with existed name", req.Username))
 		return resp, nil
 	}
 
@@ -51,6 +63,8 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	if err != nil {
 		statusMsg := "加密错误"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with system error[%s]",
+			req.Username, statusMsg))
 		return resp, nil
 	}
 
@@ -58,6 +72,8 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	if nerr != nil {
 		statusMsg := "create user failed"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with system error[%s]",
+			req.Username, statusMsg))
 		return resp, nil
 	}
 
@@ -65,10 +81,15 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	if terr != nil {
 		statusMsg := "token发放错误"
 		resp = &user.UserRegisterResponse{StatusCode: -1, StatusMsg: &statusMsg, UserId: -1, Token: ""}
+		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with system error[%s]",
+			req.Username, statusMsg))
 		return resp, nil
 	}
 
 	//返回结果
+	logCollector.Info(fmt.Sprintf("user[%s]: success to regist with encryptPassword[%s]",
+		req.Username, encryptPassword))
+
 	statusMsg := "注册并登录成功"
 	resp = &user.UserRegisterResponse{StatusCode: 0, StatusMsg: &statusMsg, UserId: int64(int(newUser.ID)), Token: token}
 	return resp, nil

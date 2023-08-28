@@ -5,19 +5,18 @@ go 1.20
 require (
 	github.com/apache/thrift v0.13.0
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317
 	github.com/bytedance/sonic v1.10.0-rc3
 	github.com/cloudwego/kitex v0.6.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-co-op/gocron v1.31.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jinzhu/copier v0.3.5
+	github.com/juju/ratelimit v1.0.2
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/minio/minio-go/v7 v7.0.61
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/juju/ratelimit v1.0.2
-	github.com/minio/minio-go/v7 v7.0.61
 	github.com/segmentio/kafka-go v0.4.42
 	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/files v1.0.1
@@ -36,7 +35,6 @@ require (
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.38.20 // indirect
-	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
@@ -83,8 +81,8 @@ require (
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect

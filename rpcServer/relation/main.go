@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/jaeger"
 	"github.com/douyin/kitex_gen/relation/relationservice"
 
 	"log"
@@ -10,8 +11,11 @@ import (
 )
 
 func main() {
+	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-relation")
+	defer closer.Close()
+
 	addr, err := net.ResolveTCPAddr("tcp", conf.RelationService.Addr)
-	svr := relationservice.NewServer(new(RelationServiceImpl), server.WithServiceAddr(addr))
+	svr := relationservice.NewServer(new(RelationServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	if err != nil {
 		log.Println(err.Error())
 	}

@@ -17,12 +17,12 @@ done
 
 # 定义项目数组、对应的 main 文件和日志文件位置
 projects=(
-  "/Users/wuwei/go/src/simple-douyin/main.go:/gin.log"
-  "/Users/wuwei/go/src/simple-douyin/rpcServer/interaction/main.go:/interaction.log"
-  "/Users/wuwei/go/src/simple-douyin/rpcServer/message/main.go:/message.log"
-  "/Users/wuwei/go/src/simple-douyin/rpcServer/relation/main.go:/relation.log"
-  "/Users/wuwei/go/src/simple-douyin/rpcServer/user/main.go:/user.log"
-  "/Users/wuwei/go/src/simple-douyin/rpcServer/video/main.go:/video.log"
+  "/Users/wuwei/go/src/simple-douyin/main.go:/Users/wuwei/go/src/logs/gin.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/interaction/main.go:/Users/wuwei/go/src/logs/interaction.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/message/main.go:/Users/wuwei/go/src/logs/message.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/relation/main.go:/Users/wuwei/go/src/logs/relation.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/user/main.go:/Users/wuwei/go/src/logs/user.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/video/main.go:/Users/wuwei/go/src/logs/video.log"
 )
 
 # 启动项目并将日志输出到指定文件

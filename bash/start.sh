@@ -17,12 +17,12 @@ done
 
 # 定义项目数组、对应的 main 文件和日志文件位置
 projects=(
-  "/root/simple-douyin/main.go:/root/douyinlogs/gin.log"
-  "/root/simple-douyin/rpcServer/interaction/main.go:/root/douyinlogs/interaction.log"
-  "/root/simple-douyin/rpcServer/message/main.go:/root/douyinlogs/message.log"
-  "/root/simple-douyin/rpcServer/relation/main.go:/root/douyinlogs/relation.log"
-  "/root/simple-douyin/rpcServer/user/main.go:/root/douyinlogs/user.log"
-  "/root/simple-douyin/rpcServer/video/main.go:/root/douyinlogs/video.log"
+  "/Users/wuwei/go/src/simple-douyin/main.go:/gin.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/interaction/main.go:/interaction.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/message/main.go:/message.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/relation/main.go:/relation.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/user/main.go:/user.log"
+  "/Users/wuwei/go/src/simple-douyin/rpcServer/video/main.go:/video.log"
 )
 
 # 启动项目并将日志输出到指定文件
@@ -30,7 +30,7 @@ function start_project {
   local project=$1
   local log_file=$2
 
-  nohup go run "$project" 2>&1 | ts '[%Y-%m-%d %H:%M:%S]' >> "$log_file" &
+  go run "$project" 2>&1 | ts '[%Y-%m-%d %H:%M:%S]' >> "$log_file" &
 }
 
 # 循环启动每个项目

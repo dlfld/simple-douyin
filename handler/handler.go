@@ -31,6 +31,7 @@ func InitRpcCli() {
 	//todo err做成list发送到kafka
 	var err error
 	once.Do(func() {
+		rpcCli = new(rpcClients)
 		rpcCli.interactionCli, err = interactionRpc.NewRpcInteractionClient()
 		if err != nil {
 			log.Printf("初始化interaction rpcclient 失败： %+v\n", err)

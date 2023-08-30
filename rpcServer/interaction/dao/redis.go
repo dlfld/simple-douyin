@@ -56,7 +56,7 @@ func (redis *redis) DelFavoriteVideoListByUserId(userId int64) error {
 }
 
 func (redis *redis) GetCommentListByVideoId(videoId int64) (commentList []*model.Comment, err error) {
-	key := fmt.Sprintf("FavoriteVideoList:videoId:%d", videoId)
+	key := fmt.Sprintf("FavoriteCommentList:videoId:%d", videoId)
 	bs, err := redis.cli.Get(context.Background(), key).Bytes()
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (redis *redis) GetCommentListByVideoId(videoId int64) (commentList []*model
 }
 
 func (redis *redis) SaveCommentListByVideoId(videoId int64, commentList []*model.Comment) error {
-	key := fmt.Sprintf("FavoriteVideoList:videoId:%d", videoId)
+	key := fmt.Sprintf("FavoriteCommentList:videoId:%d", videoId)
 	bs, _ := json.Marshal(commentList)
 	err := redis.cli.Set(context.Background(), key, bs, ttl).Err()
 	log.Printf("redis SaveCommentListByVideoId key(%s) err(%+v)", key, err)
@@ -78,7 +78,7 @@ func (redis *redis) SaveCommentListByVideoId(videoId int64, commentList []*model
 }
 
 func (redis *redis) DelCommentListByVideoId(videoId int64) error {
-	key := fmt.Sprintf("FavoriteVideoList:videoId:%d", videoId)
+	key := fmt.Sprintf("FavoriteCommentList:videoId:%d", videoId)
 	err := redis.cli.Del(context.Background(), key).Err()
 	return err
 }

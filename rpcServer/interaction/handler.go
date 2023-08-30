@@ -66,12 +66,12 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		log.Println("FavoriteAction 执行错误")
 		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
-	_ = s.dao.Redis.DelFavoriteVideoListByUserId(req.UserId)
+	_ = dao.Redis.DelFavoriteVideoListByUserId(req.UserId)
 	return newFavoriteActionResp(0, "操作成功"), nil
 }
 
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
-	if videoList, err := s.dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
+	if videoList, err := dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
 		return newFavoriteListResp(0, "ok", videoList), nil
 	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
@@ -106,7 +106,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 			Title:         dbList[i].Title,
 		}
 	}
-	_ = s.dao.Redis.SaveFavoriteVideoListByUserId(req.UserId, videoList)
+	_ = dao.Redis.SaveFavoriteVideoListByUserId(req.UserId, videoList)
 	return newFavoriteListResp(0, "ok", videoList), err
 }
 
@@ -139,7 +139,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			Content:    *req.CommentText,
 			CreateDate: m.CreatedTime.Format("01-02"),
 		}
-		_ = s.dao.Redis.DelCommentListByVideoId(req.VideoId)
+		_ = dao.Redis.DelCommentListByVideoId(req.VideoId)
 		return newCommentActionResponse(0, "增加评论成功", comment), nil
 	} else if actionType == 2 { //删除评论
 		if req.CommentId == nil {
@@ -156,7 +156,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		if err != nil {
 			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
 		}
-		_ = s.dao.Redis.DelCommentListByVideoId(req.VideoId)
+		_ = dao.Redis.DelCommentListByVideoId(req.VideoId)
 		return newCommentActionResponse(0, "评论删除成功", nil), nil
 	} else {
 		return newCommentActionResponse(-400, "actionType 输入错误: 1-发布评论，2-删除评论", nil), nil
@@ -165,7 +165,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 // CommentList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
-	if commentList, err := s.dao.Redis.GetCommentListByVideoId(req.VideoId); err == nil {
+	if commentList, err := dao.Redis.GetCommentListByVideoId(req.VideoId); err == nil {
 		return newCommentListResponse(0, "ok", commentList), nil
 	}
 	dbList, err := dao.Mysql.SearchCommentListSort(req.VideoId)
@@ -193,6 +193,6 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 			CreateDate: dbList[i].CreatedTime.Format("01-02"),
 		}
 	}
-	_ = s.dao.Redis.SaveCommentListByVideoId(req.VideoId, commentList)
+	_ = dao.Redis.SaveCommentListByVideoId(req.VideoId, commentList)
 	return newCommentListResponse(0, "ok", commentList), nil
 }

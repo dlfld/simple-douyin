@@ -14,7 +14,13 @@ var err error
 
 func NewMongodbConn() (*mongo.Client, error) {
 	once.Do(func() {
-		mdb, err = mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://42.192.46.30:27017"))
+		// Set client options
+		credential := options.Credential{
+			Username: "admin",
+			Password: "abc123456",
+		}
+		clientOptions := options.Client().ApplyURI("mongodb://42.192.46.30:27017").SetAuth(credential)
+		mdb, err = mongo.Connect(context.Background(), clientOptions)
 	})
 	if err != nil {
 		return nil, err

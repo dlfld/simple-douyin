@@ -20,7 +20,7 @@ func userRelationFollowerKey(userID uint) string {
 	return fmt.Sprintf("relation:follower:%d", userID)
 }
 
-// RelationFollow 在缓存中建立关注关系
+// RelationFollow 用户关注操作
 func RelationFollow(userID, toUserID uint) (err error) {
 	if userID == toUserID {
 		return
@@ -164,6 +164,7 @@ func RelationGetFriends(userID uint) (userList []*models.User, err error) {
 // CacheUserInfo 将用户信息存入缓存
 func CacheUserInfo(user *models.User) (err error) {
 	// 序列化用户信息
+	user.Password = ""
 	data, err := sonic.Marshal(user)
 	if err != nil {
 		return err
@@ -182,6 +183,7 @@ func CacheUsersInfo(users []*models.User) (err error) {
 	pipline := crud.redis.Pipeline()
 	// 序列化用户信息
 	for _, v := range users {
+		v.Password = ""
 		data, err := sonic.Marshal(v)
 		if err != nil {
 			return err
@@ -220,6 +222,7 @@ func GetAuthor(self uint, UserID uint) (user *model.User, err error) {
 	return
 }
 
+// GetAuthors 获取用户信息，缓存中没有的从数据库中获取
 func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err error) {
 	userIDStrs := make([]string, len(UserIDs))
 	for i, v := range UserIDs {
@@ -230,6 +233,11 @@ func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err e
 		return
 	}
 	users = make(map[int64]*model.User, 0)
+	userFollows, err := IsFollows(uint(self), UserIDs)
+	if err != nil {
+		userFollows = make(map[int64]bool, 0)
+		err = nil
+	}
 	for _, v := range user_list {
 		users[int64(v.ID)] = &model.User{
 			Id:              int64(v.ID),
@@ -237,7 +245,7 @@ func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err e
 			FollowCount:     pointer.Int64Ptr(int64(v.FollowingCount)),
 			FollowerCount:   pointer.Int64Ptr(int64(v.FollowerCount)),
 			Avatar:          pointer.StringPtr(v.Avatar),
-			IsFollow:        IsFollow(uint(self), v.ID),
+			IsFollow:        userFollows[int64(v.ID)],
 			BackgroundImage: pointer.StringPtr(v.BackgroundImage),
 			FavoriteCount:   pointer.Int64Ptr(int64(v.FavoriteCount)),
 			TotalFavorited:  pointer.Int64Ptr(int64(v.TotalFavorited)),
@@ -290,6 +298,32 @@ func IsFollow(userID, toUserID uint) bool {
 	}
 	ret := crud.redis.SIsMember(context.Background(), userRelationFollowKey(userID), toUserID).Val()
 	return ret
+}
+
+// IsFollow 判断用户是否关注了某个用户
+func IsFollows(userID uint, toUserIDs []int64) (map[int64]bool, error) {
+	ex := crud.redis.Exists(context.Background(), userRelationFollowKey(userID))
+	if ex.Val() == 0 {
+		var users []*models.User
+		users, _ = models.GetFollowList(userID)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
+	}
+	pipline := crud.redis.Pipeline()
+	for _, toUserID := range toUserIDs {
+		pipline.SIsMember(context.Background(), userRelationFollowKey(userID), toUserID).Val()
+	}
+	results, err := pipline.Exec(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	ret := make(map[int64]bool)
+	for i, v := range results {
+		ret[toUserIDs[i]] = v.(*redis.BoolCmd).Val()
+	}
+	// 无法自己关注自己
+	ret[int64(userID)] = true
+	return ret, err
 }
 
 // GetUsersByID 根据用户ID列表从缓存或数据库中批量获取用户信息

@@ -1,8 +1,12 @@
 package main
 
 import (
+	"log"
+	"net"
+
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/jaeger"
 	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/common/mysql"
@@ -10,8 +14,6 @@ import (
 	message "github.com/douyin/kitex_gen/message/messageservice"
 	"github.com/douyin/kitex_gen/model"
 	"gorm.io/gorm"
-	"log"
-	"net"
 )
 
 var db *gorm.DB
@@ -48,8 +50,14 @@ func init() {
 }
 
 func main() {
+	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-message")
+	defer closer.Close()
 	addr, err := net.ResolveTCPAddr("tcp", conf.MessageService.Addr)
-	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr))
+	if err != nil {
+		log.Println(err.Error())
+	}
+	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
+
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())

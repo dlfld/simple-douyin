@@ -64,9 +64,9 @@ func TestFollow(t *testing.T) {
 		ToUserID: toUserId,
 	}
 
-	t.Log("relation id:", relation.ID)
+	// t.Log("relation id:", relation.ID)
 	db.Where("to_user_id=? and user_id = ?", toUserId, userID).FirstOrCreate(&relation)
-	t.Log("relation id:", relation.ID)
+	// t.Log("relation id:", relation.ID)
 
 }
 func TestUserExist(t *testing.T) {

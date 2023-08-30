@@ -15,11 +15,21 @@ import (
 	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
+func init() {
+	var err error
+	db, err = mysql.NewMysqlConn()
+	if err != nil {
+		panic(err)
+	}
+
+}
+
 // FollowRelation
 //
 //	@Description: 用户之间的关注关系数据模型
 type FollowRelation struct {
-	gorm.Model
 	User     User `gorm:"foreignkey:UserID;" json:"user,omitempty"`
 	UserID   uint `gorm:"index:idx_userid;not null" json:"user_id"`
 	ToUser   User `gorm:"foreignkey:ToUserID;" json:"to_user,omitempty"`
@@ -31,9 +41,7 @@ func (FollowRelation) TableName() string {
 }
 
 func Follow(userID, toUserID uint) (err error) {
-	db, _ := mysql.NewMysqlConn()
 
-	// cache, _ := redis.NewRedisConn()
 	var user, toUser User
 
 	relation := FollowRelation{
@@ -70,7 +78,6 @@ func Follow(userID, toUserID uint) (err error) {
 //
 //	@Description: 用户取消关注, 更新Mysql与Redis缓存
 func Unfollow(userID, toUserID uint) (err error) {
-	db, _ := mysql.NewMysqlConn()
 	// cache,_:=redis.NewRedisConn()
 	var toUser, user User
 
@@ -110,7 +117,6 @@ func GetFollowList(userID uint) (userList []*User, err error) {
 		return
 	}
 	var relations []*FollowRelation
-	db, _ := mysql.NewMysqlConn()
 
 	err = db.Where("user_id=?", userID).Preload("ToUser").Find(&relations).Error
 	if err != nil {
@@ -129,7 +135,6 @@ func GetFollowerList(userID uint) (userList []*User, err error) {
 		return
 	}
 	var relations []*FollowRelation
-	db, _ := mysql.NewMysqlConn()
 
 	err = db.Where("to_user_id=?", userID).Preload("User").Find(&relations).Error
 	if err != nil {
@@ -148,7 +153,7 @@ func GetFriendList(userID uint) (userList []*User, err error) {
 		return
 	}
 	var relations []*FollowRelation
-	db, _ := mysql.NewMysqlConn()
+
 	// redis, _ := redis.NewRedisConn()
 
 	// select * from relations where user_id=1 and to_user_id in (select user_id from relations where to_user_id=1);

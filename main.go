@@ -81,5 +81,5 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
-	r.Run("192.168.65.128:8080")
+	r.Run("0.0.0.0:8080")
 }

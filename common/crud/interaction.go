@@ -1,6 +1,17 @@
 package crud
 
-import "log"
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/douyin/models"
+	"github.com/go-redis/redis/v8"
+)
+
+func favoriteVideos(userID int64) string {
+	return fmt.Sprintf("interaction:favoriteVideos:%d", userID)
+}
 
 // IsFavorite 判断是否点赞
 func IsFavorite(self uint, videoId uint) (isFavorite bool, err error) {
@@ -11,4 +22,33 @@ func IsFavorite(self uint, videoId uint) (isFavorite bool, err error) {
 		log.Println(err)
 	}
 	return i != 0, result.Error
+}
+
+// // IsFavorite 判断是否点赞
+func IsFavorites(self int64, videoId []int64) (videoFav map[int64]bool, err error) {
+	// var i int64
+	if crud.redis.Exists(context.Background(), favoriteVideos(self)).Val() != 1 {
+		var vids []any
+		err = crud.mysql.Model(&models.FavoriteVideoRelation{}).Select("video_id").Where("user_id=?", self).Find(&vids).Error
+		if err != nil {
+			return
+		}
+		err = crud.redis.SAdd(context.Background(), favoriteVideos(self), vids...).Err()
+		if err != nil {
+			return
+		}
+	}
+	pipline := crud.redis.Pipeline()
+	for _, v := range videoId {
+		pipline.SIsMember(context.Background(), favoriteVideos(self), v)
+	}
+	result, err := pipline.Exec(context.Background())
+	if err != nil {
+		return
+	}
+	videoFav = make(map[int64]bool)
+	for i, v := range result {
+		videoFav[videoId[i]] = v.(*redis.BoolCmd).Val()
+	}
+	return videoFav, nil
 }

@@ -5,16 +5,18 @@ go 1.20
 require (
 	github.com/apache/thrift v0.13.0
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317
 	github.com/bytedance/sonic v1.10.0-rc3
 	github.com/cloudwego/kitex v0.6.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-co-op/gocron v1.31.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/jinzhu/copier v0.3.5
 	github.com/juju/ratelimit v1.0.2
+	github.com/kitex-contrib/tracer-opentracing v0.0.3
 	github.com/minio/minio-go/v7 v7.0.61
+	github.com/opentracing/opentracing-go v1.2.0
 	github.com/segmentio/kafka-go v0.4.42
 	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/files v1.0.1
@@ -23,15 +25,16 @@ require (
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.42
 	github.com/u2takey/ffmpeg-go v0.5.0
 	github.com/u2takey/go-utils v0.3.1
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	golang.org/x/crypto v0.12.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
 )
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.38.20 // indirect
-	github.com/bytedance/gopkg v0.0.0-20230531144706-a12972768317 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
@@ -79,6 +82,7 @@ require (
 	github.com/oleiade/lane v1.0.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/rs/xid v1.5.0 // indirect
@@ -86,6 +90,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/arch v0.4.0 // indirect

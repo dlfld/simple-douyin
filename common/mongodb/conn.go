@@ -14,7 +14,7 @@ var err error
 
 func NewMongodbConn() (*mongo.Client, error) {
 	once.Do(func() {
-		mdb, err = mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+		mdb, err = mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://42.192.46.30:27017"))
 	})
 	if err != nil {
 		return nil, err

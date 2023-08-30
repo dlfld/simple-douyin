@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/jaeger"
+	"github.com/douyin/common/kafkaLog/productor"
 	interaction "github.com/douyin/kitex_gen/interaction/interactionservice"
 )
 
@@ -20,7 +21,10 @@ func main() {
 
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	InitDao()
-
+	if logger, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
+		panic(err)
+	}
+	logger.Info("Interaction 服务启动")
 	err = svr.Run()
 	if err != nil {
 		log.Printf("rpc服务启动失败：%+v\n", err)

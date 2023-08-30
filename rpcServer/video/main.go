@@ -7,9 +7,9 @@ import (
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
+	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/jaeger"
 	"github.com/douyin/common/kafkaLog/productor"
-	"github.com/douyin/common/etcd"
 	video "github.com/douyin/kitex_gen/video/videoservice"
 )
 

@@ -18,7 +18,7 @@ func NewRpcMessageClient() (messageservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-message")
 		addr := etcd.DiscoverService(conf.MessageService.Name)
-		cli, err = messageservice.NewClient(conf.MessageService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
+		cli, err = messageservice.NewClient(conf.MessageService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 	})
 	return cli, err
 }

@@ -31,10 +31,10 @@ func main() {
 		log.Println(err.Error())
 	}
 	svr := video.NewServer(new(VideoServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
-
+	etcd.RegisterService(conf.VideoService.Name, conf.VideoService.Addr)
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
-	etcd.RegisterService(conf.VideoService.Name, conf.VideoService.Addr)
+
 }

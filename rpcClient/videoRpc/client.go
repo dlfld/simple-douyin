@@ -18,7 +18,7 @@ func NewRpcVideoClient() (videoservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-video")
 		addr := etcd.DiscoverService(conf.VideoService.Name)
-		cli, err = videoservice.NewClient(conf.VideoService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
+		cli, err = videoservice.NewClient(conf.VideoService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

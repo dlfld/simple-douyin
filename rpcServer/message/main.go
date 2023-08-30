@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
-	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/jaeger"
 	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/common/mysql"
@@ -57,10 +57,10 @@ func main() {
 		log.Println(err.Error())
 	}
 	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
-
+	etcd.RegisterService(conf.MessageService.Name, conf.MessageService.Addr)
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
-	etcd.RegisterService(conf.MessageService.Name, conf.MessageService.Addr)
+
 }

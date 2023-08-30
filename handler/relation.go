@@ -9,20 +9,18 @@ import (
 
 	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/relation"
-	"github.com/douyin/kitex_gen/relation/relationservice"
-	"github.com/douyin/rpcClient/relationRpc"
 	"github.com/gin-gonic/gin"
 )
 
-var relationCli relationservice.Client
-
-func init() {
-	var err error
-	relationCli, err = relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
-}
+//var relationCli relationservice.Client
+//
+//func init() {
+//	var err error
+//	relationCli, err = relationRpc.NewRpcRelationClient()
+//	if err != nil {
+//		panic(err)
+//	}
+//}
 
 // @Summary 关系操作
 // @Schemes

@@ -26,7 +26,7 @@ func NewRpcRelationClient() (relationservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-relation")
 		addr := etcd.DiscoverService(conf.RelationService.Name)
-		cli, err = relationservice.NewClient(conf.RelationService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
+		cli, err = relationservice.NewClient(conf.RelationService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

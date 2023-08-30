@@ -1,12 +1,12 @@
 package main
 
 import (
+	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
-	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/jaeger"
 	interaction "github.com/douyin/kitex_gen/interaction/interactionservice"
 )
@@ -22,11 +22,10 @@ func main() {
 
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	InitDao()
-
+	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
 	err = svr.Run()
 	if err != nil {
 		panic(err)
 	}
-	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
 
 }

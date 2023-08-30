@@ -18,7 +18,7 @@ func NewRpcInteractionClient() (interactionservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-interaction")
 		addr := etcd.DiscoverService(conf.InteractionService.Name)
-		cli, err = interactionservice.NewClient(conf.InteractionService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
+		cli, err = interactionservice.NewClient(conf.InteractionService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

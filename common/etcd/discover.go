@@ -4,14 +4,13 @@ import (
 	"context"
 	"fmt"
 	"go.etcd.io/etcd/clientv3"
-	"math/rand"
 	"time"
 )
 
-func DiscoverService(serviceName string) (addr string) {
+func DiscoverService(serviceName string) (addr []string) {
 	// 创建etcd客户端连接
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"http://localhost:2379"}, // etcd服务器地址
+		Endpoints:   []string{"http://42.192.46.30:2379"}, // etcd服务器地址
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
@@ -20,7 +19,7 @@ func DiscoverService(serviceName string) (addr string) {
 	defer cli.Close()
 
 	// 查询服务信息
-	key := fmt.Sprintf("/services/%s", serviceName)
+	key := fmt.Sprintf("/douyin/%s", serviceName)
 	resp, err := cli.Get(context.Background(), key, clientv3.WithPrefix())
 	if err != nil {
 		panic(err)
@@ -32,10 +31,10 @@ func DiscoverService(serviceName string) (addr string) {
 		addresses = append(addresses, string(kv.Value))
 	}
 
-	// 客户端负载均衡
-	rand.Seed(1)
-	randomIndex := rand.Intn(len(addresses))
-	randomAddress := addresses[randomIndex]
+	//// 客户端负载均衡
+	//rand.Seed(1)
+	//randomIndex := rand.Intn(len(addresses))
+	//randomAddress := addresses[randomIndex]
 
-	return randomAddress
+	return addresses
 }

@@ -27,10 +27,10 @@ func main() {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	etcd.RegisterService(conf.RelationService.Name, conf.RelationService.Addr)
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
-	etcd.RegisterService(conf.RelationService.Name, conf.RelationService.Addr)
 
 }

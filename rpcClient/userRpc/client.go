@@ -18,7 +18,7 @@ func NewRpcUserClient() (userservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-user")
 		addr := etcd.DiscoverService(conf.UserService.Name)
-		cli, err = userservice.NewClient(conf.UserService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
+		cli, err = userservice.NewClient(conf.UserService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

@@ -10,6 +10,13 @@
 package main
 
 import (
+<<<<<<< HEAD
+=======
+	"github.com/douyin/common/etcd"
+	"log"
+	"net"
+
+>>>>>>> wuwei/etcd
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/jaeger"
@@ -37,7 +44,9 @@ func main() {
 		log.Println(err.Error())
 	}
 	err = svr.Run()
+	etcd.RegisterService(conf.UserService.Name, conf.UserService.Addr)
 	if err != nil {
 		log.Println(err.Error())
 	}
+
 }

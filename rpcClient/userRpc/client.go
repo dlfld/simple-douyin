@@ -1,6 +1,7 @@
 package userRpc
 
 import (
+	"github.com/douyin/common/etcd"
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
@@ -16,7 +17,8 @@ var err error
 func NewRpcUserClient() (userservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-user")
-		cli, err = userservice.NewClient(conf.UserService.Name, client.WithHostPorts(conf.UserService.Addr), client.WithSuite(tracerSuite))
+		addr := etcd.DiscoverService(conf.UserService.Name)
+		cli, err = userservice.NewClient(conf.UserService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

@@ -9,20 +9,18 @@ import (
 
 	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/relation"
-	"github.com/douyin/kitex_gen/relation/relationservice"
-	"github.com/douyin/rpcClient/relationRpc"
 	"github.com/gin-gonic/gin"
 )
 
-var relationCli relationservice.Client
-
-func init() {
-	var err error
-	relationCli, err = relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
-}
+//var relationCli relationservice.Client
+//
+//func init() {
+//	var err error
+//	relationCli, err = relationRpc.NewRpcRelationClient()
+//	if err != nil {
+//		panic(err)
+//	}
+//}
 
 // @Summary 关系操作
 // @Schemes
@@ -45,7 +43,7 @@ func RelationAction(c *gin.Context) {
 	fmt.Println("req:", req)
 
 	// 发起RPC调用
-	resp, err := relationCli.FollowAction(context.Background(), &req)
+	resp, err := rpcCli.relationCli.FollowAction(context.Background(), &req)
 	if err != nil {
 		constant.HandlerErr(constant.ErrFollowAction, resp)
 	}
@@ -80,7 +78,7 @@ func RelationFollowList(c *gin.Context) {
 	}
 
 	// 发起RPC调用
-	resp, err := relationCli.FollowList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FollowList(context.Background(), req)
 	if err != nil {
 		constant.HandlerErr(constant.ErrGetFollowList, resp)
 	}
@@ -114,7 +112,7 @@ func RelationFollowerList(c *gin.Context) {
 		Token:  c.Query("token"),
 	}
 	// 发起RPC调用
-	resp, err := relationCli.FollowerList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FollowerList(context.Background(), req)
 	if err != nil {
 		constant.HandlerErr(constant.ErrGetFollowerList, &resp)
 	}
@@ -145,7 +143,7 @@ func RelationFriendList(c *gin.Context) {
 		UserId: int64(userId),
 	}
 	// 发起RPC调用
-	resp, err := relationCli.FriendList(context.Background(), req)
+	resp, err := rpcCli.relationCli.FriendList(context.Background(), req)
 	if err != nil {
 		constant.HandlerErr(constant.ErrGetFriendList, &resp)
 	}

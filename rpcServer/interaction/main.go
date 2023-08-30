@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
@@ -15,19 +16,21 @@ func main() {
 	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-interaction")
 	defer closer.Close()
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
+
 	if err != nil {
 		log.Printf("addr获取失败：%+v\n", err)
 	}
 
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	InitDao()
+	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
 	if logger, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
 		panic(err)
 	}
 	logger.Info("Interaction 服务启动")
 	err = svr.Run()
 	if err != nil {
-		log.Printf("rpc服务启动失败：%+v\n", err)
+		panic(err)
 	}
 
 }

@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/douyin/kitex_gen/video"
-	"github.com/douyin/rpcClient/videoRpc"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,10 +23,10 @@ import (
 // @Router /douyin/publish/list/ [GET]
 func PublishList(c *gin.Context) {
 	// 创建客户端链接
-	cli, err := videoRpc.NewRpcVideoClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := videoRpc.NewRpcVideoClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	// 创建发生消息的请求实例
 	userId, err := strconv.Atoi(c.Query("user_id"))
 	if err != nil {
@@ -39,7 +38,7 @@ func PublishList(c *gin.Context) {
 	}
 
 	// 发起RPC调用
-	resp, err := cli.PublishList(context.Background(), req)
+	resp, err := rpcCli.videoCli.PublishList(context.Background(), req)
 	if err != nil {
 		panic(err)
 	}
@@ -57,10 +56,10 @@ func PublishList(c *gin.Context) {
 // @Router /douyin/publish/action/ [POST]
 func VideoSubmit(c *gin.Context) {
 	// 创建客户端链接
-	cli, err := videoRpc.NewRpcVideoClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := videoRpc.NewRpcVideoClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	// Token: c.Query("token"),
 	// 创建发生消息的请求实例 接收视频投稿信息
 
@@ -77,7 +76,7 @@ func VideoSubmit(c *gin.Context) {
 
 	// 前端请求数据绑定到req中
 	// 发起RPC调用
-	resp, err := cli.PublishAction(context.Background(), req)
+	resp, err := rpcCli.videoCli.PublishAction(context.Background(), req)
 
 	if err != nil {
 		panic(err)
@@ -97,10 +96,10 @@ func VideoSubmit(c *gin.Context) {
 // @Router /douyin/feed [GET]
 func VideoFeed(c *gin.Context) {
 	// 创建客户端链接
-	cli, err := videoRpc.NewRpcVideoClient()
-	if err != nil {
-		panic(err)
-	}
+	//cli, err := videoRpc.NewRpcVideoClient()
+	//if err != nil {
+	//	panic(err)
+	//}
 	//token := c.Query("token")
 	latestTime := c.Query("latest_time")
 	var timestamp int64 = 0
@@ -113,7 +112,7 @@ func VideoFeed(c *gin.Context) {
 	feedRequest := &video.FeedRequest{}
 	feedRequest.LatestTime = &timestamp
 	feedRequest.UserId = int64(c.GetUint("userID"))
-	resp, err := cli.Feed(context.Background(), feedRequest)
+	resp, err := rpcCli.videoCli.Feed(context.Background(), feedRequest)
 	if err != nil {
 		panic(err)
 	}

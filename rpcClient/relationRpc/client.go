@@ -1,6 +1,7 @@
 package relationRpc
 
 import (
+	"github.com/douyin/common/etcd"
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
@@ -24,7 +25,8 @@ func init() {
 func NewRpcRelationClient() (relationservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-relation")
-		cli, err = relationservice.NewClient(conf.RelationService.Name, client.WithHostPorts(conf.RelationService.Addr), client.WithSuite(tracerSuite))
+		addr := etcd.DiscoverService(conf.RelationService.Name)
+		cli, err = relationservice.NewClient(conf.RelationService.Name, client.WithHostPorts(addr...), client.WithSuite(tracerSuite))
 		if err != nil {
 			panic(err)
 		}

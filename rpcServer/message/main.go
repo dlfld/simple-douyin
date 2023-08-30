@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
@@ -56,9 +57,10 @@ func main() {
 		log.Println(err.Error())
 	}
 	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
-
+	etcd.RegisterService(conf.MessageService.Name, conf.MessageService.Addr)
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}
+
 }

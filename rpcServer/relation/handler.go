@@ -89,15 +89,17 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 		// err = models.Follow(userId, uint(req.ToUserId))
 		err = crud.RelationFollow(userId, uint(req.ToUserId))
 		if err != nil {
-			msg = err.Error()
+			// msg = err.Error()
+			logCollector.Error(fmt.Sprintf("follow action error: %v", err))
 		} else {
 			msg = "follow ok"
 		}
+
 	case 2:
 		// err = models.Unfollow(userId, uint(req.ToUserId))
 		err = crud.RelationUnFollow(userId, uint(req.ToUserId))
 		if err != nil {
-			msg = err.Error()
+			logCollector.Error(fmt.Sprintf("unfollow action error: %v", err))
 		} else {
 			msg = "unfollow ok"
 		}
@@ -114,7 +116,10 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	// userList, _ := models.GetFollowList(uint(req.UserId))
-	userList, _ := crud.RelationGetFollows(uint(req.UserId))
+	userList, err := crud.RelationGetFollows(uint(req.UserId))
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("get follow list error: %v", err))
+	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
 	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
@@ -127,7 +132,10 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 	// crud, _ := crud.NewCachedCRUD()
 	// var kitexList []*model.User
 	// userList, _ := models.GetFollowerList(uint(req.UserId))
-	userList, _ := crud.RelationGetFollowers(uint(req.UserId))
+	userList, err := crud.RelationGetFollowers(uint(req.UserId))
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("get follower list error: %v", err))
+	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
 	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
@@ -138,7 +146,10 @@ func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.Rela
 	// TODO: Your code here...
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
-	userList, _ := crud.RelationGetFriends(uint(req.UserId))
+	userList, err := crud.RelationGetFriends(uint(req.UserId))
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("get friend list error: %v", err))
+	}
 	// userList, _ := models.GetFriendList(uint(req.UserId))
 	// var kitexList []*model.FriendUser
 	kitexList := friendUsersToKitex(userList)

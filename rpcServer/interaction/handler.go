@@ -162,9 +162,8 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		}
 		_ = dao.Redis.DelCommentListByVideoId(req.VideoId)
 		return newCommentActionResponse(0, "评论删除成功", nil), nil
-	} else {
-		return newCommentActionResponse(-400, "actionType 输入错误: 1-发布评论，2-删除评论", nil), nil
 	}
+	return newCommentActionResponse(-400, "actionType 输入错误: 1-发布评论，2-删除评论", nil), nil
 }
 
 // CommentList implements the InteractionServiceImpl interface.

@@ -3,13 +3,24 @@ package handler
 import (
 	"context"
 	"fmt"
+
 	"net/http"
 	"strconv"
 
+	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/relation"
-	"github.com/douyin/rpcClient/relationRpc"
 	"github.com/gin-gonic/gin"
 )
+
+//var relationCli relationservice.Client
+//
+//func init() {
+//	var err error
+//	relationCli, err = relationRpc.NewRpcRelationClient()
+//	if err != nil {
+//		panic(err)
+//	}
+//}
 
 // @Summary 关系操作
 // @Schemes
@@ -20,13 +31,6 @@ import (
 // @Param request_body body relation.FollowActionRequest true "request body"
 // @Router /douyin/relation/action/ [POST]
 func RelationAction(c *gin.Context) {
-	// 1. 创建客户端连接
-	// cli := relationCliPool.Get().(relationservice.Client)
-	cli, err := relationRpc.NewRpcRelationClient()
-
-	if err != nil {
-		panic(err)
-	}
 	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))
 	ActionType, _ := strconv.Atoi(c.Query("action_type"))
 	userID, has := c.Get("userID")
@@ -39,11 +43,11 @@ func RelationAction(c *gin.Context) {
 	fmt.Println("req:", req)
 
 	// 发起RPC调用
-	resp, err := cli.FollowAction(context.Background(), &req)
+	resp, err := rpcCli.relationCli.FollowAction(context.Background(), &req)
 	if err != nil {
-		panic(err)
+		constant.HandlerErr(constant.ErrFollowAction, resp)
 	}
-	// defer relationCliPool.Put(cli)
+
 	// gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
@@ -58,32 +62,28 @@ func RelationAction(c *gin.Context) {
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/relation/follow/list/  [GET]
 func RelationFollowList(c *gin.Context) {
-	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
-	// cli := relationCliPool.Get().(relationservice.Client)
-	// 2. 创建发生消息的请求实例
+	// 创建发生消息的请求实例
 	// req := relation.NewFollowingListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		panic(err)
+		resp := relation.FollowingListResponse{}
+		constant.HandlerErr(constant.ErrBadRequest, &resp)
+		c.JSON(http.StatusOK, resp)
+		return
 	}
+	// 前端请求数据绑定到req中
 	req := &relation.FollowingListRequest{
 		UserId: int64(userId),
 		Token:  c.Query("token"),
 	}
-	// 3. 前端请求数据绑定到req中
-	// _ = c.ShouldBindQuery(req)
 
-	// 4. 发起RPC调用
-	resp, err := cli.FollowList(context.Background(), req)
+	// 发起RPC调用
+	resp, err := rpcCli.relationCli.FollowList(context.Background(), req)
 	if err != nil {
-		panic(err)
+		constant.HandlerErr(constant.ErrGetFollowList, resp)
 	}
 	// relationCliPool.Put(cli)
-	// 5. gin返回给前端
+	// gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -97,29 +97,26 @@ func RelationFollowList(c *gin.Context) {
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/relation/follower/list/  [GET]
 func RelationFollowerList(c *gin.Context) {
-	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
-	// 2. 创建发生消息的请求实例
+
+	// 创建发生消息的请求实例
 	// req := relation.NewFollowerListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		panic(err)
+		resp := relation.FollowerListResponse{}
+		constant.HandlerErr(constant.ErrBadRequest, &resp)
+		c.JSON(http.StatusOK, resp)
 	}
+	// 前端请求数据绑定到req中
 	req := &relation.FollowerListRequest{
 		UserId: int64(userId),
 		Token:  c.Query("token"),
 	}
-	// 3. 前端请求数据绑定到req中
-	// _ = c.ShouldBind(req)
-	// 4. 发起RPC调用
-	resp, err := cli.FollowerList(context.Background(), req)
+	// 发起RPC调用
+	resp, err := rpcCli.relationCli.FollowerList(context.Background(), req)
 	if err != nil {
-		panic(err)
+		constant.HandlerErr(constant.ErrGetFollowerList, &resp)
 	}
-	// 5. gin返回给前端
+	// gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -133,29 +130,23 @@ func RelationFollowerList(c *gin.Context) {
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/relation/friend/list/  [GET]
 func RelationFriendList(c *gin.Context) {
-	// 1. 创建客户端连接
-	cli, err := relationRpc.NewRpcRelationClient()
-	if err != nil {
-		panic(err)
-	}
-	// 2. 创建发生消息的请求实例
+	// 创建发生消息的请求实例
 	// req := relation.NewRelationFriendListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		panic(err)
+		resp := relation.FollowingListResponse{}
+		constant.HandlerErr(constant.ErrBadRequest, &resp)
+		c.JSON(http.StatusOK, resp)
 	}
+	// 前端请求数据绑定到req中
 	req := &relation.RelationFriendListRequest{
 		UserId: int64(userId),
-		// Token:  c.Query("token"),
-
 	}
-	// 3. 前端请求数据绑定到req中
-	// _ = c.ShouldBind(req)
-	// 4. 发起RPC调用
-	resp, err := cli.FriendList(context.Background(), req)
+	// 发起RPC调用
+	resp, err := rpcCli.relationCli.FriendList(context.Background(), req)
 	if err != nil {
-		panic(err)
+		constant.HandlerErr(constant.ErrGetFriendList, &resp)
 	}
-	// 5. gin返回给前端
+	// gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }

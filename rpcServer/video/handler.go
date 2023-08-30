@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/douyin/common/constant"
-	"github.com/douyin/common/crud"
-	"github.com/douyin/kitex_gen/video"
 	"log"
 	"time"
+
+	"github.com/douyin/common/constant"
+	"github.com/douyin/common/crud"
+	"github.com/douyin/kitex_gen/model"
+	"github.com/douyin/kitex_gen/video"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -16,8 +18,9 @@ type VideoServiceImpl struct{}
 
 // Feed implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (resp *video.FeedResponse, err error) {
-	// feed, err, lastTime :=  GetVideoFeed(*req.LatestTime, 30, uint(req.UserId))
-	feed, err := crud.GetUserFeed(req.UserId, *req.LatestTime)
+	var feed []*model.Video
+	var nextTime int64
+	feed, nextTime, err = crud.GetUserFeed(req.GetUserId(), req.GetLatestTime())
 	if err != nil {
 		log.Fatalln("视频流调用失败")
 		//往Kafka中写入错误日志
@@ -27,8 +30,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		return resp, nil
 	}
 	statusMsg := "Success"
-	*req.LatestTime = *req.LatestTime + 1
-	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: req.LatestTime}, nil
+	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &nextTime}, nil
 
 }
 

@@ -18,6 +18,11 @@ const (
 	ErrMsgTooLong
 	ErrFeedErr
 	ErrPublishList
+	ErrFollowAction
+	ErrGetFollowList
+	ErrGetFollowerList
+	ErrGetFriendList
+	ErrBadRequest
 )
 
 var errMap = map[int32]string{
@@ -34,6 +39,11 @@ var errMap = map[int32]string{
 	ErrMsgTooLong:           "消息过长",
 	ErrFeedErr:              "视频获取失败",
 	ErrPublishList:          "获取已发布视频列表失败",
+	ErrFollowAction:         "关注/取关操作失败",
+	ErrGetFollowList:        "获取关注列表失败",
+	ErrGetFollowerList:      "获取粉丝列表失败",
+	ErrBadRequest:           "请求参数错误",
+	ErrGetFriendList:        "获取好友列表失败",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

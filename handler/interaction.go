@@ -2,30 +2,13 @@ package handler
 
 import (
 	"context"
-	"log"
-	"net/http"
-	"strconv"
-	"sync"
-
 	"github.com/douyin/kitex_gen/interaction"
-	"github.com/douyin/kitex_gen/interaction/interactionservice"
-	"github.com/douyin/rpcClient/interactionRpc"
+	"strconv"
+
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
-
-var cli interactionservice.Client
-var once sync.Once
-
-// InitInteractionCli 创建一个rpc client 连接
-func InitInteractionCli() (err error) {
-	once.Do(func() {
-		cli, err = interactionRpc.NewRpcInteractionClient()
-	})
-	if err != nil {
-		log.Printf("初始化interaction rpcclient 失败： %+v\n", err)
-	}
-	return
-}
 
 // @Summary xxx
 // @Schemes
@@ -46,7 +29,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 		UserId:     int64(userId),
 	}
 
-	resp, err := cli.FavoriteAction(context.Background(), req)
+	resp, err := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": resp.StatusMsg,
@@ -75,7 +58,7 @@ func InteractionFavoriteList(c *gin.Context) {
 		UserId: int64(userId),
 	}
 
-	resp, err := cli.FavoriteList(context.Background(), req)
+	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": resp.StatusMsg,
@@ -109,7 +92,7 @@ func InteractionCommentAction(c *gin.Context) {
 		CommentId:   &commentId,
 	}
 
-	resp, err := cli.CommentAction(context.Background(), req)
+	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": resp.StatusMsg,
@@ -136,7 +119,7 @@ func InteractionCommentList(c *gin.Context) {
 		VideoId: videoId,
 	}
 
-	resp, err := cli.CommentList(context.Background(), req)
+	resp, err := rpcCli.interactionCli.CommentList(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": resp.StatusMsg,

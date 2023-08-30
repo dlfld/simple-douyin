@@ -10,6 +10,7 @@
 package main
 
 import (
+	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
@@ -28,7 +29,9 @@ func main() {
 		log.Println(err.Error())
 	}
 	err = svr.Run()
+	etcd.RegisterService(conf.UserService.Name, conf.UserService.Addr)
 	if err != nil {
 		log.Println(err.Error())
 	}
+
 }

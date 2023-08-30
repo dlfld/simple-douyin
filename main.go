@@ -43,7 +43,7 @@ func main() {
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	//对桶进行设置
-	bucket := middleware.RateLimitMiddleware(1*time.Second, 1000, 10)
+	bucket := middleware.RateLimitMiddleware(1*time.Second, 10000, 10)
 	apiRouter := r.Group("/douyin")
 	jwtRouter := r.Group("/douyin")
 	limitTestRouter := r.Group("/douyin")
@@ -53,7 +53,8 @@ func main() {
 	// 添加中间件
 	//jwtRouter.Use(middleware.MaxAllowed)
 	// 只用来解析token不做拦截
-	apiRouter.Use(middleware.JWT_PARSE, bucket)
+	apiRouter.Use(bucket)
+	apiRouter.Use(middleware.JWT_PARSE)
 
 	apiRouter.GET("/user/", handler.UserInfo)
 	apiRouter.POST("/user/register/", handler.Register)

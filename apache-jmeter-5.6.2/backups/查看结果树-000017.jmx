@@ -39,7 +39,7 @@
           <stringProp name="HTTPSampler.domain">http://127.0.0.1</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
-          <stringProp name="HTTPSampler.path">http://127.0.0.1:8080/douyin/relation/friend/list/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjgsImV4cCI6MTY5MzYyMzk1MCwiaWF0IjoxNjkzMDE5MTUwLCJpc3MiOiJsZWFybi50ZWNoIiwic3ViIjoidXNlciB0b2tlbiJ9.lcrKjePSEaYsDFc7kxfxcKXeHz4sQIM5ckirx8SwPE4&amp;user_id=8</stringProp>
+          <stringProp name="HTTPSampler.path">http://127.0.0.1:8080/douyin/relation/friend/list/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjgsImV4cCI6MTY5MzYyMzk1MCwiaWF0IjoxNjkzMDE5MTUwLCJpc3MiOiJsZWFybi50ZWNoIiwic3ViIjoidXNlciB0b2tlbiJ9.lcrKjePSEaYsDFc7kxfxcKXeHz4sQIM5ckirx8SwPE4&amp;user_id=999</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

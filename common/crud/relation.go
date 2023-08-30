@@ -234,6 +234,10 @@ func GetAuthors(self int64, UserIDs []int64) (users map[int64]*model.User, err e
 	}
 	users = make(map[int64]*model.User, 0)
 	userFollows, err := IsFollows(uint(self), UserIDs)
+	if err != nil {
+		userFollows = make(map[int64]bool, 0)
+		err = nil
+	}
 	for _, v := range user_list {
 		users[int64(v.ID)] = &model.User{
 			Id:              int64(v.ID),

@@ -1,6 +1,7 @@
 package messageRpc
 
 import (
+	"github.com/douyin/common/etcd"
 	"sync"
 
 	"github.com/cloudwego/kitex/client"
@@ -16,7 +17,8 @@ var err error
 func NewRpcMessageClient() (messageservice.Client, error) {
 	once.Do(func() {
 		tracerSuite, _ := jaeger.InitJaeger("kitex-client-message")
-		cli, err = messageservice.NewClient(conf.MessageService.Name, client.WithHostPorts(conf.MessageService.Addr), client.WithSuite(tracerSuite))
+		addr := etcd.DiscoverService(conf.MessageService.Name)
+		cli, err = messageservice.NewClient(conf.MessageService.Name, client.WithHostPorts(addr), client.WithSuite(tracerSuite))
 	})
 	return cli, err
 }

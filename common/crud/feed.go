@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/bytedance/sonic"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
+	"github.com/go-redis/redis/v8"
 )
 
 func userWatchedVideo(userID int64) string {
@@ -15,6 +17,9 @@ func userWatchedVideo(userID int64) string {
 }
 func totalVideo() string {
 	return "video:feed:total"
+}
+func videosCache() string {
+	return "video:feed:videos"
 }
 
 // 缓存用户看过哪些视频 防止出现重复结果
@@ -61,6 +66,63 @@ func GetUserUnWatched(userID int64) (videoIDs []int, err error) {
 	return
 }
 
+func CacheVideos(videos []*models.Video) (err error) {
+	pipline := crud.redis.Pipeline()
+	for _, v := range videos {
+		data, err := sonic.Marshal(v)
+		if err != nil {
+			return err
+		}
+		pipline.HSet(context.Background(), videosCache(), v.ID, string(data))
+	}
+	_, err = pipline.Exec(context.Background())
+	return
+}
+
+func GetVideos(videoIDs []int) (videos []*models.Video, err error) {
+	videos = make([]*models.Video, len(videoIDs))
+	pipline := crud.redis.Pipeline()
+	for _, v := range videoIDs {
+		pipline.HGet(context.Background(), videosCache(), strconv.Itoa(int(v)))
+	}
+	results, err := pipline.Exec(context.Background())
+	if err != nil {
+		return
+	}
+	uncached := make([]int, 0)
+	uncached_pos := make([]int, 0)
+	for i, v := range results {
+		if v.Err() != nil {
+			uncached = append(uncached, videoIDs[i])
+			uncached_pos = append(uncached_pos, i)
+			continue
+		}
+		data, err := v.(*redis.StringCmd).Result()
+		if err != nil {
+			uncached = append(uncached, videoIDs[i])
+			uncached_pos = append(uncached_pos, i)
+			continue
+		}
+		videos[i] = &models.Video{}
+		err = sonic.Unmarshal([]byte(data), &videos[i])
+		if err != nil {
+			uncached = append(uncached, videoIDs[i])
+			uncached_pos = append(uncached_pos, i)
+			continue
+		}
+	}
+	if len(uncached) > 0 {
+		var DBModels []*models.Video
+		crud.mysql.Model(&models.Video{}).Where("id in (?)", uncached).Find(&DBModels)
+		for i, v := range uncached_pos {
+			videos[v] = DBModels[i]
+		}
+		CacheVideos(DBModels)
+	}
+
+	return
+}
+
 // GetUserFeed TODO 缓存Video对象 避免反复查询数据库
 // 返回当前用户的视频流
 func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, err error) {
@@ -69,7 +131,11 @@ func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, err err
 	var DBModels []*models.Video
 	// 查询没有看过的视频记录
 	if len(unwatched) >= 30 {
-		crud.mysql.Model(&models.Video{}).Order("id desc").Where("id in (?)", unwatched[:30]).Find(&DBModels)
+		// crud.mysql.Model(&models.Video{}).Order("id desc").Where("id in (?)", unwatched[:30]).Find(&DBModels)
+		DBModels, err = GetVideos(unwatched[:30])
+		if err != nil {
+			return
+		}
 	} else if len(unwatched) == 0 { // 数量=0
 		DeleteUserWatched(UserID)
 		crud.mysql.Model(&models.Video{}).Order("id desc").Limit(30).Find(&DBModels)
@@ -98,14 +164,17 @@ func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, err err
 		autherIDs[i] = v.AuthorID
 	}
 	//TODO 批量处理isFavourite
-	// isFavs=GetFavourites(userID,videoIDs)
+	isFavs, err := IsFavorites(UserID, videoIDs)
+	if err != nil {
+		return
+	}
 	//fmt.Printf("UserId = %d,autherIDS = %d", UserID, autherIDs)
 
 	authors, _ := GetAuthors(UserID, autherIDs)
 	for i, v := range DBModels {
 		videos[i].Author = authors[v.AuthorID]
-		// videos[i].IsFavorite=isFavs[v.id]
-		videos[i].IsFavorite, _ = IsFavorite(uint(UserID), uint(v.ID))
+		videos[i].IsFavorite = isFavs[v.ID]
+		// videos[i].IsFavorite, _ = IsFavorite(uint(UserID), uint(v.ID))
 	}
 	// 记录用户看过的视频
 	err = CacheUserWatched(UserID, videoIDs)

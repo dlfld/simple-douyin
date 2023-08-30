@@ -10,14 +10,23 @@
 package main
 
 import (
-	"log"
-	"net"
-
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/jaeger"
+	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/kitex_gen/user/userservice"
+	"log"
+	"net"
 )
+
+var logCollector *productor.LogCollector
+
+func init() {
+	var err error
+	if logCollector, err = productor.NewLogCollector(conf.UserService.Name); err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-user")

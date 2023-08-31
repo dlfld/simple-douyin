@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
-
 	"gorm.io/gorm"
 	"time"
 
@@ -20,14 +20,17 @@ var logger *productor.LogCollector
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
 type InteractionServiceImpl struct {
-	dao *d.Dao
 }
 
 func InitDao() {
 	dao = d.NewDao()
+	dao.BloomFilter.PreLoadAll(dao.Mysql.GetCli())
 }
 
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
+	if !dao.BloomFilter.IfVideoIdExists(req.VideoId) {
+		return newFavoriteActionResp(-400, "入参无效"), errors.New("入参无效")
+	}
 	m := models.FavoriteVideoRelation{
 		VideoID: req.VideoId,
 		UserID:  req.UserId,
@@ -41,7 +44,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	if actionType == 1 { // 点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if exists {
-			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), nil
+			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), errors.New("入参无效")
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			_, err = dao.Mysql.InsertFavorite(&m)
@@ -75,6 +78,9 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 }
 
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
+	if !dao.BloomFilter.IfUserIdExists(req.UserId) {
+		return newFavoriteListResp(-400, "入参无效", nil), errors.New("入参无效")
+	}
 	if videoList, err := dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
 		return newFavoriteListResp(0, "ok", videoList), nil
 	}
@@ -118,6 +124,9 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
 	actionType := req.ActionType
 	if actionType == 1 { // 增加评论
+		if !dao.BloomFilter.IfUserIdExists(*req.UserId) || !dao.BloomFilter.IfVideoIdExists(req.VideoId) {
+			return newCommentActionResponse(-400, "入参无效", nil), errors.New("入参无效")
+		}
 		if req.CommentText == nil {
 			return newCommentActionResponse(-500, "请输入评论内容", nil), err
 		}
@@ -146,8 +155,8 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		_ = dao.Redis.DelCommentListByVideoId(req.VideoId)
 		return newCommentActionResponse(0, "增加评论成功", comment), nil
 	} else if actionType == 2 { //删除评论
-		if req.CommentId == nil {
-			return newCommentActionResponse(-500, "删除评论时请输入评论ID", nil), err
+		if req.CommentId == nil || !dao.BloomFilter.IfCommentIdExists(*req.CommentId) {
+			return newCommentActionResponse(-500, "未输入commentId或无效", nil), errors.New("入参无效")
 		}
 		m := models.Comment{
 			ID: *req.CommentId,
@@ -168,6 +177,9 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 // CommentList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
+	if !dao.BloomFilter.IfVideoIdExists(req.VideoId) {
+		return newCommentListResponse(-400, "入参无效", nil), errors.New("入参无效")
+	}
 	if commentList, err := dao.Redis.GetCommentListByVideoId(req.VideoId); err == nil {
 		return newCommentListResponse(0, "ok", commentList), nil
 	}

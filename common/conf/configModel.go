@@ -54,3 +54,8 @@ type kafkaConfig struct {
 	Addr string
 	Port int
 }
+
+type bloomConfig struct {
+	BloomBit uint
+	HashNum  uint
+}

@@ -139,6 +139,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		var commentId int64
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			commentId, err = dao.Mysql.InsertComment(&m)
+			dao.BloomFilter.AddCommentIds(commentId)
 			_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, 1)
 			return err
 		})

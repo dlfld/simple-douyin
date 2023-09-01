@@ -26,6 +26,7 @@ require (
 	github.com/u2takey/ffmpeg-go v0.5.0
 	github.com/u2takey/go-utils v0.3.1
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
+	github.com/willf/bloom v2.0.3+incompatible
 	go.etcd.io/etcd v3.3.27+incompatible
 	go.mongodb.org/mongo-driver v1.12.1
 	golang.org/x/crypto v0.12.0
@@ -113,7 +114,6 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/willf/bitset v1.1.11 // indirect
-	github.com/willf/bloom v2.0.3+incompatible // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect

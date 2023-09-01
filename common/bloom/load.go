@@ -32,12 +32,6 @@ func (b *Filter) PreLoadUserIds(db *gorm.DB) {
 	b.AddElements(convertInt64ToPrefixString(userIds, userPrefix))
 }
 
-func (b *Filter) AddElements(elements []string) {
-	for _, e := range elements {
-		b.filter.Add([]byte(e))
-	}
-}
-
 func convertInt64ToPrefixString(intSlice []int64, prefix string) []string {
 	stringSlice := make([]string, len(intSlice))
 	for i, num := range intSlice {

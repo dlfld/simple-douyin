@@ -3,6 +3,7 @@ package bloom
 import (
 	"github.com/douyin/common/conf"
 	"github.com/willf/bloom"
+	"strconv"
 )
 
 type Filter struct {
@@ -16,6 +17,18 @@ func NewBloomFilter() *Filter {
 	return &Filter{
 		filter: filter,
 	}
+}
+
+func getVideoElement(videoId int64) string {
+	return videoPrefix + strconv.FormatInt(videoId, 10)
+}
+
+func getCommentElement(commentId int64) string {
+	return commentPrefix + strconv.FormatInt(commentId, 10)
+}
+
+func getUserElement(userId int64) string {
+	return userPrefix + strconv.FormatInt(userId, 10)
 }
 
 const (

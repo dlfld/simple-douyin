@@ -114,6 +114,7 @@ func VideoFeed(c *gin.Context) {
 	feedRequest.UserId = int64(c.GetUint("userID"))
 	resp, err := rpcCli.videoCli.Feed(context.Background(), feedRequest)
 	if err != nil {
+		log.Fatalln(err)
 		panic(err)
 	}
 	//返回给前端

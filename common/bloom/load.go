@@ -6,9 +6,9 @@ import (
 )
 
 func (b *Filter) PreLoadAll(db *gorm.DB) {
-	go b.PreLoadVideoIds(db)
-	go b.PreLoadCommentIds(db)
-	go b.PreLoadUserIds(db)
+	b.PreLoadVideoIds(db)
+	b.PreLoadCommentIds(db)
+	b.PreLoadUserIds(db)
 }
 
 func (b *Filter) PreLoadVideoIds(db *gorm.DB) {

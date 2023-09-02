@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/douyin/common/crud"
 	"github.com/douyin/common/kafkaLog/productor"
@@ -48,6 +49,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			_, err = dao.Mysql.InsertFavorite(&m)
+			err = crud.FavoriteVideo(req.UserId, req.VideoId)
 			_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, 1)
 			_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, 1)
 			_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, 1)
@@ -61,6 +63,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			_, err = dao.Mysql.CancelFavorite(&m)
+			err = crud.UnFavoriteVideo(req.UserId, req.VideoId)
 			_, err = dao.Mysql.VideoFavoriteCountIncr(req.VideoId, -1)
 			_, err = dao.Mysql.UserFavoriteCountIncr(req.UserId, -1)
 			_, err = dao.Mysql.UserTotalFavoritedCountIncr(authorId, -1)

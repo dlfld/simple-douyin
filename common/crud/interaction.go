@@ -13,6 +13,38 @@ func favoriteVideos(userID int64) string {
 	return fmt.Sprintf("interaction:favoriteVideos:%d", userID)
 }
 
+func FavoriteVideo(userID, videoID int64) (err error) {
+	if crud.redis.Exists(context.Background(), favoriteVideos(userID)).Val() != 1 {
+		var vids []any
+		err = crud.mysql.Model(&models.FavoriteVideoRelation{}).Select("video_id").Where("user_id=?", userID).Find(&vids).Error
+		if err != nil {
+			return
+		}
+		err = crud.redis.SAdd(context.Background(), favoriteVideos(userID), vids...).Err()
+		if err != nil {
+			return
+		}
+	}
+	err = crud.redis.SAdd(context.Background(), favoriteVideos(userID), videoID).Err()
+	return
+}
+
+func UnFavoriteVideo(userID, videoID int64) (err error) {
+	if crud.redis.Exists(context.Background(), favoriteVideos(userID)).Val() != 1 {
+		var vids []any
+		err = crud.mysql.Model(&models.FavoriteVideoRelation{}).Select("video_id").Where("user_id=?", userID).Find(&vids).Error
+		if err != nil {
+			return
+		}
+		err = crud.redis.SAdd(context.Background(), favoriteVideos(userID), vids...).Err()
+		if err != nil {
+			return
+		}
+	}
+	err = crud.redis.SRem(context.Background(), favoriteVideos(userID), videoID).Err()
+	return
+}
+
 // IsFavorite 判断是否点赞
 func IsFavorite(self uint, videoId uint) (isFavorite bool, err error) {
 	var i int64

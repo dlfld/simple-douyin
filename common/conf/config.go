@@ -58,3 +58,8 @@ var CosConfig = cosConfig{
 	SecretKey: "6JRWbdZKzhW7TabR7eCcv1uc9hCcpxX6",
 	ReginUrl:  "https://cos.COS_REGION.myqcloud.com",
 }
+
+var BloomConfig = bloomConfig{
+	BloomBit: 1000000,
+	HashNum:  3,
+}

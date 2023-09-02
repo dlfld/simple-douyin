@@ -13,6 +13,14 @@ func TestCreate(t *testing.T) {
 	)
 }
 
+func TestA(t *testing.T) {
+	c := NewMysql()
+	result := c.cli.Raw("SELECT id from videos")
+	var videoIds []int64
+	result.Scan(&videoIds)
+	fmt.Println(result)
+}
+
 func TestInsertFavorite(t *testing.T) {
 	c := NewMysql()
 	m := models.FavoriteVideoRelation{

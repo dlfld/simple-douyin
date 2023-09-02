@@ -30,7 +30,7 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		return resp, nil
 	}
 	statusMsg := "Success"
-	log.Println("%+v\n", feed)
+	// log.Println("%+v\n", feed)
 	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &nextTime}, nil
 
 }

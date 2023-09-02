@@ -147,7 +147,7 @@ func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, next_ti
 		}
 	} else { // 数量=0
 		// 查询数据库
-		crud.mysql.Raw("SELECT * FROM videos WHERE created_at <= ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), 30).Find(&DBModels)
+		crud.mysql.Raw("SELECT * FROM videos WHERE created_at < ? ORDER BY created_at DESC LIMIT ?;", time.UnixMilli(latestTime), 30).Find(&DBModels)
 		CacheVideos(DBModels)
 	}
 	videoIDs := make([]int64, len(DBModels))

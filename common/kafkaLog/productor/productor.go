@@ -2,7 +2,6 @@ package productor
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/bytedance/gopkg/util/logger"
@@ -71,11 +70,11 @@ func NewLogCollector(serviceName string) (*LogCollector, error) {
 // value: 服务日志信息
 // 验证服务名合法后，就会开启携程去执行写入消息的操作
 func writeLogToKafka(key string, level logger.Level, logValue string) {
-	record, _ := json.Marshal(kafkaLog.LogRecord{
-		Type:  level,
-		Value: logValue,
-	})
-	go write(retryTime, key, record)
+	//record, _ := json.Marshal(kafkaLog.LogRecord{
+	//	Type:  level,
+	//	Value: logValue,
+	//})
+	//go write(retryTime, key, record)
 }
 
 func write(reTime int, key string, value []byte) {

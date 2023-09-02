@@ -99,7 +99,9 @@ func GetVideos(videoIDs []int) (videos []*models.Video, err error) {
 	}
 	uncached := make([]int, 0)
 	uncached_pos := make([]int, 0)
+	// TODO fix bug
 	for i, v := range results {
+
 		if v.Err() != nil {
 			uncached = append(uncached, videoIDs[i])
 			uncached_pos = append(uncached_pos, i)
@@ -107,7 +109,8 @@ func GetVideos(videoIDs []int) (videos []*models.Video, err error) {
 		}
 		videos[i] = &models.Video{}
 		err := v.(*redis.StringStringMapCmd).Scan(videos[i])
-		if err != nil {
+		resultMap, err := v.(*redis.StringStringMapCmd).Result()
+		if len(resultMap) == 0 || err != nil {
 			uncached = append(uncached, videoIDs[i])
 			uncached_pos = append(uncached_pos, i)
 			continue

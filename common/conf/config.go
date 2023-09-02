@@ -1,11 +1,11 @@
 package conf
 
 var Mysql = mysqlConfig{
-	Login: "root:abc123456@tcp(42.192.46.30:3306)/douyin?charset=utf8&parseTime=True&loc=Local",
+	Login: "root:abc123456@tcp(101.34.81.220:3306)/douyin?charset=utf8&parseTime=True&loc=Local",
 	Debug: true,
 }
 var Redis = redisConfig{
-	Addr:     "42.192.46.30:6379",
+	Addr:     "101.34.81.220:6379",
 	Password: "abc123456",
 }
 
@@ -33,13 +33,14 @@ var InteractionService = interactionServiceConfig{
 }
 
 var Kafka = kafkaConfig{
-	Addr: "42.192.46.30",
+	//Addr: . "101.34.81.220",
+	Addr: "10.23.65.200",
 	Port: 9092,
 }
 
 var MinioConfig = minioConfig{
-	IP:                        "42.192.46.30",
-	EndPoint:                  "42.192.46.30:9000",
+	IP:                        "101.34.81.220",
+	EndPoint:                  "101.34.81.220:9000",
 	AccessKeyId:               "LX5CNH0ZL1I0BF6I4965",
 	SecretAccessKey:           "75+9VGc4jBsQPzkJdvqgZeN6u6p3O+NnfF0KYxPY",
 	UseSSL:                    false,

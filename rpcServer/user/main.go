@@ -10,13 +10,9 @@
 package main
 
 import (
-<<<<<<< HEAD
-	"github.com/douyin/common/etcd"
 	"log"
 	"net"
 
-=======
->>>>>>> master
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/etcd"

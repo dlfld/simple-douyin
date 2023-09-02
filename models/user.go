@@ -38,7 +38,7 @@ func (User) TableName() string {
 
 // CreateUser create user
 func CreateUser(username, encryptPassword string) (*User, error) {
-	newUser := User{UserName: username, Password: encryptPassword}
+	newUser := User{UserName: username, Password: encryptPassword, Avatar: "https://th.bing.com/th/id/OIP.TgAt8TdvbjehPYIKGY7BIgHaHY?w=208&h=207&c=7&r=0&o=5&pid=1.7"}
 	db, err := mysql.NewMysqlConn()
 	if err != nil {
 		return nil, err

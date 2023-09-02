@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"github.com/douyin/kitex_gen/interaction"
+	"log"
 	"strconv"
 
 	"net/http"
@@ -59,7 +60,8 @@ func InteractionFavoriteList(c *gin.Context) {
 	}
 
 	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
-	if err != nil || resp.StatusCode != 0 {
+	log.Printf("resp = %+v\n", resp)
+	if resp != nil && err != nil || resp.StatusCode != 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"msg": resp.StatusMsg,
 			"err": err,

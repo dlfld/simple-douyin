@@ -27,7 +27,6 @@ func newCommentActionResponse(code int32, msg string, comment *model.Comment) *i
 		Comment:    comment,
 	}
 }
-
 func newCommentListResponse(code int32, msg string, commentList []*model.Comment) *interaction.CommentListResponse {
 	return &interaction.CommentListResponse{
 		StatusCode:  code,

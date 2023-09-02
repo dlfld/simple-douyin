@@ -22,9 +22,9 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 	// 1. 数据库和缓存中读取消息
 	// req.FromUserId是当前用户id，req.ToUserId是对方用户id
 	// 得到当前用户发送给别人的消息
-	messageList := make([]*model.Message, 0)
+	sendMes := make([]*model.Message, 0)
 	if req.PreMsgTime == 0 {
-		sendMes, err := getSenderToReceiverMes(ctx, req.FromUserId, req.ToUserId, req.PreMsgTime)
+		sendMes, err = getSenderToReceiverMes(ctx, req.FromUserId, req.ToUserId, req.PreMsgTime)
 		if err != nil {
 			logCollector.Error(fmt.Sprintf("user[%d]: Failed to query the message sent by user[%d] to user[%d] where preMsgTime=%s, err=%s",
 				req.ToUserId, req.FromUserId, req.ToUserId, time.Unix(req.PreMsgTime, 0).Format("2006-01-02 15:04:05"), err.Error()),
@@ -32,11 +32,6 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 			constant.HandlerErr(constant.ErrSystemBusy, resp)
 			return resp, nil
 		}
-		// 冷启动，为了不重复显示消息，只返回时间
-		if len(sendMes) == 1 {
-			sendMes[0].Content = ""
-		}
-		messageList = append(messageList, sendMes...)
 	}
 	// 得到当前用户接收的消息
 	receivedMsg, err := getSenderToReceiverMes(ctx, req.ToUserId, req.FromUserId, req.PreMsgTime)
@@ -48,7 +43,11 @@ func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.Messa
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return resp, nil
 	}
-	messageList = append(messageList, receivedMsg...)
+	// 冷启动，为了不重复显示消息，只返回时间
+	if len(sendMes) == 1 && len(receivedMsg) == 0 {
+		sendMes[0].Content = ""
+	}
+	messageList := append(sendMes, receivedMsg...)
 	sort.Slice(messageList, func(i, j int) bool {
 		return messageList[i].CreateTime < messageList[j].CreateTime
 	})

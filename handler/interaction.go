@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/interaction"
 	"log"
 	"strconv"
@@ -32,10 +33,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrFavoriteAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)
 
@@ -61,11 +59,8 @@ func InteractionFavoriteList(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
 	log.Printf("resp = %+v\n", resp)
-	if resp != nil && err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+	if err != nil || resp.StatusCode != 0 {
+		constant.HandlerErr(constant.ErrFavoriteList, resp)
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -96,10 +91,7 @@ func InteractionCommentAction(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrCommentAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)
 }
@@ -123,10 +115,7 @@ func InteractionCommentList(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.CommentList(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrCommentList, resp)
 	}
 
 	c.JSON(http.StatusOK, resp)

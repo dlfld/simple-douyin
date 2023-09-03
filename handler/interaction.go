@@ -34,6 +34,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
+		resp = new(interaction.FavoriteActionResponse)
 		constant.HandlerErr(constant.ErrFavoriteAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)

@@ -17,6 +17,7 @@ func NewBloomFilter() *Filter {
 	return &Filter{
 		filter: filter,
 	}
+	//return nil
 }
 
 func getVideoElement(videoId int64) string {

@@ -32,7 +32,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	statusMsg := "Success"
 	// log.Println("%+v\n", feed)
 	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &nextTime}, nil
-
 }
 
 // PublishAction implements the VideoServiceImpl interface.
@@ -48,7 +47,14 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	title := req.Title
 	dataLen := int64(len(req.GetData()))
 	//执行视频上传逻辑
-
+	if dataLen > 50*1000*1000 {
+		constant.HandlerErr(constant.ErrVideoSizeMaxLimit, resp)
+		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: nil}, nil
+	}
+	if len(title) == 0 || len(title) > 50 {
+		constant.HandlerErr(constant.ErrVideoTitleLength, resp)
+		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: nil}, nil
+	}
 	go func() {
 		err = UploadVideo(reader, dataLen, userId, title)
 		if err != nil {

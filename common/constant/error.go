@@ -27,6 +27,8 @@ const (
 	ErrFavoriteList
 	ErrCommentAction
 	ErrCommentList
+	ErrVideoSizeMaxLimit
+	ErrVideoTitleLength
 )
 
 var errMap = map[int32]string{

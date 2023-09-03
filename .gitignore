@@ -3,6 +3,7 @@
 #
 apache-*
 config.go
+conf.go
 # Binaries for programs and plugins
 *.mp4
 *.exe

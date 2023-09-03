@@ -9,6 +9,25 @@ WORKDIR /app
 COPY  ./ /app
 # 进入 rpcServer/video 目录
 
-RUN go mod tidy
+RUN go mod tidy && go build -o main .
+
+WORKDIR /app/rpcServer/video
+RUN go build -o main .
+
+WORKDIR /app/rpcServer/user
+RUN go build -o main .
+
+WORKDIR /app/rpcServer/message
+RUN go build -o main .
+
+WORKDIR /app/rpcServer/interaction
+RUN go build -o main .
+
+WORKDIR /app/rpcServer/relation
+RUN go build -o main .
+
+
+
+
 
 

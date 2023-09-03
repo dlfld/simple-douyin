@@ -1,48 +1,56 @@
-version: '2'
+version: '3'
 services:
   base:
     build:
       context: .
       dockerfile: Dockerfile
     image: base-image
+  
+  http_server:
+    depends_on:
+      - base
+    image: base-image
+    ports:
+      - "8080:8080"
+    command: sh -c "cd /app && ./main"
 
   video:
     depends_on:
       - base
     image: base-image
-    expose:
-      - 8084
-    command: sh -c "cd /app/rpcServer/video && go run ."
+    ports:
+      - "8084:8084"
+    command: sh -c "cd /app/rpcServer/video && ./main"
     
   relation:
     depends_on:
       - base
     image: base-image
-    expose:
-      - 8082
-    command: sh -c "cd /app/rpcServer/relation && go run ."
+    ports:
+      - "8082:8082"
+    command: sh -c "cd /app/rpcServer/relation && ./main"
 
   message:
     depends_on:
       - base
     image: base-image
-    expose:
-      - 8083
-    command: sh -c "cd /app/rpcServer/message && go run ."
+    ports:
+      - "8083:8083"
+    command: sh -c "cd /app/rpcServer/message && ./main"
 
   user:
     depends_on:
       - base
     image: base-image
-    expose:
-      - 8081
-    command: sh -c "cd /app/rpcServer/user && go run ."
+    ports:
+      - "8081:8081"
+    command: sh -c "cd /app/rpcServer/user && ./main"
 
   
   interaction:
     depends_on:
       - base
     image: base-image
-    expose:
-      - 8085
-    command: sh -c "cd /app/rpcServer/interaction && go run ."
+    ports:
+      - "8085:8085"
+    command: sh -c "cd /app/rpcServer/interaction && ./main"

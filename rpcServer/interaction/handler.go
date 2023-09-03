@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -38,7 +37,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	}
 	authorId, err := dao.Mysql.SearchAuthorIdsByVideoId(req.VideoId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+		//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
 		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
 	actionType := req.ActionType
@@ -58,7 +57,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	} else if actionType == 2 { //取消点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if !exists {
-			logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+			//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
 			return newFavoriteActionResp(-400, "操作失败: 您之前未点过赞, 无法取消点赞"), nil
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
@@ -73,7 +72,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		return newFavoriteActionResp(-400, "actionType 输入错误：1-点赞，2-取消点赞"), nil
 	}
 	if err != nil {
-		logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+		//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
 		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
 	_ = dao.Redis.DelFavoriteVideoListByUserId(req.UserId)

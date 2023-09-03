@@ -6,7 +6,7 @@
     "paths": {
         "/douyin/comment/action/": {
             "post": {
-                "description": "xxx",
+                "description": "登录用户对视频进行评论。",
                 "consumes": [
                     "application/json"
                 ],
@@ -16,23 +16,45 @@
                 "tags": [
                     "互动接口"
                 ],
-                "summary": "xxx",
+                "summary": "用户评论操作",
                 "parameters": [
                     {
-                        "description": "request body",
-                        "name": "request_body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interaction.CommentActionRequest"
-                        }
+                        "type": "integer",
+                        "name": "action_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "comment_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "comment_text",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "video_id",
+                        "in": "query"
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/comment/list/": {
             "get": {
-                "description": "xxx",
+                "description": "查看视频的所有评论，按发布时间倒序。",
                 "consumes": [
                     "application/json"
                 ],
@@ -42,23 +64,30 @@
                 "tags": [
                     "互动接口"
                 ],
-                "summary": "xxx",
+                "summary": "获取视频评论",
                 "parameters": [
                     {
-                        "description": "request body",
-                        "name": "request_body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interaction.CommentListRequest"
-                        }
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "video_id",
+                        "in": "query"
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/favorite/action/": {
             "post": {
-                "description": "xxx",
+                "description": "登录用户对视频的点赞和取消点赞操作。",
                 "consumes": [
                     "application/json"
                 ],
@@ -68,23 +97,35 @@
                 "tags": [
                     "互动接口"
                 ],
-                "summary": "xxx",
+                "summary": "用户点赞操作",
                 "parameters": [
                     {
-                        "description": "request body",
-                        "name": "request_body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interaction.FavoriteActionRequest"
-                        }
+                        "type": "integer",
+                        "name": "action_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "video_id",
+                        "in": "query"
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/favorite/list/": {
             "get": {
-                "description": "xxx",
+                "description": "登录用户的所有点赞视频。",
                 "consumes": [
                     "application/json"
                 ],
@@ -94,18 +135,20 @@
                 "tags": [
                     "互动接口"
                 ],
-                "summary": "xxx",
+                "summary": "获取用户点赞列表",
                 "parameters": [
                     {
-                        "description": "request body",
-                        "name": "request_body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/interaction.FavoriteListRequest"
-                        }
+                        "type": "string",
+                        "name": "token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/feed": {
@@ -135,7 +178,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/message/action/": {
@@ -148,24 +192,43 @@
                     "application/json"
                 ],
                 "tags": [
-                    "消息"
+                    "消息接口"
                 ],
                 "parameters": [
                     {
-                        "description": "Message Action Params",
+                        "type": "integer",
+                        "name": "action_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "content",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "from_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "to_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户鉴权token",
                         "name": "token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/message.MessageActionRequest"
-                        }
+                        "in": "query",
+                        "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/message/chat/": {
-            "post": {
-                "description": "登录用户对消息的相关操作，目前只支持消息发送",
+            "get": {
+                "description": "当前登录用户和其他指定用户的聊天消息记录",
                 "consumes": [
                     "application/json"
                 ],
@@ -173,19 +236,33 @@
                     "application/json"
                 ],
                 "tags": [
-                    "消息"
+                    "消息接口"
                 ],
                 "parameters": [
                     {
-                        "description": "Message Action Params",
+                        "type": "integer",
+                        "name": "from_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "pre_msg_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "to_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户鉴权token",
                         "name": "token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/message.MessageChatRequest"
-                        }
+                        "in": "query",
+                        "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/publish/action/": {
@@ -210,7 +287,8 @@
                             "$ref": "#/definitions/video.PublishActionRequest"
                         }
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/publish/list/": {
@@ -235,7 +313,8 @@
                             "$ref": "#/definitions/video.PublishListRequest"
                         }
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/relation/action/": {
@@ -253,15 +332,29 @@
                 "summary": "关系操作",
                 "parameters": [
                     {
-                        "description": "request body",
-                        "name": "request_body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/relation.FollowActionRequest"
-                        }
+                        "type": "integer",
+                        "name": "action_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "from_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "to_user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户鉴权token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/relation/follow/list/": {
@@ -292,7 +385,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/relation/follower/list/": {
@@ -323,7 +417,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/relation/friend/list/": {
@@ -354,7 +449,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/user/": {
@@ -384,7 +480,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/user/login/": {
@@ -414,7 +511,8 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         },
         "/douyin/user/register/": {
@@ -444,121 +542,12 @@
                         "in": "query",
                         "required": true
                     }
-                ]
+                ],
+                "responses": {}
             }
         }
     },
     "definitions": {
-        "interaction.CommentActionRequest": {
-            "type": "object",
-            "properties": {
-                "action_type": {
-                    "type": "integer"
-                },
-                "comment_id": {
-                    "type": "integer"
-                },
-                "comment_text": {
-                    "type": "string"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                },
-                "video_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "interaction.CommentListRequest": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                },
-                "video_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "interaction.FavoriteActionRequest": {
-            "type": "object",
-            "properties": {
-                "action_type": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                },
-                "video_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "interaction.FavoriteListRequest": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "message.MessageActionRequest": {
-            "type": "object",
-            "properties": {
-                "action_type": {
-                    "type": "integer"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "from_user_id": {
-                    "type": "integer"
-                },
-                "to_user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "message.MessageChatRequest": {
-            "type": "object",
-            "properties": {
-                "from_user_id": {
-                    "type": "integer"
-                },
-                "pre_msg_time": {
-                    "type": "integer"
-                },
-                "to_user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "relation.FollowActionRequest": {
-            "type": "object",
-            "properties": {
-                "action_type": {
-                    "type": "integer"
-                },
-                "from_user_id": {
-                    "type": "integer"
-                },
-                "to_user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "video.PublishActionRequest": {
             "type": "object",
             "properties": {

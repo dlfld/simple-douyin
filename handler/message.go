@@ -14,10 +14,11 @@ import (
 // MessageAction @Summary 消息操作
 // @Schemes
 // @Description 登录用户对消息的相关操作，目前只支持消息发送
-// @Tags 消息
+// @Tags 消息接口
 // @Accept json
 // @Produce json
-// @Param token body message.MessageActionRequest true "Message Action Params"
+// @Param token query message.MessageActionRequest true "Message Action Params"
+// @Param token query string true "用户鉴权token"
 // @Router /douyin/message/action/ [POST]
 func MessageAction(c *gin.Context) {
 	// 1. 创建客户端连接
@@ -46,14 +47,15 @@ func MessageAction(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// MessageAction @Summary 消息操作
+// MessageChat @Summary 消息查询
 // @Schemes
-// @Description 登录用户对消息的相关操作，目前只支持消息发送
-// @Tags 消息
+// @Description 当前登录用户和其他指定用户的聊天消息记录
+// @Tags 消息接口
 // @Accept json
 // @Produce json
-// @Param token body message.MessageChatRequest true "Message Action Params"
-// @Router /douyin/message/chat/ [POST]
+// @Param token query message.MessageChatRequest true "Message Action Params"
+// @Param token query string true "用户鉴权token"
+// @Router /douyin/message/chat/ [GET]
 func MessageChat(c *gin.Context) {
 	// 1. 创建客户端连接
 	//cli, err := messageRpc.NewRpcMessageClient()

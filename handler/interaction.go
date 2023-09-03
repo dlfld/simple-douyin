@@ -2,22 +2,24 @@ package handler
 
 import (
 	"context"
-	"github.com/douyin/kitex_gen/interaction"
 	"log"
 	"strconv"
+
+	"github.com/douyin/common/constant"
+	"github.com/douyin/kitex_gen/interaction"
 
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary xxx
+// @Summary 用户点赞操作
 // @Schemes
-// @Description xxx
-// @Tags 互动接口1
+// @Description 登录用户对视频的点赞和取消点赞操作。
+// @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body interaction.FavoriteActionRequest true "request body"
+// @Param request_body query interaction.FavoriteActionRequest true "request body"
 // @Router /douyin/favorite/action/ [POST]
 func InteractionFavoriteAction(c *gin.Context) {
 
@@ -32,22 +34,19 @@ func InteractionFavoriteAction(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrFavoriteAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)
 
 }
 
-// @Summary xxx
+// @Summary 获取用户点赞列表
 // @Schemes
-// @Description xxx
+// @Description 登录用户的所有点赞视频。
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body interaction.FavoriteListRequest true "request body"
+// @Param request_body query interaction.FavoriteListRequest true "request body"
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
 	// userId := int64(c.GetUint("userID"))
@@ -61,23 +60,20 @@ func InteractionFavoriteList(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
 	log.Printf("resp = %+v\n", resp)
-	if resp != nil && err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+	if err != nil || resp.StatusCode != 0 {
+		constant.HandlerErr(constant.ErrFavoriteList, resp)
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary xxx
+// @Summary 用户评论操作
 // @Schemes
-// @Description xxx
+// @Description 登录用户对视频进行评论。
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body interaction.CommentActionRequest true "request body"
+// @Param request_body query interaction.CommentActionRequest true "request body"
 // @Router /douyin/comment/action/ [POST]
 func InteractionCommentAction(c *gin.Context) {
 
@@ -93,24 +89,20 @@ func InteractionCommentAction(c *gin.Context) {
 		CommentText: &commentText,
 		CommentId:   &commentId,
 	}
-
 	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrCommentAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Summary xxx
+// @Summary 获取视频评论
 // @Schemes
-// @Description xxx
+// @Description 查看视频的所有评论，按发布时间倒序。
 // @Tags 互动接口
 // @Accept json
 // @Produce json
-// @Param request_body body interaction.CommentListRequest true "request body"
+// @Param request_body query interaction.CommentListRequest true "request body"
 // @Router /douyin/comment/list/ [GET]
 func InteractionCommentList(c *gin.Context) {
 
@@ -123,10 +115,7 @@ func InteractionCommentList(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.CommentList(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"msg": resp.StatusMsg,
-			"err": err,
-		})
+		constant.HandlerErr(constant.ErrCommentList, resp)
 	}
 
 	c.JSON(http.StatusOK, resp)

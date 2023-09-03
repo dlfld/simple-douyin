@@ -28,7 +28,8 @@ import (
 // @Tags 社交接口
 // @Accept json
 // @Produce json
-// @Param request_body body relation.FollowActionRequest true "request body"
+// @Param request_body query relation.FollowActionRequest true "request body"
+// @Param token query string true "用户鉴权token"
 // @Router /douyin/relation/action/ [POST]
 func RelationAction(c *gin.Context) {
 	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))

@@ -1,9 +1,10 @@
 package middleware
 
 import (
+	"net/http"
+
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func JWT_AUTH(c *gin.Context) {
@@ -12,14 +13,14 @@ func JWT_AUTH(c *gin.Context) {
 		Token = c.PostForm("token")
 	}
 	if Token == "" && c.Request.Method == "POST" {
-		tokenMap := make(map[string]string, 0)
+		tokenMap := make(map[string]any, 0)
 		err := c.ShouldBindJSON(&tokenMap)
 		if err != nil {
 			c.JSON(http.StatusForbidden, noToken)
 			c.Abort()
 			return
 		}
-		Token = tokenMap["token"]
+		Token = tokenMap["token"].(string)
 	}
 	_, claims, err1 := common.ParseToken(Token)
 	if err1 != nil {

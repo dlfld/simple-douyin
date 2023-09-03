@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -38,14 +36,14 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	}
 	authorId, err := dao.Mysql.SearchAuthorIdsByVideoId(req.VideoId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
-		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
+		//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+		return newFavoriteActionResp(-500, "FavoriteAction 失败"), nil
 	}
 	actionType := req.ActionType
 	if actionType == 1 { // 点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if exists {
-			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), errors.New("入参无效")
+			return newFavoriteActionResp(-400, "操作失败: 不能重复点赞"), nil
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			_, err = dao.Mysql.InsertFavorite(&m)
@@ -58,7 +56,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	} else if actionType == 2 { //取消点赞
 		exists, _ := dao.Mysql.SearchFavoriteExist(&m)
 		if !exists {
-			logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+			//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
 			return newFavoriteActionResp(-400, "操作失败: 您之前未点过赞, 无法取消点赞"), nil
 		}
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
@@ -73,7 +71,7 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 		return newFavoriteActionResp(-400, "actionType 输入错误：1-点赞，2-取消点赞"), nil
 	}
 	if err != nil {
-		logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
+		//logger.Error(fmt.Sprintf("FavoriteAction 执行错误[%v]", err))
 		return newFavoriteActionResp(-500, "FavoriteAction 失败"), err
 	}
 	_ = dao.Redis.DelFavoriteVideoListByUserId(req.UserId)
@@ -89,7 +87,7 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
-		return newFavoriteListResp(-500, "FavoriteList 错误", nil), err
+		return newFavoriteListResp(-500, "FavoriteList 错误", nil), nil
 	}
 	authorIds := make([]int64, len(dbList))
 	for i := 0; i < len(dbList); i++ {
@@ -131,7 +129,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		//	return newCommentActionResponse(-400, "入参无效", nil), errors.New("入参无效")
 		//}
 		if req.CommentText == nil {
-			return newCommentActionResponse(-500, "请输入评论内容", nil), err
+			return newCommentActionResponse(-500, "请输入评论内容", nil), nil
 		}
 		m := models.Comment{
 			VideoID:     req.VideoId,
@@ -148,7 +146,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		})
 		user, _ := dao.Mysql.SearchUserByUserId(*req.UserId)
 		if err != nil {
-			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
+			return newCommentActionResponse(-500, "CommentAction 失败", nil), nil
 		}
 		comment := &model.Comment{
 			Id:         commentId,
@@ -171,7 +169,7 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return err
 		})
 		if err != nil {
-			return newCommentActionResponse(-500, "CommentAction 失败", nil), err
+			return newCommentActionResponse(-500, "CommentAction 失败", nil), nil
 		}
 		_ = dao.Redis.DelCommentListByVideoId(req.VideoId)
 		return newCommentActionResponse(0, "评论删除成功", nil), nil
@@ -189,7 +187,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	}
 	dbList, err := dao.Mysql.SearchCommentListSort(req.VideoId)
 	if err != nil {
-		return newCommentListResponse(-500, "CommentList 失败", nil), err
+		return newCommentListResponse(-500, "CommentList 失败", nil), nil
 	}
 	commentUserIds := make([]int64, len(dbList))
 	for i := 0; i < len(dbList); i++ {
@@ -197,7 +195,7 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	}
 	commentUserList, err := dao.Mysql.SearchUserByMids(commentUserIds, *req.UserId)
 	if err != nil {
-		return newCommentListResponse(-500, "CommentList 失败", nil), err
+		return newCommentListResponse(-500, "CommentList 失败", nil), nil
 	}
 	commentUserMap := make(map[int64]*model.User)
 	for _, v := range commentUserList {

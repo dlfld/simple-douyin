@@ -23,6 +23,10 @@ const (
 	ErrGetFollowerList
 	ErrGetFriendList
 	ErrBadRequest
+	ErrFavoriteAction
+	ErrFavoriteList
+	ErrCommentAction
+	ErrCommentList
 	ErrVideoSizeMaxLimit
 	ErrVideoTitleLength
 )
@@ -46,8 +50,10 @@ var errMap = map[int32]string{
 	ErrGetFollowerList:      "获取粉丝列表失败",
 	ErrBadRequest:           "请求参数错误",
 	ErrGetFriendList:        "获取好友列表失败",
-	ErrVideoSizeMaxLimit:    "视频大小超过限制，请上传50M以内的视频",
-	ErrVideoTitleLength:     "视频标题长度不合适",
+	ErrFavoriteAction:       "点赞操作失败",
+	ErrFavoriteList:         "获取点赞列表失败",
+	ErrCommentAction:        "评论操作失败",
+	ErrCommentList:          "获取评论列表失败",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

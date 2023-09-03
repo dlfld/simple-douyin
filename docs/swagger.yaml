@@ -1,75 +1,4 @@
 definitions:
-  interaction.CommentActionRequest:
-    properties:
-      action_type:
-        type: integer
-      comment_id:
-        type: integer
-      comment_text:
-        type: string
-      token:
-        type: string
-      user_id:
-        type: integer
-      video_id:
-        type: integer
-    type: object
-  interaction.CommentListRequest:
-    properties:
-      token:
-        type: string
-      user_id:
-        type: integer
-      video_id:
-        type: integer
-    type: object
-  interaction.FavoriteActionRequest:
-    properties:
-      action_type:
-        type: integer
-      token:
-        type: string
-      user_id:
-        type: integer
-      video_id:
-        type: integer
-    type: object
-  interaction.FavoriteListRequest:
-    properties:
-      token:
-        type: string
-      user_id:
-        type: integer
-    type: object
-  message.MessageActionRequest:
-    properties:
-      action_type:
-        type: integer
-      content:
-        type: string
-      from_user_id:
-        type: integer
-      to_user_id:
-        type: integer
-    type: object
-  message.MessageChatRequest:
-    properties:
-      from_user_id:
-        type: integer
-      pre_msg_time:
-        type: integer
-      to_user_id:
-        type: integer
-    type: object
-  relation.FollowActionRequest:
-    properties:
-      action_type:
-        type: integer
-      from_user_id:
-        type: integer
-      to_user_id:
-        type: integer
-    type: object
   video.PublishActionRequest:
     properties:
       data:
@@ -95,68 +24,93 @@ paths:
     post:
       consumes:
       - application/json
-      description: xxx
+      description: 登录用户对视频进行评论。
       parameters:
-      - description: request body
-        in: body
-        name: request_body
-        required: true
-        schema:
-          $ref: '#/definitions/interaction.CommentActionRequest'
+      - in: query
+        name: action_type
+        type: integer
+      - in: query
+        name: comment_id
+        type: integer
+      - in: query
+        name: comment_text
+        type: string
+      - in: query
+        name: token
+        type: string
+      - in: query
+        name: user_id
+        type: integer
+      - in: query
+        name: video_id
+        type: integer
       produces:
       - application/json
-      summary: xxx
+      responses: {}
+      summary: 用户评论操作
       tags:
       - 互动接口
   /douyin/comment/list/:
     get:
       consumes:
       - application/json
-      description: xxx
+      description: 查看视频的所有评论，按发布时间倒序。
       parameters:
-      - description: request body
-        in: body
-        name: request_body
-        required: true
-        schema:
-          $ref: '#/definitions/interaction.CommentListRequest'
+      - in: query
+        name: token
+        type: string
+      - in: query
+        name: user_id
+        type: integer
+      - in: query
+        name: video_id
+        type: integer
       produces:
       - application/json
-      summary: xxx
+      responses: {}
+      summary: 获取视频评论
       tags:
       - 互动接口
   /douyin/favorite/action/:
     post:
       consumes:
       - application/json
-      description: xxx
+      description: 登录用户对视频的点赞和取消点赞操作。
       parameters:
-      - description: request body
-        in: body
-        name: request_body
-        required: true
-        schema:
-          $ref: '#/definitions/interaction.FavoriteActionRequest'
+      - in: query
+        name: action_type
+        type: integer
+      - in: query
+        name: token
+        type: string
+      - in: query
+        name: user_id
+        type: integer
+      - in: query
+        name: video_id
+        type: integer
       produces:
       - application/json
-      summary: xxx
+      responses: {}
+      summary: 用户点赞操作
       tags:
       - 互动接口
   /douyin/favorite/list/:
     get:
       consumes:
       - application/json
-      description: xxx
+      description: 登录用户的所有点赞视频。
       parameters:
-      - description: request body
-        in: body
-        name: request_body
-        required: true
-        schema:
-          $ref: '#/definitions/interaction.FavoriteListRequest'
+      - in: query
+        name: token
+        type: string
+      - in: query
+        name: user_id
+        type: integer
       produces:
       - application/json
-      summary: xxx
+      responses: {}
+      summary: 获取用户点赞列表
       tags:
       - 互动接口
   /douyin/feed:
@@ -177,6 +131,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       tags:
       - 视频接口
   /douyin/message/action/:
@@ -185,32 +140,53 @@ paths:
       - application/json
       description: 登录用户对消息的相关操作，目前只支持消息发送
       parameters:
-      - description: Message Action Params
-        in: body
+      - in: query
+        name: action_type
+        type: integer
+      - in: query
+        name: content
+        type: string
+      - in: query
+        name: from_user_id
+        type: integer
+      - in: query
+        name: to_user_id
+        type: integer
+      - description: 用户鉴权token
+        in: query
         name: token
         required: true
-        schema:
-          $ref: '#/definitions/message.MessageActionRequest'
+        type: string
       produces:
       - application/json
+      responses: {}
       tags:
-      - 消息
+      - 消息接口
   /douyin/message/chat/:
-    post:
+    get:
       consumes:
       - application/json
-      description: 登录用户对消息的相关操作，目前只支持消息发送
+      description: 当前登录用户和其他指定用户的聊天消息记录
       parameters:
-      - description: Message Action Params
-        in: body
+      - in: query
+        name: from_user_id
+        type: integer
+      - in: query
+        name: pre_msg_time
+        type: integer
+      - in: query
+        name: to_user_id
+        type: integer
+      - description: 用户鉴权token
+        in: query
         name: token
         required: true
-        schema:
-          $ref: '#/definitions/message.MessageChatRequest'
+        type: string
       produces:
       - application/json
+      responses: {}
       tags:
-      - 消息
+      - 消息接口
   /douyin/publish/action/:
     post:
       consumes:
@@ -225,6 +201,7 @@ paths:
           $ref: '#/definitions/video.PublishActionRequest'
       produces:
       - application/json
+      responses: {}
       tags:
       - 视频接口
   /douyin/publish/list/:
@@ -241,6 +218,7 @@ paths:
           $ref: '#/definitions/video.PublishListRequest'
       produces:
       - application/json
+      responses: {}
       tags:
       - 视频接口
   /douyin/relation/action/:
@@ -249,14 +227,23 @@ paths:
       - application/json
       description: 登录用户对其他用户进行关注或取消关注。
       parameters:
-      - description: request body
-        in: body
-        name: request_body
+      - in: query
+        name: action_type
+        type: integer
+      - in: query
+        name: from_user_id
+        type: integer
+      - in: query
+        name: to_user_id
+        type: integer
+      - description: 用户鉴权token
+        in: query
+        name: token
         required: true
-        schema:
-          $ref: '#/definitions/relation.FollowActionRequest'
+        type: string
       produces:
       - application/json
+      responses: {}
       summary: 关系操作
       tags:
       - 社交接口
@@ -278,6 +265,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       summary: 用户关注列表
       tags:
       - 社交接口
@@ -299,6 +287,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       summary: 用户粉丝列表
       tags:
       - 社交接口
@@ -320,6 +309,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       summary: 用户好友列表
       tags:
       - 社交接口
@@ -341,6 +331,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       tags:
       - 基础接口
   /douyin/user/login/:
@@ -361,6 +352,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       tags:
       - 基础接口
   /douyin/user/register/:
@@ -381,6 +373,7 @@ paths:
         type: string
       produces:
       - application/json
+      responses: {}
       tags:
       - 基础接口
 swagger: "2.0"

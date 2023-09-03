@@ -180,8 +180,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间",
                         "name": "latest_time",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -291,13 +290,32 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "body",
+                        "type": "file",
+                        "description": "file",
+                        "name": "data",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_id",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "token",
                         "name": "token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/video.PublishActionRequest"
-                        }
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {}
@@ -317,13 +335,14 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "body",
+                        "type": "string",
                         "name": "token",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/video.PublishListRequest"
-                        }
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "user_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {}
@@ -556,36 +575,6 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {}
-            }
-        }
-    },
-    "definitions": {
-        "video.PublishActionRequest": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "video.PublishListRequest": {
-            "type": "object",
-            "properties": {
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
             }
         }
     }

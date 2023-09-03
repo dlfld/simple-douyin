@@ -17,7 +17,7 @@ import (
 // @Schemes
 // @Description 获取用户发表的视频列表
 // @Tags 视频接口
-// @Param token body video.PublishListRequest true "body"
+// @Param token query video.PublishListRequest true "body"
 // @Accept json
 // @Produce json
 // @Router /douyin/publish/list/ [GET]
@@ -50,7 +50,10 @@ func PublishList(c *gin.Context) {
 // @Schemes
 // @Description 视频投稿
 // @Tags 视频接口
-// @Param token body video.PublishActionRequest true "body"
+// @Param data formData file true "file"
+// @Param title formData string true "title"
+// @Param user_id query string true "user_id"
+// @Param token query string true "token"
 // @Accept json
 // @Produce json
 // @Router /douyin/publish/action/ [POST]
@@ -89,7 +92,7 @@ func VideoSubmit(c *gin.Context) {
 // @Schemes
 // @Description 获取最近新发的30条视频
 // @Tags 视频接口
-// @Param latest_time query int64 true "可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间"
+// @Param latest_time query int64 false "可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间"
 // @Param token query string true "用户鉴权token"
 // @Accept json
 // @Produce json

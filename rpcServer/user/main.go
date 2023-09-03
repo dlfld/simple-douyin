@@ -34,12 +34,12 @@ func main() {
 	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-user")
 	defer closer.Close()
 	addr, err := net.ResolveTCPAddr("tcp", conf.UserService.Addr)
-	svr := userservice.NewServer(new(UserServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	if err != nil {
 		log.Println(err.Error())
 	}
-	err = svr.Run()
+	svr := userservice.NewServer(new(UserServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	etcd.RegisterService(conf.UserService.Name, conf.UserService.Addr)
+	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())
 	}

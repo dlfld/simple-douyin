@@ -3,6 +3,9 @@ package etcd
 import (
 	"context"
 	"fmt"
+	"net"
+	"os"
+	"strings"
 	"time"
 
 	"go.etcd.io/etcd/clientv3"
@@ -26,12 +29,26 @@ func RegisterService(serviceName string, serviceAddress string) {
 	if err != nil {
 		panic(err)
 	}
-
-	// 将服务信息注册到etcd中
-	key := fmt.Sprintf("/douyin/%s/%s", serviceName, serviceAddress)
-	_, err = cli.Put(context.Background(), key, serviceAddress, clientv3.WithLease(resp.ID))
+	// 获取当前服务器ip
+	hostname, err := os.Hostname()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
+	}
+
+	ips, err := net.LookupIP(hostname)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, ip := range ips {
+		// 将服务信息注册到etcd中
+		newip := strings.ReplaceAll(serviceAddress, "0.0.0.0", ip.String())
+		key := fmt.Sprintf("/douyin/%s/%s", serviceName, newip)
+		_, err = cli.Put(context.Background(), key, newip, clientv3.WithLease(resp.ID))
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// 定期刷新租约

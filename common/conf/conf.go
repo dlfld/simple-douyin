@@ -13,23 +13,23 @@ var Redis = redisConfig{
 
 var UserService = userServiceConfig{
 	Name: "userService",
-	Addr: "127.0.0.1:8081",
+	Addr: "0.0.0.0:8081",
 }
 var RelationService = relationServiceConfig{
 	Name: "relationService",
-	Addr: "127.0.0.1:8082",
+	Addr: "0.0.0.0:8082",
 }
 var MessageService = messageServiceConfig{
 	Name: "messageService",
-	Addr: "127.0.0.1:8083",
+	Addr: "0.0.0.0:8083",
 }
 var VideoService = videoServiceConfig{
 	Name: "videoService",
-	Addr: "127.0.0.1:8084",
+	Addr: "0.0.0.0:8084",
 }
 var InteractionService = interactionServiceConfig{
 	Name: "interactionService",
-	Addr: "127.0.0.1:8085",
+	Addr: "0.0.0.0:8085",
 }
 
 var Kafka = kafkaConfig{

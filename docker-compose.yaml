@@ -1,0 +1,48 @@
+version: '2'
+services:
+  base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: base-image
+
+  video:
+    depends_on:
+      - base
+    image: base-image
+    expose:
+      - 8084
+    command: sh -c "cd /app/rpcServer/video && go run ."
+    
+  relation:
+    depends_on:
+      - base
+    image: base-image
+    expose:
+      - 8082
+    command: sh -c "cd /app/rpcServer/relation && go run ."
+
+  message:
+    depends_on:
+      - base
+    image: base-image
+    expose:
+      - 8083
+    command: sh -c "cd /app/rpcServer/message && go run ."
+
+  user:
+    depends_on:
+      - base
+    image: base-image
+    expose:
+      - 8081
+    command: sh -c "cd /app/rpcServer/user && go run ."
+
+  
+  interaction:
+    depends_on:
+      - base
+    image: base-image
+    expose:
+      - 8085
+    command: sh -c "cd /app/rpcServer/interaction && go run ."

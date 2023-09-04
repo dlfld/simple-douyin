@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/douyin/common/conf"
 	"go.etcd.io/etcd/clientv3"
 )
 
@@ -16,7 +17,7 @@ const grantTime = 3600 * 24 * 100
 func RegisterService(serviceName string, serviceAddress string) {
 	// 创建etcd客户端连接
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"http://101.34.81.220:2379"}, // etcd服务器地址
+		Endpoints:   []string{conf.EtcdConfig.Addr}, // etcd服务器地址
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {

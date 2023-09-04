@@ -5,7 +5,27 @@ services:
       context: .
       dockerfile: Dockerfile
     image: base-image
-  
+
+  etcd:
+    hostname: etcd
+    image: bitnami/etcd:3
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    privileged: true
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    environment:
+      - "ALLOW_NONE_AUTHENTICATION=yes"
+  redis:
+    image: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
   http_server:
     depends_on:
       - base
@@ -13,10 +33,12 @@ services:
     ports:
       - "8080:8080"
     command: sh -c "cd /app && ./main"
+    restart: always
 
   video:
     depends_on:
       - base
+      - etcd
     image: base-image
     ports:
       - "8084:8084"
@@ -25,6 +47,7 @@ services:
   relation:
     depends_on:
       - base
+      - etcd
     image: base-image
     ports:
       - "8082:8082"
@@ -33,6 +56,7 @@ services:
   message:
     depends_on:
       - base
+      - etcd
     image: base-image
     ports:
       - "8083:8083"
@@ -41,6 +65,7 @@ services:
   user:
     depends_on:
       - base
+      - etcd
     image: base-image
     ports:
       - "8081:8081"
@@ -50,6 +75,7 @@ services:
   interaction:
     depends_on:
       - base
+      - etcd
     image: base-image
     ports:
       - "8085:8085"

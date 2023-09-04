@@ -59,3 +59,7 @@ type bloomConfig struct {
 	BloomBit uint
 	HashNum  uint
 }
+
+type etcdConfig struct {
+	Addr string
+}

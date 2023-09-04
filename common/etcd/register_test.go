@@ -26,7 +26,7 @@ func TestRegisterService(t *testing.T) {
 func TestGetAll(t *testing.T) {
 	// 创建etcd客户端连接
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"http://101.34.81.220:2379"}, // etcd服务器地址
+		Endpoints:   []string{"http://127.0.0.1:2379"}, // etcd服务器地址
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
@@ -41,6 +41,7 @@ func TestGetAll(t *testing.T) {
 	}
 	for _, kv := range resp.Kvs {
 		fmt.Println(string(kv.Key), string(kv.Value))
+		cli.Delete(context.Background(), string(kv.Key))
 	}
 
 }

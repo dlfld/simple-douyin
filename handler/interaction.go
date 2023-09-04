@@ -61,6 +61,7 @@ func InteractionFavoriteList(c *gin.Context) {
 	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
 	// log.Printf("resp = %+v\n", resp)
 	if err != nil || resp.StatusCode != 0 {
+		resp = new(interaction.FavoriteListResponse)
 		constant.HandlerErr(constant.ErrFavoriteList, resp)
 	}
 
@@ -91,6 +92,7 @@ func InteractionCommentAction(c *gin.Context) {
 	}
 	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
+		resp = new(interaction.CommentActionResponse)
 		constant.HandlerErr(constant.ErrCommentAction, resp)
 	}
 	c.JSON(http.StatusOK, resp)
@@ -115,6 +117,7 @@ func InteractionCommentList(c *gin.Context) {
 
 	resp, err := rpcCli.interactionCli.CommentList(context.Background(), req)
 	if err != nil || resp.StatusCode != 0 {
+		resp = new(interaction.CommentListResponse)
 		constant.HandlerErr(constant.ErrCommentList, resp)
 	}
 

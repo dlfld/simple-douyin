@@ -39,6 +39,7 @@ func main() {
 	//genSwagger()
 	// public directory is used to serve static resources
 	//r.Static("/static", "./public")
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

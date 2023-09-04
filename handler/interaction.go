@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"log"
 	"strconv"
 
 	"github.com/douyin/common/constant"
@@ -60,7 +59,7 @@ func InteractionFavoriteList(c *gin.Context) {
 	}
 
 	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
-	log.Printf("resp = %+v\n", resp)
+	// log.Printf("resp = %+v\n", resp)
 	if err != nil || resp.StatusCode != 0 {
 		constant.HandlerErr(constant.ErrFavoriteList, resp)
 	}

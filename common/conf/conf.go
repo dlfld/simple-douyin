@@ -2,11 +2,11 @@ package conf
 
 var Mysql = mysqlConfig{
 	Login: "root:abc123456@tcp(101.34.81.220:3306)/douyin?charset=utf8&parseTime=True&loc=Local",
-	Debug: true,
+	Debug: false,
 }
 var Redis = redisConfig{
-	Addr:     "101.34.81.220:6379",
-	Password: "abc123456",
+	Addr:     "redis:6379",
+	Password: "",
 }
 
 //TODO ip改成远端地址
@@ -63,4 +63,8 @@ var CosConfig = cosConfig{
 var BloomConfig = bloomConfig{
 	BloomBit: 1000000,
 	HashNum:  3,
+}
+
+var EtcdConfig = etcdConfig{
+	"http://etcd:2379",
 }

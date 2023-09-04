@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-
 	"net/http"
 	"strconv"
 
@@ -40,7 +38,7 @@ func MessageAction(c *gin.Context) {
 		return
 	}
 	req.FromUserId = int64(c.GetUint("userID"))
-	fmt.Printf("req = %+v\n", req)
+	// fmt.Printf("req = %+v\n", req)
 	// 4. 发起RPC调用
 	resp, _ := rpcCli.messageCli.SendMessage(c, req)
 	// 5. 处理错误返回响应

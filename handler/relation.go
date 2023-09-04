@@ -2,8 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
-
 	"net/http"
 	"strconv"
 
@@ -34,14 +32,14 @@ import (
 func RelationAction(c *gin.Context) {
 	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))
 	ActionType, _ := strconv.Atoi(c.Query("action_type"))
-	userID, has := c.Get("userID")
-	fmt.Println(userID, has)
+	// userID, has := c.Get("userID")
+	// fmt.Println(userID, has)
 	req := relation.FollowActionRequest{
 		FromUserId: int64(c.GetUint("userID")),
 		ToUserId:   int64(ToUserID),
 		ActionType: int32(ActionType),
 	}
-	fmt.Println("req:", req)
+	// fmt.Println("req:", req)
 
 	// 发起RPC调用
 	resp, err := rpcCli.relationCli.FollowAction(context.Background(), &req)

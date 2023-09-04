@@ -19,6 +19,7 @@ services:
       - "2380:2380"
     environment:
       - "ALLOW_NONE_AUTHENTICATION=yes"
+      
   redis:
     image: redis
     hostname: redis
@@ -43,6 +44,7 @@ services:
     ports:
       - "8084:8084"
     command: sh -c "cd /app/rpcServer/video && ./main"
+    restart: always
     
   relation:
     depends_on:
@@ -52,6 +54,7 @@ services:
     ports:
       - "8082:8082"
     command: sh -c "cd /app/rpcServer/relation && ./main"
+    restart: always
 
   message:
     depends_on:
@@ -61,6 +64,7 @@ services:
     ports:
       - "8083:8083"
     command: sh -c "cd /app/rpcServer/message && ./main"
+    restart: always
 
   user:
     depends_on:
@@ -70,7 +74,7 @@ services:
     ports:
       - "8081:8081"
     command: sh -c "cd /app/rpcServer/user && ./main"
-
+    restart: always
   
   interaction:
     depends_on:
@@ -80,3 +84,4 @@ services:
     ports:
       - "8085:8085"
     command: sh -c "cd /app/rpcServer/interaction && ./main"
+    restart: always

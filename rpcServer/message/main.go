@@ -12,7 +12,6 @@ import (
 	"github.com/douyin/common/mysql"
 	rdb "github.com/douyin/common/redis"
 	message "github.com/douyin/kitex_gen/message/messageservice"
-	"github.com/douyin/kitex_gen/model"
 	"gorm.io/gorm"
 )
 
@@ -32,9 +31,9 @@ func init() {
 	if db, err = mysql.NewMysqlConn(); err != nil {
 		panic(err)
 	}
-	if err = db.AutoMigrate(&model.Message{}); err != nil {
-		panic(err)
-	}
+	//if err = db.AutoMigrate(&model.Message{}); err != nil {
+	//	panic(err)
+	//}
 	// 2. 初始化redis缓存
 	r, err := rdb.NewRedisConn()
 	if err != nil {

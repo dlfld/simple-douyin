@@ -9,8 +9,8 @@ WORKDIR /app
 COPY  ./ /app
 # 进入 rpcServer/video 目录
 
-RUN 
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
+#RUN
+#RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
 
 RUN go mod tidy && go build -o main .
 

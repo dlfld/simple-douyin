@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/douyin/common/etcd"
+	"github.com/douyin/kitex_gen/model"
 	"log"
 	"net"
 
@@ -31,9 +32,9 @@ func init() {
 	if db, err = mysql.NewMysqlConn(); err != nil {
 		panic(err)
 	}
-	//if err = db.AutoMigrate(&model.Message{}); err != nil {
-	//	panic(err)
-	//}
+	if err = db.AutoMigrate(&model.Message{}); err != nil {
+		panic(err)
+	}
 	// 2. 初始化redis缓存
 	r, err := rdb.NewRedisConn()
 	if err != nil {

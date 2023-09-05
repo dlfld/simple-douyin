@@ -81,12 +81,11 @@ services:
   http_server:
     depends_on:
       - base
-      - etcd
-      - video
+      - message
       - interaction
       - user
-      - message
       - relation
+      - video
     image: base-image
     ports:
       - "8080:8080"

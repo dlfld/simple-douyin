@@ -123,8 +123,10 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 		Content:    req.Content,
 		CreateTime: time.Now().UnixMilli(),
 	}
+	tx := db.Begin()
 	// 3. 存入mysql数据库表
-	if err = db.Create(&messageRecord).Error; err != nil {
+	if err = tx.Create(&messageRecord).Error; err != nil {
+		tx.Rollback()
 		logCollector.Error(
 			fmt.Sprintf("failed to create message record in mysql, err=%s", err.Error()),
 		)
@@ -132,24 +134,25 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 		return resp, nil
 	}
 	logCollector.Info(fmt.Sprintf("The message from user[%d] to user[%d] was successfully stored in MySQL, content: %s",
-		messageRecord.FromUserId, messageRecord.ToUserId, messageRecord.Content),
-	)
+		messageRecord.FromUserId, messageRecord.ToUserId, messageRecord.Content))
 	// 4. 序列化后存入缓存
 	key := fmt.Sprintf("%s:%d:%d", messageCacheTable, req.FromUserId, req.ToUserId)
 	record, err := json.Marshal(messageRecord)
 	if err != nil {
+		tx.Rollback()
 		logCollector.Error(fmt.Sprintf("failed to marshal, err: %s", err.Error()))
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return resp, nil
 	}
 	if err = cache.ZAdd(ctx, key, float64(messageRecord.CreateTime), record, time.Hour*24*7).Err(); err != nil {
+		tx.Rollback()
 		logCollector.Error(fmt.Sprintf("failed to create cache, err: %s", err.Error()))
 		constant.HandlerErr(constant.ErrSystemBusy, resp)
 		return nil, err
 	}
+	tx.Commit()
 	logCollector.Info(fmt.Sprintf("The message from user[%d] to user[%d] was successfully stored in Redis, key: %s, content: %s",
-		messageRecord.FromUserId, messageRecord.ToUserId, key, messageRecord.Content),
-	)
+		messageRecord.FromUserId, messageRecord.ToUserId, key, messageRecord.Content))
 	// 5. 缓存消息记录超过设定的阈值，就从缓存中删除5天之前的数据
 	go cache.keepDataNum(ctx, key)
 	return resp, nil

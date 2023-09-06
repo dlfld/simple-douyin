@@ -10,6 +10,7 @@ import (
 	"github.com/douyin/common/middleware"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
+	initialize "github.com/douyin/initialize/gorm"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -83,5 +84,8 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
+	time.Sleep(5)
+	initialize.CreateInteractionTable()
+	initialize.CreateTable()
 	r.Run("0.0.0.0:8080")
 }

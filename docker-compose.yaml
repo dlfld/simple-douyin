@@ -1,6 +1,16 @@
 version: '3'
 services:
 
+  mysql:
+    image: mysql
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: abc123456
+      MYSQL_DATABASE: douyin
+    restart: always
+
   etcd:
     hostname: etcd
     image: bitnami/etcd
@@ -25,8 +35,9 @@ services:
 
   video:
     depends_on:
-
+      - mysql
       - etcd
+      - redis
     image: 15150276667/douyin
     ports:
       - "8084:8084"
@@ -35,8 +46,9 @@ services:
     
   relation:
     depends_on:
-
+      - mysql
       - etcd
+      - redis
     image: 15150276667/douyin
     ports:
       - "8082:8082"
@@ -45,7 +57,7 @@ services:
 
   message:
     depends_on:
-
+      - mysql
       - etcd
       - redis
     image: 15150276667/douyin
@@ -56,8 +68,9 @@ services:
 
   user:
     depends_on:
-
+      - mysql
       - etcd
+      - redis
     image: 15150276667/douyin
     ports:
       - "8081:8081"
@@ -66,7 +79,7 @@ services:
   
   interaction:
     depends_on:
-
+      - mysql
       - etcd
     image: 15150276667/douyin
     ports:

@@ -1,10 +1,5 @@
 version: '3'
 services:
-  base:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: base-image
 
   etcd:
     hostname: etcd
@@ -30,9 +25,9 @@ services:
 
   video:
     depends_on:
-      - base
+
       - etcd
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8084:8084"
     command: sh -c "cd /app/rpcServer/video && ./main"
@@ -40,9 +35,9 @@ services:
     
   relation:
     depends_on:
-      - base
+
       - etcd
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8082:8082"
     command: sh -c "cd /app/rpcServer/relation && ./main"
@@ -50,10 +45,10 @@ services:
 
   message:
     depends_on:
-      - base
+
       - etcd
       - redis
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8083:8083"
     command: sh -c "cd /app/rpcServer/message && ./main"
@@ -61,9 +56,9 @@ services:
 
   user:
     depends_on:
-      - base
+
       - etcd
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8081:8081"
     command: sh -c "cd /app/rpcServer/user && ./main"
@@ -71,9 +66,9 @@ services:
   
   interaction:
     depends_on:
-      - base
+
       - etcd
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8085:8085"
     command: sh -c "cd /app/rpcServer/interaction && ./main"
@@ -81,13 +76,13 @@ services:
 
   http_server:
     depends_on:
-      - base
+
       - message
       - interaction
       - user
       - relation
       - video
-    image: base-image
+    image: 15150276667/douyin
     ports:
       - "8080:8080"
     command: sh -c "cd /app && ./main"

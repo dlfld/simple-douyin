@@ -1,6 +1,10 @@
 version: '3'
 services:
-
+  base:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: base-image
   mysql:
     image: mysql
     hostname: mysql
@@ -38,10 +42,10 @@ services:
       - mysql
       - etcd
       - redis
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8084:8084"
-    command: sh -c "cd /app/rpcServer/video && ./main"
+    command: sh -c "cd /app/rpcServer/video && sleep 10 && ./main"
     restart: always
     
   relation:
@@ -49,10 +53,10 @@ services:
       - mysql
       - etcd
       - redis
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8082:8082"
-    command: sh -c "cd /app/rpcServer/relation && ./main"
+    command: sh -c "cd /app/rpcServer/relation && sleep 10 && ./main"
     restart: always
 
   message:
@@ -60,10 +64,10 @@ services:
       - mysql
       - etcd
       - redis
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8083:8083"
-    command: sh -c "cd /app/rpcServer/message && ./main"
+    command: sh -c "cd /app/rpcServer/message && sleep 10 && ./main"
     restart: always
 
   user:
@@ -71,20 +75,20 @@ services:
       - mysql
       - etcd
       - redis
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8081:8081"
-    command: sh -c "cd /app/rpcServer/user && ./main"
+    command: sh -c "cd /app/rpcServer/user && sleep 10 && ./main"
     restart: always
   
   interaction:
     depends_on:
       - mysql
       - etcd
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8085:8085"
-    command: sh -c "cd /app/rpcServer/interaction && ./main"
+    command: sh -c "cd /app/rpcServer/interaction && sleep 10 && ./main"
     restart: always
 
   http_server:
@@ -95,8 +99,8 @@ services:
       - user
       - relation
       - video
-    image: 15150276667/douyin
+    image: base-image
     ports:
       - "8080:8080"
-    command: sh -c "cd /app && ./main"
+    command: sh -c "cd /app && sleep 10 && ./main"
     restart: always

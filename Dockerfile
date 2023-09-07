@@ -1,17 +1,12 @@
-# 使用官方Golang镜像作为基础镜像
-FROM golang:1.20.5
-ENV GOPROXY https://goproxy.cn
+FROM 15150276667/douyin
 
 # 设置工作目录
 WORKDIR /app
 
-# 复制应用程序源代码到容器中
+RUN rm -rf /app/*
 COPY  ./ /app
-# 进入 rpcServer/video 目录
 
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
-
-RUN go mod tidy && go build -o main .
+RUN go build -o main .
 
 WORKDIR /app/rpcServer/video
 RUN go build -o main .

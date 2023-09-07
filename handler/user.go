@@ -65,6 +65,7 @@ func Login(c *gin.Context) {
 	// 4. 发起RPC调用
 	resp, err2 := rpcCli.userCli.UserLogin(context.Background(), req)
 	if err2 != nil {
+		resp = new(user.UserLoginResponse)
 		c.JSON(http.StatusBadGateway, resp)
 		//panic(err2)
 	}

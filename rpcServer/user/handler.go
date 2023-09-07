@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/douyin/common/constant"
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
@@ -11,7 +13,6 @@ import (
 	"github.com/douyin/rpcServer/user/common"
 	"github.com/douyin/rpcServer/user/util"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -22,7 +23,7 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	//获取参数
 	username := req.GetUsername()
 	password := req.GetPassword()
-
+	resp = new(user.UserRegisterResponse)
 	//密码不为空且小于32位
 	if len(password) > 32 || len(password) <= 5 {
 		//statusMsg := "密码必须小于32位且不为空"

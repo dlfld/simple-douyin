@@ -93,6 +93,9 @@ func Unfollow(userID, toUserID uint) (err error) {
 	}
 	db.Transaction(func(tx *gorm.DB) (err error) {
 		// 更新关注数
+		if tx.Where("to_user_id=? and user_id = ?", toUserID, userID).Delete(&relation).RowsAffected == 0 {
+			return errors.New("relation not exist")
+		}
 		err = tx.Model(&user).Update("following_count", gorm.Expr("following_count - ?", 1)).Error
 		if err != nil {
 			return nil
@@ -101,7 +104,6 @@ func Unfollow(userID, toUserID uint) (err error) {
 		if err != nil {
 			return nil
 		}
-		err = tx.Where("to_user_id=? and user_id = ?", toUserID, userID).Delete(&relation).Error
 		if err != nil {
 			return nil
 		}

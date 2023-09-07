@@ -44,6 +44,7 @@ func RelationAction(c *gin.Context) {
 	// 发起RPC调用
 	resp, err := rpcCli.relationCli.FollowAction(context.Background(), &req)
 	if err != nil {
+		resp = new(relation.FollowActionResponse)
 		constant.HandlerErr(constant.ErrFollowAction, resp)
 	}
 
@@ -65,8 +66,8 @@ func RelationFollowList(c *gin.Context) {
 	// req := relation.NewFollowingListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		resp := relation.FollowingListResponse{}
-		constant.HandlerErr(constant.ErrBadRequest, &resp)
+		resp := new(relation.FollowingListResponse)
+		constant.HandlerErr(constant.ErrBadRequest, resp)
 		c.JSON(http.StatusOK, resp)
 		return
 	}

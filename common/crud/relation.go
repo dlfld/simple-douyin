@@ -25,9 +25,25 @@ func RelationFollow(userID, toUserID uint) (err error) {
 	if userID == toUserID {
 		return
 	}
+	if crud.redis.Exists(context.Background(), userRelationFollowKey(userID)).Val() == 0 {
+		var users []*models.User
+		users, _ = models.GetFollowList(userID)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
+	}
+	if crud.redis.Exists(context.Background(), userRelationFollowerKey(toUserID)).Val() == 0 {
+		var users []*models.User
+		users, _ = models.GetFollowerList(toUserID)
+		CacheRelationFollowers(toUserID, users)
+		CacheUsersInfo(users)
+	}
+	if crud.redis.SIsMember(context.Background(), userRelationFollowKey(userID), toUserID).Val() {
+		return
+	}
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
 	models.Follow(userID, toUserID)
+
 	// 将被关注用户添加到关注列表
 	res := pipline.SAdd(context.Background(), userRelationFollowKey(userID), toUserID)
 	if res.Err() != nil {
@@ -41,7 +57,6 @@ func RelationFollow(userID, toUserID uint) (err error) {
 	}
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
-	DeletePublishListCache(int(userID))
 	return err
 }
 
@@ -50,9 +65,22 @@ func RelationUnFollow(userID, toUserID uint) (err error) {
 	if userID == toUserID {
 		return
 	}
+
 	pipline := crud.redis.Pipeline()
 	defer pipline.Close()
 	models.Unfollow(userID, toUserID)
+	if crud.redis.Exists(context.Background(), userRelationFollowKey(userID)).Val() == 0 {
+		var users []*models.User
+		users, _ = models.GetFollowList(userID)
+		CacheRelationFollows(userID, users)
+		CacheUsersInfo(users)
+	}
+	if crud.redis.Exists(context.Background(), userRelationFollowerKey(toUserID)).Val() == 0 {
+		var users []*models.User
+		users, _ = models.GetFollowerList(toUserID)
+		CacheRelationFollowers(toUserID, users)
+		CacheUsersInfo(users)
+	}
 	// 从关注列表中移除被取消关注用户
 	res := pipline.SRem(context.Background(), userRelationFollowKey(userID), toUserID)
 	if res.Err() != nil {
@@ -66,7 +94,7 @@ func RelationUnFollow(userID, toUserID uint) (err error) {
 	}
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
-	DeletePublishListCache(int(userID))
+
 	return err
 }
 

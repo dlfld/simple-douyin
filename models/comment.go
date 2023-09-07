@@ -9,8 +9,11 @@
 package models
 
 import (
-	"gorm.io/gorm"
+	"context"
+	"fmt"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 // Comment
@@ -30,4 +33,9 @@ type Comment struct {
 
 func (Comment) TableName() string {
 	return "comments"
+}
+
+func (c *Comment) AfterUpdate(tx *gorm.DB) (err error) {
+	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", c.UserID))
+	return cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", c.VideoID)).Err()
 }

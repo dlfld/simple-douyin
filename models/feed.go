@@ -9,10 +9,11 @@
 package models
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/douyin/common/mysql"
-
 	"gorm.io/gorm"
 )
 
@@ -35,6 +36,10 @@ type Video struct {
 
 func (Video) TableName() string {
 	return "videos"
+}
+
+func (v *Video) AfterUpdate(tx *gorm.DB) (err error) {
+	return cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", v.ID)).Err()
 }
 
 // FindVideoListBy

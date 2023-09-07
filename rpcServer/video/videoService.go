@@ -99,6 +99,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 				return nil, err
 			}
 		}
+		pipeline.Expire(context.Background(), userPublishVideoList(userId), time.Minute)
 		// 执行缓存操作
 		pipeline.Exec(context.Background())
 	}

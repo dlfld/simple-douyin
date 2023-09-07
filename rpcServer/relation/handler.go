@@ -92,6 +92,7 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 			// msg = err.Error()
 			logCollector.Error(fmt.Sprintf("follow action error: %v", err))
 		} else {
+			crud.DeletePublishListCache(int(userId))
 			msg = "follow ok"
 		}
 
@@ -101,6 +102,7 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 		if err != nil {
 			logCollector.Error(fmt.Sprintf("unfollow action error: %v", err))
 		} else {
+			crud.DeletePublishListCache(int(userId))
 			msg = "unfollow ok"
 		}
 

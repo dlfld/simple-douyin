@@ -26,6 +26,7 @@ func FavoriteVideo(userID, videoID int64) (err error) {
 		}
 	}
 	err = crud.redis.SAdd(context.Background(), favoriteVideos(userID), videoID).Err()
+	DeletePublishListCache(int(userID))
 	return
 }
 
@@ -42,6 +43,7 @@ func UnFavoriteVideo(userID, videoID int64) (err error) {
 		}
 	}
 	err = crud.redis.SRem(context.Background(), favoriteVideos(userID), videoID).Err()
+	DeletePublishListCache(int(userID))
 	return
 }
 

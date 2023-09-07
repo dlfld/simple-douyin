@@ -41,6 +41,7 @@ func RelationFollow(userID, toUserID uint) (err error) {
 	}
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
+	DeletePublishListCache(int(userID))
 	return err
 }
 
@@ -65,6 +66,7 @@ func RelationUnFollow(userID, toUserID uint) (err error) {
 	}
 	// 执行缓存操作
 	_, err = pipline.Exec(context.Background())
+	DeletePublishListCache(int(userID))
 	return err
 }
 

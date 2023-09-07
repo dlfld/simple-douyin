@@ -6,6 +6,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/bytedance/sonic"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/crud"
@@ -14,11 +20,6 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/douyin/rpcServer/video/convert"
-	"io"
-	"log"
-	"strconv"
-	"strings"
-	"time"
 )
 
 // 视频类型
@@ -159,6 +160,7 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	}
 	//插入数据
 	err = models.InsertVideo(&video)
+	crud.DeletePublishListCache(int(userId))
 	if err != nil {
 		return err
 	}

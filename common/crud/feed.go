@@ -21,6 +21,11 @@ func videosCache(VideoID int64) string {
 	return fmt.Sprintf("video:cache:%d", VideoID)
 }
 
+func DeletePublishListCache(userID int) (err error) {
+	err = crud.redis.Del(context.Background(), fmt.Sprintf("video:feed:publish:%d", userID)).Err()
+	return
+}
+
 // 缓存用户看过哪些视频 防止出现重复结果
 func CacheUserWatched(userID int64, videoIDs []int64) (err error) {
 	pipline := crud.redis.Pipeline()

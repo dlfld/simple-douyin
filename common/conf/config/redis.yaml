@@ -1,0 +1,3 @@
+redis:
+  addr: "redis:6379"
+  pwd: ""

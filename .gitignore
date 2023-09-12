@@ -2,7 +2,6 @@
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 apache-*
-common/conf/conf.go
 # Binaries for programs and plugins
 *.mp4
 *.exe

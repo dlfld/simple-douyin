@@ -1,0 +1,2 @@
+etcd:
+  addr: "http://etcd:2379"

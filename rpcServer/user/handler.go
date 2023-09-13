@@ -85,7 +85,7 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	//返回结果
 	logCollector.Info(fmt.Sprintf("user[%s]: success to regist with encryptPassword[%s]",
 		username, encryptPassword))
-
+	bf.AddUserId(int64(int(newUser.ID)))
 	statusMsg := "注册并登录成功"
 	resp = &user.UserRegisterResponse{StatusCode: 0, StatusMsg: &statusMsg, UserId: int64(int(newUser.ID)), Token: token}
 	return resp, nil

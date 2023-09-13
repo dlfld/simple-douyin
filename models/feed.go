@@ -65,10 +65,10 @@ func FindVideoListBy(field, condition string) ([]*Video, error) {
 // @Description:
 // @param video
 // @return error
-func InsertVideo(video *Video) error {
+func InsertVideo(video *Video) (id int64, err error) {
 	conn, err := mysql.NewMysqlConn()
 	if err != nil {
-		return err
+		return
 	}
 	conn.Transaction(func(tx *gorm.DB) (err error) {
 		err = tx.Model(&User{}).Where("id = ?", video.AuthorID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
@@ -83,7 +83,7 @@ func InsertVideo(video *Video) error {
 	})
 
 	// conn.Create(video)
-	return nil
+	return video.ID, nil
 }
 
 //	GetVideoFeedList

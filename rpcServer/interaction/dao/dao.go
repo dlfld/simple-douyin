@@ -14,7 +14,7 @@ func NewDao() (dao *Dao) {
 	dao = &Dao{
 		Mysql:       NewMysql(),
 		Redis:       NewRedis(),
-		BloomFilter: bloom.NewBloomFilter(),
+		BloomFilter: bloom.NewBloom(),
 	}
 	return dao
 }

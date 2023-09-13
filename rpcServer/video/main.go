@@ -2,6 +2,7 @@
 package main
 
 import (
+	"github.com/douyin/common/bloom"
 	"log"
 	"net"
 
@@ -15,6 +16,7 @@ import (
 
 // LogCollector 日志收集器
 var LogCollector *productor.LogCollector
+var bf *bloom.Filter
 
 func init() {
 	var err error
@@ -22,6 +24,7 @@ func init() {
 	if LogCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
 		panic(err)
 	}
+	bf = bloom.NewBloom()
 }
 func main() {
 	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-video")

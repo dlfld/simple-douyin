@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/douyin/common/bloom"
 
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/relation"
 	"github.com/douyin/models"
 )
+
+var bf *bloom.Filter
 
 // RelationServiceImpl implements the last service interface defined in the IDL.
 type RelationServiceImpl struct{}

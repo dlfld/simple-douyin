@@ -37,8 +37,8 @@ services:
     restart: always
 
   bloom:
-    hostname: bloom
     image: redislabs/rebloom
+    hostname: bloom
     ports:
       - "6380:6379"
     restart: always
@@ -99,7 +99,6 @@ services:
 
   http_server:
     depends_on:
-
       - message
       - interaction
       - user

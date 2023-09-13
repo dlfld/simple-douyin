@@ -1,21 +1,26 @@
 package bloom
 
-// IfExists 通用查询, element需自定义, 慎用
-func (b *Filter) IfExists(element string) bool {
-	return b.filter.Test([]byte(element))
+import (
+	"context"
+)
+
+func (b *Filter) ifExists(key string, element interface{}) (exist bool, err error) {
+	result, err := b.filter.Do(context.Background(), "BF.EXISTS", key, element).Bool()
+	if err != nil {
+		return
+	} else {
+		return result, nil
+	}
 }
 
-func (b *Filter) IfVideoIdExists(videoId int64) bool {
-	element := getVideoElement(videoId)
-	return b.filter.Test([]byte(element))
+func (b *Filter) CheckIfVideoIdExists(videoId int64) (exist bool, err error) {
+	return b.ifExists(bloomVideo, videoId)
 }
 
-func (b *Filter) IfCommentIdExists(commentId int64) bool {
-	element := getCommentElement(commentId)
-	return b.filter.Test([]byte(element))
+func (b *Filter) CheckIfCommentIdExists(commentId int64) (exist bool, err error) {
+	return b.ifExists(bloomComment, commentId)
 }
 
-func (b *Filter) IfUserIdExists(userId int64) bool {
-	element := getUserElement(userId)
-	return b.filter.Test([]byte(element))
+func (b *Filter) CheckIfUserIdExists(userId int64) (exist bool, err error) {
+	return b.ifExists(bloomComment, userId)
 }

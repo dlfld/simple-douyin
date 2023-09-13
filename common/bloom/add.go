@@ -1,22 +1,49 @@
 package bloom
 
-func (b *Filter) AddElements(elements []string) {
+import "context"
+
+const (
+	bloomVideo   = "bloom:videoIds"
+	bloomComment = "bloom:commentIds"
+	bloomUser    = "bloom:userIds"
+)
+
+func (b *Filter) addElement(key string, element interface{}) {
+	b.filter.Do(context.Background(), "BF.ADD", key, element)
+}
+
+func (b *Filter) AddVideoId(videoId int64) {
+	b.addElement(bloomVideo, videoId)
+}
+
+func (b *Filter) AddCommentId(commentId int64) {
+	b.addElement(bloomComment, commentId)
+}
+
+func (b *Filter) AddUserId(userId int64) {
+	b.addElement(bloomUser, userId)
+}
+
+func (b *Filter) addElements(key string, elements []interface{}) {
 	for _, e := range elements {
-		b.filter.Add([]byte(e))
+		b.addElement(key, e)
 	}
 }
 
-func (b *Filter) AddVideoIds(videoId int64) {
-	element := getVideoElement(videoId)
-	b.filter.Add([]byte(element))
+func (b *Filter) AddVideoIds(elements []int64) {
+	for _, e := range elements {
+		b.addElement(bloomVideo, e)
+	}
 }
 
-func (b *Filter) AddCommentIds(commentId int64) {
-	element := getCommentElement(commentId)
-	b.filter.Add([]byte(element))
+func (b *Filter) AddCommentIds(elements []int64) {
+	for _, e := range elements {
+		b.addElement(bloomComment, e)
+	}
 }
 
-func (b *Filter) AddUserIds(userId int64) {
-	element := getUserElement(userId)
-	b.filter.Add([]byte(element))
+func (b *Filter) AddUserIds(elements []int64) {
+	for _, e := range elements {
+		b.addElement(bloomUser, e)
+	}
 }

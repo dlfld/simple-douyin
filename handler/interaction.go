@@ -4,7 +4,6 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/interaction"
 
 	"net/http"
@@ -22,8 +21,8 @@ import (
 // @Router /douyin/favorite/action/ [POST]
 func InteractionFavoriteAction(c *gin.Context) {
 
-	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
-	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	actionType, _ := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
 	userId := int64(c.GetUint("userID"))
 	req := &interaction.FavoriteActionRequest{
 		VideoId:    videoId,
@@ -31,11 +30,7 @@ func InteractionFavoriteAction(c *gin.Context) {
 		UserId:     int64(userId),
 	}
 
-	resp, err := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
-	if err != nil || resp.StatusCode != 0 {
-		resp = new(interaction.FavoriteActionResponse)
-		constant.HandlerErr(constant.ErrFavoriteAction, resp)
-	}
+	resp, _ := rpcCli.interactionCli.FavoriteAction(context.Background(), req)
 	c.JSON(http.StatusOK, resp)
 
 }
@@ -50,21 +45,12 @@ func InteractionFavoriteAction(c *gin.Context) {
 // @Router /douyin/favorite/list/ [GET]
 func InteractionFavoriteList(c *gin.Context) {
 	// userId := int64(c.GetUint("userID"))
-	userId, err := strconv.Atoi(c.Query("user_id"))
-	if err != nil {
-		return
-	}
+	userId, _ := strconv.Atoi(c.Query("user_id"))
 	req := &interaction.FavoriteListRequest{
 		UserId: int64(userId),
 	}
 
-	resp, err := rpcCli.interactionCli.FavoriteList(context.Background(), req)
-	// log.Printf("resp = %+v\n", resp)
-	if err != nil || resp.StatusCode != 0 {
-		resp = new(interaction.FavoriteListResponse)
-		constant.HandlerErr(constant.ErrFavoriteList, resp)
-	}
-
+	resp, _ := rpcCli.interactionCli.FavoriteList(context.Background(), req)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -77,11 +63,10 @@ func InteractionFavoriteList(c *gin.Context) {
 // @Param request_body query interaction.CommentActionRequest true "request body"
 // @Router /douyin/comment/action/ [POST]
 func InteractionCommentAction(c *gin.Context) {
-
-	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
-	actionType, err := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	actionType, _ := strconv.Atoi(c.Query("action_type")) // 1-点赞，2-取消点赞
 	userId := int64(c.GetUint("userID"))
-	commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
+	commentId, _ := strconv.ParseInt(c.Query("comment_id"), 10, 64)
 	commentText := c.Query("comment_text")
 	req := &interaction.CommentActionRequest{
 		VideoId:     videoId,
@@ -90,11 +75,7 @@ func InteractionCommentAction(c *gin.Context) {
 		CommentText: &commentText,
 		CommentId:   &commentId,
 	}
-	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
-	if err != nil || resp.StatusCode != 0 {
-		resp = new(interaction.CommentActionResponse)
-		constant.HandlerErr(constant.ErrCommentAction, resp)
-	}
+	resp, _ := rpcCli.interactionCli.CommentAction(context.Background(), req)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -109,17 +90,12 @@ func InteractionCommentAction(c *gin.Context) {
 func InteractionCommentList(c *gin.Context) {
 
 	userId := int64(c.GetUint("userID"))
-	videoId, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	req := &interaction.CommentListRequest{
 		UserId:  &userId,
 		VideoId: videoId,
 	}
 
-	resp, err := rpcCli.interactionCli.CommentList(context.Background(), req)
-	if err != nil || resp.StatusCode != 0 {
-		resp = new(interaction.CommentListResponse)
-		constant.HandlerErr(constant.ErrCommentList, resp)
-	}
-
+	resp, _ := rpcCli.interactionCli.CommentList(context.Background(), req)
 	c.JSON(http.StatusOK, resp)
 }

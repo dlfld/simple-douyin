@@ -31,10 +31,10 @@ func TestBloomFilter(t *testing.T) {
 }
 
 func TestBloomFilter2(t *testing.T) {
-	bloom := NewBloomForTest()
-	ids := []int64{1, 3, 5, 7, 9}
-	bloom.AddVideoIds(ids)
-	bloom.AddCommentIds(ids)
+	bloom := newBloomForTest()
+	//ids := []int64{1, 3, 5, 7, 9}
+	//bloom.AddVideoIds(ids)
+	//bloom.AddCommentIds(ids)
 	//bloom.AddUserIds(ids)
 	for i := 0; i < 10; i++ {
 		exists, err := bloom.CheckIfVideoIdExists(int64(i))

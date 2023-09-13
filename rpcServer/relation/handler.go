@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/douyin/common/bloom"
+	"github.com/douyin/common/constant"
 
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
@@ -87,6 +88,16 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	resp.StatusMsg = &msg
 	userId := uint(req.FromUserId)
 
+	exists, err := bf.CheckIfUserIdExists(req.ToUserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
+
 	switch req.ActionType {
 	case 1:
 		// err = models.Follow(userId, uint(req.ToUserId))
@@ -118,6 +129,15 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 // FollowList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
 	// TODO: Your code here...
+	exists, err := bf.CheckIfUserIdExists(req.UserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	// userList, _ := models.GetFollowList(uint(req.UserId))
@@ -133,6 +153,16 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 // FollowerList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
 	// TODO: Your code here...
+	exists, err := bf.CheckIfUserIdExists(req.UserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
+
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	// var kitexList []*model.User
@@ -149,6 +179,16 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 // FriendList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
 	// TODO: Your code here...
+	exists, err := bf.CheckIfUserIdExists(req.UserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
+
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	userList, err := crud.RelationGetFriends(uint(req.UserId))

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/douyin/common/bloom"
 	"github.com/douyin/common/etcd"
 	"log"
 	"net"
@@ -18,6 +19,7 @@ import (
 
 var db *gorm.DB
 var cache *Cache
+var bf *bloom.Filter
 
 const (
 	messageCacheTable  = "message"
@@ -47,6 +49,7 @@ func init() {
 	if logCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
 		panic(err)
 	}
+	bf = bloom.NewBloom()
 }
 
 func main() {

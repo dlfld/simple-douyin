@@ -29,6 +29,9 @@ const (
 	ErrCommentList
 	ErrVideoSizeMaxLimit
 	ErrVideoTitleLength
+	ErrBloomVideo
+	ErrBloomComment
+	ErrBloomUser
 )
 
 var errMap = map[int32]string{
@@ -54,6 +57,9 @@ var errMap = map[int32]string{
 	ErrFavoriteList:         "获取点赞列表失败",
 	ErrCommentAction:        "评论操作失败",
 	ErrCommentList:          "获取评论列表失败",
+	ErrBloomVideo:           "该视频不存在",
+	ErrBloomComment:         "该评论不存在",
+	ErrBloomUser:            "该用户不存在",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

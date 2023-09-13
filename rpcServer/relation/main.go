@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/cloudwego/kitex/server"
+	"github.com/douyin/common/bloom"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/jaeger"
@@ -28,6 +29,7 @@ func main() {
 		log.Println(err.Error())
 	}
 	etcd.RegisterService(conf.RelationService.Name, conf.RelationService.Addr)
+	bf = bloom.NewBloom()
 	err = svr.Run()
 	if err != nil {
 		log.Println(err.Error())

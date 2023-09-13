@@ -14,13 +14,17 @@ func (b *Filter) ifExists(key string, element interface{}) (exist bool, err erro
 }
 
 func (b *Filter) CheckIfVideoIdExists(videoId int64) (exist bool, err error) {
-	return b.ifExists(bloomVideo, videoId)
+	return b.ifExists(bloomVideoId, videoId)
 }
 
 func (b *Filter) CheckIfCommentIdExists(commentId int64) (exist bool, err error) {
-	return b.ifExists(bloomComment, commentId)
+	return b.ifExists(bloomCommentId, commentId)
 }
 
 func (b *Filter) CheckIfUserIdExists(userId int64) (exist bool, err error) {
-	return b.ifExists(bloomUser, userId)
+	return b.ifExists(bloomUserId, userId)
+}
+
+func (b *Filter) CheckIfUserNameExists(userName string) (exist bool, err error) {
+	return b.ifExists(bloomUserName, userName)
 }

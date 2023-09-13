@@ -22,7 +22,7 @@ func NewBloom() *Filter {
 	}
 }
 
-func NewBloomForTest() *Filter {
+func newBloomForTest() *Filter {
 	var rdb *redis.Client
 	once.Do(func() {
 		rdb = redis.NewClient(&redis.Options{Addr: "localhost:6380", Password: "", DB: 0})

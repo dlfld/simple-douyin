@@ -17,7 +17,7 @@ import (
 )
 
 var dao *d.Dao
-var logger *productor.LogCollector
+var logCollector *productor.LogCollector
 
 // InteractionServiceImpl implements the last service interface defined in the IDL.
 type InteractionServiceImpl struct {
@@ -32,10 +32,10 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 	resp = new(interaction.FavoriteActionResponse)
 	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
 	} else {
 		if !exists {
-			constant.HandlerErr(constant.ErrFavoriteAction, resp)
+			constant.HandlerErr(constant.ErrBloomVideo, resp)
 			return resp, nil
 		}
 	}
@@ -96,10 +96,10 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	resp = new(interaction.FavoriteListResponse)
 	exists, err := dao.BloomFilter.CheckIfUserIdExists(req.UserId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
+		logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
 	} else {
 		if !exists {
-			constant.HandlerErr(constant.ErrFavoriteList, resp)
+			constant.HandlerErr(constant.ErrBloomUser, resp)
 			return resp, nil
 		}
 	}
@@ -141,10 +141,10 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 	resp = new(interaction.CommentActionResponse)
 	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
 	} else {
 		if !exists {
-			constant.HandlerErr(constant.ErrCommentAction, resp)
+			constant.HandlerErr(constant.ErrBloomVideo, resp)
 			return resp, nil
 		}
 	}
@@ -161,20 +161,20 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 		exists, err = dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+			logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
 		} else {
 			if !exists {
-				constant.HandlerErr(constant.ErrCommentAction, resp)
+				constant.HandlerErr(constant.ErrBloomVideo, resp)
 				return resp, nil
 			}
 		}
 
 		exists, err = dao.BloomFilter.CheckIfUserIdExists(*req.UserId)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
+			logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
 		} else {
 			if !exists {
-				constant.HandlerErr(constant.ErrCommentAction, resp)
+				constant.HandlerErr(constant.ErrBloomUser, resp)
 				return resp, nil
 			}
 		}
@@ -188,7 +188,6 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 		var commentId int64
 		err = dao.Mysql.GetCli().Transaction(func(tx *gorm.DB) (err error) {
 			commentId, err = dao.Mysql.InsertComment(&m)
-			//dao.BloomFilter.AddCommentIds(commentId)
 			_, err = dao.Mysql.VideoCommentCountIncr(req.VideoId, 1)
 			return err
 		})
@@ -214,10 +213,10 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 
 		exists, err = dao.BloomFilter.CheckIfCommentIdExists(*req.CommentId)
 		if err != nil {
-			logger.Error(fmt.Sprintf("Interaction bloom_comment err[%v]", err))
+			logCollector.Error(fmt.Sprintf("Interaction bloom_comment err[%v]", err))
 		} else {
 			if !exists {
-				constant.HandlerErr(constant.ErrCommentAction, resp)
+				constant.HandlerErr(constant.ErrBloomComment, resp)
 				return resp, nil
 			}
 		}
@@ -245,10 +244,10 @@ func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interacti
 	resp = new(interaction.CommentListResponse)
 	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
 	if err != nil {
-		logger.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
 	} else {
 		if !exists {
-			constant.HandlerErr(constant.ErrFavoriteAction, resp)
+			constant.HandlerErr(constant.ErrBloomVideo, resp)
 			return resp, nil
 		}
 	}

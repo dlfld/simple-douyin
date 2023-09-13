@@ -22,5 +22,5 @@ func (b *Filter) CheckIfCommentIdExists(commentId int64) (exist bool, err error)
 }
 
 func (b *Filter) CheckIfUserIdExists(userId int64) (exist bool, err error) {
-	return b.ifExists(bloomComment, userId)
+	return b.ifExists(bloomUser, userId)
 }

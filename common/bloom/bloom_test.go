@@ -31,17 +31,17 @@ func TestBloomFilter(t *testing.T) {
 }
 
 func TestBloomFilter2(t *testing.T) {
-	bloom := NewBloom()
+	bloom := NewBloomForTest()
 	ids := []int64{1, 3, 5, 7, 9}
 	bloom.AddVideoIds(ids)
 	bloom.AddCommentIds(ids)
-	bloom.AddUserIds(ids)
+	//bloom.AddUserIds(ids)
 	for i := 0; i < 10; i++ {
 		exists, err := bloom.CheckIfVideoIdExists(int64(i))
 		if err != nil {
 			fmt.Println("id : ", i, " err : ", err)
 		}
-		fmt.Println(fmt.Sprintf("id(%d) 是否存在(%v)", i, exists))
+		fmt.Println(fmt.Sprintf("videoid(%d) 是否存在(%v)", i, exists))
 	}
 
 	for i := 0; i < 10; i++ {
@@ -49,7 +49,7 @@ func TestBloomFilter2(t *testing.T) {
 		if err != nil {
 			fmt.Println("id : ", i, " err : ", err)
 		}
-		fmt.Println(fmt.Sprintf("id(%d) 是否存在(%v)", i, exists))
+		fmt.Println(fmt.Sprintf("commentid(%d) 是否存在(%v)", i, exists))
 	}
 
 	for i := 0; i < 10; i++ {
@@ -57,6 +57,6 @@ func TestBloomFilter2(t *testing.T) {
 		if err != nil {
 			fmt.Println("id : ", i, " err : ", err)
 		}
-		fmt.Println(fmt.Sprintf("id(%d) 是否存在(%v)", i, exists))
+		fmt.Println(fmt.Sprintf("userid(%d) 是否存在(%v)", i, exists))
 	}
 }

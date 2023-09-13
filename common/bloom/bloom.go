@@ -21,3 +21,13 @@ func NewBloom() *Filter {
 		filter: rdb,
 	}
 }
+
+func NewBloomForTest() *Filter {
+	var rdb *redis.Client
+	once.Do(func() {
+		rdb = redis.NewClient(&redis.Options{Addr: "localhost:6380", Password: "", DB: 0})
+	})
+	return &Filter{
+		filter: rdb,
+	}
+}

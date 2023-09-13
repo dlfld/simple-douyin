@@ -5,6 +5,8 @@ import (
 	"strconv"
 )
 
+// 预先加载
+
 func (b *Filter) PreLoadAll(db *gorm.DB) {
 	b.PreLoadVideoIds(db)
 	b.PreLoadCommentIds(db)

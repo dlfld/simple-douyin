@@ -189,8 +189,8 @@ func init() {
 			log.Fatal(err)
 		}
 		BloomConfig = bloomConfig{
-			BloomBit: v.GetUint("bloomBit"),
-			HashNum:  v.GetUint("hashNum"),
+			Addr:     v.GetString("addr"),
+			Password: v.GetString("pwd"),
 		}
 		wg.Done()
 	}()

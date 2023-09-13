@@ -129,6 +129,7 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 // FollowList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
 	// TODO: Your code here...
+	resp = new(relation.FollowingListResponse)
 	exists, err := bf.CheckIfUserIdExists(req.UserId)
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
@@ -153,6 +154,7 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 // FollowerList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
 	// TODO: Your code here...
+	resp = new(relation.FollowerListResponse)
 	exists, err := bf.CheckIfUserIdExists(req.UserId)
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
@@ -179,6 +181,7 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 // FriendList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
 	// TODO: Your code here...
+	resp = new(relation.RelationFriendListResponse)
 	exists, err := bf.CheckIfUserIdExists(req.UserId)
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))

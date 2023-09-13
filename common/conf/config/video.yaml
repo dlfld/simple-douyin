@@ -1,3 +1,2 @@
-video:
-  name: "videoService"
-  addr: "0.0.0.0:8084"
+name: "videoService"
+addr: "0.0.0.0:8084"

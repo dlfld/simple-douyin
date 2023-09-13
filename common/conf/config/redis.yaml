@@ -1,3 +1,2 @@
-redis:
-  addr: "redis:6379"
-  pwd: ""
+addr: "redis:6379"
+pwd: ""

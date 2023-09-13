@@ -1,3 +1,2 @@
-message:
-  name: "messageService"
-  addr: "0.0.0.0:8083"
+name: "messageService"
+addr: "0.0.0.0:8083"

@@ -1,5 +1,4 @@
-cos:
-  url: "https://douyin-1300206677.cos.ap-shanghai.myqcloud.com"
-  secretId: "AKIDMdjfAWtCTvFcw794sgP2UvEOMrMgtz11"
-  secretKey: "6JRWbdZKzhW7TabR7eCcv1uc9hCcpxX6"
-  reginUrl: "https://cos.COS_REGION.myqcloud.com"
+url: "https://douyin-1300206677.cos.ap-shanghai.myqcloud.com"
+secretId: "AKIDMdjfAWtCTvFcw794sgP2UvEOMrMgtz11"
+secretKey: "6JRWbdZKzhW7TabR7eCcv1uc9hCcpxX6"
+reginUrl: "https://cos.COS_REGION.myqcloud.com"

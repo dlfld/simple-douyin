@@ -5,9 +5,12 @@ package conf
 
 import (
 	"fmt"
+
 	"testing"
 )
 
 func TestGetAllServiceName(t *testing.T) {
-	fmt.Printf("%+v", Mysql)
+	//initConfig()
+	fmt.Printf("%+v\n", Mysql)
+	fmt.Printf("%+v\n", VideoService)
 }

@@ -1,3 +1,2 @@
-mysql:
-  name: "root:abc123456@tcp(mysql:3306)/douyin?charset=utf8&parseTime=True&loc=Local"
-  debug: true
+login: root:abc123456@tcp(mysql:3306)/douyin?charset=utf8&parseTime=True&loc=Local
+debug: true

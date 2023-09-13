@@ -13,4 +13,5 @@ func TestGetAllServiceName(t *testing.T) {
 	//initConfig()
 	fmt.Printf("%+v\n", Mysql)
 	fmt.Printf("%+v\n", VideoService)
+	fmt.Printf("%+v\n", MessageService)
 }

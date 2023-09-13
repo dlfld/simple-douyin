@@ -28,10 +28,8 @@ func init() {
 	//初始化mysql配置
 	go func() {
 		v := viper.New()
-
 		v.SetConfigName("mysql")  //设置配置文件名
 		v.SetConfigType(fileType) //设置配置文件类型
-		v.SetConfigFile("config/mysql.yaml")
 		v.AddConfigPath("config/")
 		err := v.ReadInConfig()
 		if err != nil {
@@ -216,16 +214,16 @@ func init() {
 }
 
 // MinioConfig 废弃
-var MinioConfig = minioConfig{
-	IP:                        "101.34.81.220",
-	EndPoint:                  "101.34.81.220:9000",
-	AccessKeyId:               "LX5CNH0ZL1I0BF6I4965",
-	SecretAccessKey:           "75+9VGc4jBsQPzkJdvqgZeN6u6p3O+NnfF0KYxPY",
-	UseSSL:                    false,
-	VideoBucketName:           "video",
-	AvatarBucketName:          "avatar",
-	BackgroundImageBucketName: "bgi",
-}
+//var MinioConfig = minioConfig{
+//	IP:                        "101.34.81.220",
+//	EndPoint:                  "101.34.81.220:9000",
+//	AccessKeyId:               "LX5CNH0ZL1I0BF6I4965",
+//	SecretAccessKey:           "75+9VGc4jBsQPzkJdvqgZeN6u6p3O+NnfF0KYxPY",
+//	UseSSL:                    false,
+//	VideoBucketName:           "video",
+//	AvatarBucketName:          "avatar",
+//	BackgroundImageBucketName: "bgi",
+//}
 
 func GetAllServiceName() []string {
 	return []string{UserService.Name, RelationService.Name, MessageService.Name, VideoService.Name, InteractionService.Name}

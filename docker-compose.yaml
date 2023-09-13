@@ -36,6 +36,12 @@ services:
       - "6379:6379"
     restart: always
 
+  bloom:
+    hostname: bloom
+    image: redislabs/rebloom
+    ports:
+      - "6380:6379"
+    restart: always
 
   video:
     depends_on:

@@ -123,7 +123,7 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	default:
 		msg = fmt.Sprintf("unknow action type: %d", req.ActionType)
 	}
-	return
+	return resp, nil
 }
 
 // FollowList implements the RelationServiceImpl interface.
@@ -148,7 +148,7 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, nil
 }
 
 // FollowerList implements the RelationServiceImpl interface.
@@ -175,7 +175,7 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, nil
 }
 
 // FriendList implements the RelationServiceImpl interface.
@@ -202,5 +202,5 @@ func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.Rela
 	// var kitexList []*model.FriendUser
 	kitexList := friendUsersToKitex(userList)
 
-	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, nil
 }

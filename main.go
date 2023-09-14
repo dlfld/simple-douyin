@@ -1,12 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"os/exec"
-	"runtime"
 	"time"
 
+	//_ "github.com/douyin/common/conf"
 	"github.com/douyin/common/middleware"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
@@ -16,26 +13,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func getWorkingDirPath() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	return dir
-}
-
-func genSwagger() {
-	// 有问题，不能用
-	sysType := runtime.GOOS
-	if sysType == "linux" || sysType == "darwin" {
-		absWd := getWorkingDirPath()
-		command := "bash " + absWd + "/bash/swag_gen.sh"
-		cmd := exec.Command(command)
-		err := cmd.Run()
-		fmt.Printf("%+v\n", err)
-	}
-}
 func main() {
+	//fmt.Printf("%+v\n", conf.Mysql)
+
 	//执行生成swagger文件的命令 warning 失效
 	//genSwagger()
 	// public directory is used to serve static resources

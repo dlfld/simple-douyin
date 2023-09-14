@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/bytedance/gopkg/util/logger"
+	"github.com/bytedance/sonic"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/kafkaLog"
 	"github.com/segmentio/kafka-go"
-	"time"
 )
 
 var (
@@ -68,13 +70,13 @@ func NewLogCollector(serviceName string) (*LogCollector, error) {
 // writeLogToKafka 向kafka写入消息，错误信息用key-value对表示
 // key：服务名称 （和配置文件一致，服务名不一致将会拒绝写入）
 // value: 服务日志信息
-// 验证服务名合法后，就会开启携程去执行写入消息的操作
+// 验证服务名合法后，就会开启协程去执行写入消息的操作
 func writeLogToKafka(key string, level logger.Level, logValue string) {
-	//record, _ := json.Marshal(kafkaLog.LogRecord{
-	//	Type:  level,
-	//	Value: logValue,
-	//})
-	//go write(retryTime, key, record)
+	record, _ := sonic.Marshal(kafkaLog.LogRecord{
+		Type:  level,
+		Value: logValue,
+	})
+	go write(retryTime, key, record)
 }
 
 func write(reTime int, key string, value []byte) {

@@ -2,10 +2,11 @@ package mongodb
 
 import (
 	"context"
+	"sync"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	_ "go.mongodb.org/mongo-driver/mongo/readpref"
-	"sync"
 )
 
 var mdb *mongo.Client
@@ -19,7 +20,7 @@ func NewMongodbConn() (*mongo.Client, error) {
 			Username: "admin",
 			Password: "abc123456",
 		}
-		clientOptions := options.Client().ApplyURI("mongodb://42.192.46.30:27017").SetAuth(credential)
+		clientOptions := options.Client().ApplyURI("mongodb://mongodb:27017").SetAuth(credential)
 		mdb, err = mongo.Connect(context.Background(), clientOptions)
 	})
 	if err != nil {

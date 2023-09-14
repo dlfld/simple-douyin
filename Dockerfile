@@ -23,7 +23,8 @@ RUN go build -o main .
 WORKDIR /app/rpcServer/relation
 RUN go build -o main .
 
-
+WORKDIR /app/rpcServer/logger
+RUN go build -o main .
 
 
 

@@ -14,6 +14,9 @@ import (
 
 var logCollector *productor.LogCollector
 
+func init() {
+	logCollector = &productor.LogCollector{ServiceName: conf.RelationService.Name}
+}
 func main() {
 	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-relation")
 	var err error

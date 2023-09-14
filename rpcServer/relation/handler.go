@@ -8,6 +8,7 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/relation"
 	"github.com/douyin/models"
+	"github.com/u2takey/go-utils/pointer"
 )
 
 // RelationServiceImpl implements the last service interface defined in the IDL.
@@ -77,9 +78,8 @@ func friendUsersToKitex(friendUsers []*models.User) (kitexList []*model.FriendUs
 
 // FollowAction implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.FollowActionRequest) (resp *relation.FollowActionResponse, err error) {
-	// TODO: Your code here...
+
 	var msg string
-	// crud, _ := crud.NewCachedCRUD()
 	resp = new(relation.FollowActionResponse)
 	resp.StatusMsg = &msg
 	userId := uint(req.FromUserId)
@@ -114,47 +114,38 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 
 // FollowList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
-	// TODO: Your code here...
-	var msg string = "get follow list ok"
-	// crud, _ := crud.NewCachedCRUD()
-	// userList, _ := models.GetFollowList(uint(req.UserId))
+
 	userList, err := crud.RelationGetFollows(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get follow list error: %v", err))
+		return
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取关注列表成功!"), UserList: kitexList}, err
 }
 
 // FollowerList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
-	// TODO: Your code here...
-	var msg string = "get follow list ok"
-	// crud, _ := crud.NewCachedCRUD()
-	// var kitexList []*model.User
-	// userList, _ := models.GetFollowerList(uint(req.UserId))
+
 	userList, err := crud.RelationGetFollowers(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get follower list error: %v", err))
+		return
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取粉丝列表成功!"), UserList: kitexList}, err
 }
 
 // FriendList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
-	// TODO: Your code here...
-	var msg string = "get follow list ok"
-	// crud, _ := crud.NewCachedCRUD()
+
 	userList, err := crud.RelationGetFriends(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get friend list error: %v", err))
+		return
 	}
-	// userList, _ := models.GetFriendList(uint(req.UserId))
-	// var kitexList []*model.FriendUser
 	kitexList := friendUsersToKitex(userList)
-
-	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
+	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取好友列表成功!"), UserList: kitexList}, err
 }

@@ -1,14 +1,16 @@
 package main
 
 import (
+	"context"
 	"github.com/douyin/common/bloom"
 	"github.com/douyin/common/etcd"
+	"github.com/kitex-contrib/obs-opentelemetry/provider"
+	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
-	"github.com/douyin/common/jaeger"
 	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/common/mysql"
 	rdb "github.com/douyin/common/redis"
@@ -53,13 +55,17 @@ func init() {
 }
 
 func main() {
-	tracerSuite, closer := jaeger.InitJaegerServer("kitex-server-message")
-	defer closer.Close()
+	p := provider.NewOpenTelemetryProvider(
+		provider.WithServiceName("message"),
+		provider.WithExportEndpoint("host.docker.internal:4317"),
+		provider.WithInsecure(),
+	)
+	defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.MessageService.Addr)
 	if err != nil {
 		log.Println(err.Error())
 	}
-	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
+	svr := message.NewServer(new(MessageServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracing.NewServerSuite()))
 	etcd.RegisterService(conf.MessageService.Name, conf.MessageService.Addr)
 	err = svr.Run()
 	if err != nil {

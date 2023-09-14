@@ -30,7 +30,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigName("mysql")  //设置配置文件名
 		v.SetConfigType(fileType) //设置配置文件类型
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -46,7 +46,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("redis")  //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -61,7 +61,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("user")   //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -78,7 +78,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType)   //设置配置文件类型
 		v.SetConfigName("relation") //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -95,7 +95,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType)  //设置配置文件类型
 		v.SetConfigName("message") //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -112,7 +112,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("video")  //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -129,7 +129,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType)      //设置配置文件类型
 		v.SetConfigName("interaction") //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -146,7 +146,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("kafka")  //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -164,7 +164,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("cos")    //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -183,7 +183,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("bloom")  //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -200,7 +200,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("etcd")   //设置配置文件名
-		v.AddConfigPath("config/")
+		v.AddConfigPath("/app/common/conf/config")
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)

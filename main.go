@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"time"
 
 	//_ "github.com/douyin/common/conf"
@@ -64,6 +66,12 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
+	p := provider.NewOpenTelemetryProvider(
+		provider.WithServiceName("http-server"),
+		provider.WithExportEndpoint("host.docker.internal:4317"),
+		provider.WithInsecure(),
+	)
+	defer p.Shutdown(context.Background())
 	time.Sleep(5)
 	initialize.CreateInteractionTable()
 	initialize.CreateTable()

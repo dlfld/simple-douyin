@@ -27,7 +27,7 @@ type InteractionServiceImpl struct {
 
 func InitDao() {
 	dao = d.NewDao()
-	logger = &productor.LogCollector{ServiceName: conf.InteractionService.Name}
+	logCollector = &productor.LogCollector{ServiceName: conf.InteractionService.Name}
 	dao.BloomFilter.PreLoadAll(dao.Mysql.GetCli())
 }
 

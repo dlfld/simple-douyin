@@ -4,12 +4,16 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/douyin/common/bloom"
+	"github.com/douyin/common/constant"
+
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/relation"
 	"github.com/douyin/models"
-	"github.com/u2takey/go-utils/pointer"
 )
+
+var bf *bloom.Filter
 
 // RelationServiceImpl implements the last service interface defined in the IDL.
 type RelationServiceImpl struct{}
@@ -84,6 +88,16 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	resp.StatusMsg = &msg
 	userId := uint(req.FromUserId)
 
+	exists, err := bf.CheckIfUserIdExists(req.ToUserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
+
 	switch req.ActionType {
 	case 1:
 		// err = models.Follow(userId, uint(req.ToUserId))
@@ -109,12 +123,25 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	default:
 		msg = fmt.Sprintf("unknow action type: %d", req.ActionType)
 	}
-	return
+	return resp, nil
 }
 
 // FollowList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
-
+	// TODO: Your code here...
+	resp = new(relation.FollowingListResponse)
+	exists, err := bf.CheckIfUserIdExists(req.UserId)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
+	var msg string = "get follow list ok"
+	// crud, _ := crud.NewCachedCRUD()
+	// userList, _ := models.GetFollowList(uint(req.UserId))
 	userList, err := crud.RelationGetFollows(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get follow list error: %v", err))
@@ -122,12 +149,16 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取关注列表成功!"), UserList: kitexList}, err
+	return &relation.FollowingListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
 }
 
 // FollowerList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
-
+	// TODO: Your code here...
+	var msg string = "get follow list ok"
+	// crud, _ := crud.NewCachedCRUD()
+	// var kitexList []*model.User
+	// userList, _ := models.GetFollowerList(uint(req.UserId))
 	userList, err := crud.RelationGetFollowers(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get follower list error: %v", err))
@@ -135,17 +166,20 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 	}
 	kitexList := usersToKitex(uint(req.UserId), userList)
 
-	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取粉丝列表成功!"), UserList: kitexList}, err
+	return &relation.FollowerListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
 }
 
 // FriendList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
-
+	// TODO: Your code here...
+	var msg string = "get follow list ok"
+	// crud, _ := crud.NewCachedCRUD()
 	userList, err := crud.RelationGetFriends(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get friend list error: %v", err))
 		return
 	}
 	kitexList := friendUsersToKitex(userList)
-	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: pointer.StringPtr("获取好友列表成功!"), UserList: kitexList}, err
+
+	return &relation.RelationFriendListResponse{StatusCode: 0, StatusMsg: &msg, UserList: kitexList}, err
 }

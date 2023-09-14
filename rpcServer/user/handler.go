@@ -85,7 +85,8 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 	//返回结果
 	logCollector.Info(fmt.Sprintf("user[%s]: success to regist with encryptPassword[%s]",
 		username, encryptPassword))
-
+	bf.AddUserId(int64(int(newUser.ID)))
+	bf.AddUserName(username)
 	statusMsg := "注册并登录成功"
 	resp = &user.UserRegisterResponse{StatusCode: 0, StatusMsg: &statusMsg, UserId: int64(int(newUser.ID)), Token: token}
 	return resp, nil
@@ -96,6 +97,17 @@ func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequ
 	//获取参数
 	username := req.GetUsername()
 	password := req.GetPassword()
+
+	resp = new(user.UserLoginResponse)
+	exists, err := bf.CheckIfUserNameExists(username)
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
 
 	//数据验证
 	if len(password) <= 0 || len(username) <= 0 {
@@ -147,6 +159,17 @@ func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequ
 func (s *UserServiceImpl) UserMsg(ctx context.Context, req *user.UserRequest) (resp *user.UserResponse, err error) {
 	userId := uint(req.GetUserId())
 	tokenString := req.GetToken()
+
+	resp = new(user.UserResponse)
+	exists, err := bf.CheckIfUserIdExists(int64(userId))
+	if err != nil {
+		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	} else {
+		if !exists {
+			constant.HandlerErr(constant.ErrBloomUser, resp)
+			return resp, nil
+		}
+	}
 
 	token, claims, err1 := common.ParseToken(tokenString)
 	useridClaims := claims.UserId

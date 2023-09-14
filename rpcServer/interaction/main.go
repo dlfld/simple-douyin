@@ -24,10 +24,10 @@ func main() {
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracerSuite))
 	InitDao()
 	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
-	if logger, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
+	if logCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
 		panic(err)
 	}
-	logger.Info("Interaction 服务启动")
+	logCollector.Info("Interaction 服务启动")
 	err = svr.Run()
 	if err != nil {
 		panic(err)

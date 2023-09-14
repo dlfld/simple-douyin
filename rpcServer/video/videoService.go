@@ -160,7 +160,8 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 		CommentCount:  0,
 	}
 	//插入数据
-	err = models.InsertVideo(&video)
+	ID, err := models.InsertVideo(&video)
+	bf.AddVideoId(ID)
 	crud.DeletePublishListCache(int(userId))
 	if err != nil {
 		return err

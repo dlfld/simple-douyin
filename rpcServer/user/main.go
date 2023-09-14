@@ -10,6 +10,7 @@
 package main
 
 import (
+	"github.com/douyin/common/bloom"
 	"log"
 	"net"
 
@@ -22,12 +23,14 @@ import (
 )
 
 var logCollector *productor.LogCollector
+var bf *bloom.Filter
 
 func init() {
 	var err error
 	if logCollector, err = productor.NewLogCollector(conf.UserService.Name); err != nil {
 		panic(err)
 	}
+	bf = bloom.NewBloom()
 }
 
 func main() {

@@ -91,6 +91,11 @@ services:
       - "2181:2181"
     environment:
       TZ: Asia/Shanghai
+  bloom:
+    image: redislabs/rebloom
+    hostname: bloom
+    ports:
+      - "6380:6379"
     restart: always
 
   video:
@@ -157,7 +162,6 @@ services:
 
   http_server:
     depends_on:
-
       - message
       - interaction
       - user

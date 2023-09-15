@@ -3,11 +3,12 @@ package main
 
 import (
 	"context"
+	"log"
+	"net"
+
 	"github.com/douyin/common/bloom"
 	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
-	"log"
-	"net"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
@@ -23,7 +24,7 @@ var bf *bloom.Filter
 func init() {
 	var err error
 	//初始化日志收集器
-	if LogCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
+	if LogCollector, err = productor.NewLogCollector(conf.VideoService.Name); err != nil {
 		panic(err)
 	}
 	bf = bloom.NewBloom()

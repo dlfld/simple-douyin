@@ -11,8 +11,10 @@ package models
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
+	"github.com/douyin/common/gorse"
 	"github.com/douyin/common/mysql"
 	"gorm.io/gorm"
 )
@@ -39,7 +41,15 @@ func (Video) TableName() string {
 }
 
 func (v *Video) AfterUpdate(tx *gorm.DB) (err error) {
-	return cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", v.ID)).Err()
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", v.ID))
+	return nil
+}
+func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
+	gorse.Client.InsertItem(context.Background(),
+		gorse.Item{ItemId: strconv.Itoa(int(v.ID)),
+			Timestamp: time.Now().Format("2006-01-02 15:04:05"),
+			Comment:   v.Title})
+	return nil
 }
 
 // FindVideoListBy

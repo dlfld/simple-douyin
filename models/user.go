@@ -11,7 +11,9 @@ package models
 import (
 	"context"
 	"fmt"
+	"strconv"
 
+	"github.com/douyin/common/gorse"
 	"github.com/douyin/common/mysql"
 	myredis "github.com/douyin/common/redis"
 	"github.com/douyin/kitex_gen/model"
@@ -51,6 +53,11 @@ func (User) TableName() string {
 func (u *User) AfterUpdate(tx *gorm.DB) (err error) {
 	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", u.ID))
 	return cache.Del(context.Background(), fmt.Sprintf("video:feed:publish:%d", u.ID)).Err()
+}
+
+func (u *User) AfterCreate(tx *gorm.DB) (err error) {
+	gorse.Client.InsertUser(context.Background(), gorse.User{UserId: strconv.Itoa(int(u.ID)), Comment: u.UserName})
+	return nil
 }
 
 // CreateUser create user

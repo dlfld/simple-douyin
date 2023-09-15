@@ -79,8 +79,14 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			return nil, err
 		}
 		// 对kitex对象和model对象进行转换
-		author, _ := crud.GetAuthor(uint(userId), uint(userId))
+		author, err := crud.GetAuthor(uint(userId), uint(userId))
+		if err != nil {
+			return nil, err
+		}
 		resVideoList, err = convert.VideoSliceBo2Dto(videoList)
+		if err != nil {
+			return nil, err
+		}
 		for _, video := range resVideoList {
 			video.Author = author
 		}
@@ -129,7 +135,6 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	//视频文件上传
 	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, videoName, dataLen, videoContentType)
 	if err != nil {
-		log.Fatalln("OSS视频文件上传失败")
 		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to upload video to cos in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
@@ -139,7 +144,6 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	//抽取第一帧图片,得先上传视频文件，然后获取到视频文件的播放链接
 	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
 	if err != nil {
-		log.Fatalln("视频封面图抽取失败！", err)
 		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to get the first frame in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
@@ -175,7 +179,9 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	// 将video数据放入redis中，
 	videoJson, _ := sonic.Marshal(video)
 	//将这个视频添加到当前用户的发布视频cache当中去
-	cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
+	if cache.Exists(context.Background(), userPublishVideoList(int(userId))).Val() == 1 {
+		cache.RPush(context.Background(), userPublishVideoList(int(userId)), videoJson)
+	}
 	return nil
 }
 
@@ -278,7 +284,7 @@ func GetVideoFeed(latestTime int64, nums int, userID uint) ([]*model.Video, erro
 			log.Print("写缓存失败")
 		}
 	}
-	latestTimeRes = 123456
+
 	// 将当前播放列表的latestTime写入到cache中
 	pipeline.Set(context.Background(), cacheLastTimeKey, latestTimeRes, 60)
 	// 执行缓存操作

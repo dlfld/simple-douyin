@@ -75,6 +75,7 @@ func writeLogToKafka(key string, level logger.Level, logValue string) {
 	record, _ := sonic.Marshal(kafkaLog.LogRecord{
 		Type:  level,
 		Value: logValue,
+		Time:  time.Now().Format("2006-01-02 15:04:05"),
 	})
 	go write(retryTime, key, record)
 }

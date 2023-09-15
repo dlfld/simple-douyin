@@ -63,3 +63,7 @@ type bloomConfig struct {
 type etcdConfig struct {
 	Addr string
 }
+
+type otelConfig struct {
+	Addr string
+}

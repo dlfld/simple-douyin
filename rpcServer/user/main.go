@@ -12,6 +12,7 @@ package main
 import (
 	"context"
 	"github.com/douyin/common/bloom"
+	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -21,7 +22,6 @@ import (
 	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/kafkaLog/productor"
 	"github.com/douyin/kitex_gen/user/userservice"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
 )
 
 var logCollector *productor.LogCollector
@@ -36,11 +36,7 @@ func init() {
 }
 
 func main() {
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("user"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("user")
 	defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.UserService.Addr)
 	if err != nil {

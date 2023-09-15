@@ -7,8 +7,8 @@ import (
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/kafkaLog/productor"
+	"github.com/douyin/common/otel"
 	"github.com/douyin/kitex_gen/relation/relationservice"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 
 	"log"
@@ -21,11 +21,7 @@ func init() {
 	logCollector = &productor.LogCollector{ServiceName: conf.RelationService.Name}
 }
 func main() {
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("relation"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("relation")
 	defer p.Shutdown(context.Background())
 	var err error
 	if logCollector, err = productor.NewLogCollector(conf.RelationService.Name); err != nil {

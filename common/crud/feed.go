@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/douyin/common/gorse"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/go-redis/redis/v8"
@@ -133,17 +134,80 @@ func GetVideos(videoIDs []int) (videos []*models.Video, err error) {
 	return
 }
 
-// GetUserFeed TODO 缓存Video对象 避免反复查询数据库
+func GetRecommend(UserID int) (videos []*model.Video, next_time int64, err error) {
+	// 从gorse获取推荐结果 最多30个 自动设置已读
+	videoIdStrList, err := gorse.Client.GetItemRecommend(context.Background(), strconv.Itoa(int(UserID)), nil, "read", "1m", 30, 0)
+	if err != nil {
+		return
+	}
+	// 转换为int数组
+	videoIds := make([]int, len(videoIdStrList))
+	for _, v := range videoIdStrList {
+		n, e := strconv.Atoi(v)
+		if e != nil {
+			continue
+		}
+		videoIds = append(videoIds, n)
+	}
+	// 查询视频详情
+	DBModels, err := GetVideos(videoIds)
+	if err != nil {
+		return
+	}
+	videoIDs := make([]int64, len(DBModels))
+	autherIDs := make([]int64, len(DBModels))
+	videos = make([]*model.Video, len(DBModels))
+	for i, v := range DBModels {
+		videos[i] = &model.Video{
+			Id:            v.ID,
+			PlayUrl:       v.PlayUrl,
+			CoverUrl:      v.CoverUrl,
+			FavoriteCount: v.FavoriteCount,
+			CommentCount:  v.CommentCount,
+			Title:         v.Title,
+		}
+		videoIDs[i] = v.ID
+		autherIDs[i] = v.AuthorID
+	}
+	// 查询是否被当前用户关注
+	isFavs, err := IsFavorites(int64(UserID), videoIDs)
+	if err != nil {
+		isFavs = make(map[int64]bool, 0)
+		err = nil
+	}
+
+	// 获取视频作者信息
+	authors, _ := GetAuthors(int64(UserID), autherIDs)
+	for i, v := range DBModels {
+		videos[i].Author = authors[v.AuthorID]
+		videos[i].IsFavorite = isFavs[v.ID]
+
+	}
+	// 时间戳
+	if len(DBModels) > 1 {
+		next_time = DBModels[len(DBModels)-1].CreatedAt.UnixMilli()
+	}
+	return
+}
+
+// GetUserFeed
 // 返回当前用户的视频流
 func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, next_time int64, err error) {
-	// 查询当前用户没有看过的热点视频记录
+
+	// 使用gorse查询推荐
+	videos, next_time, err = GetRecommend(int(UserID))
+	if err == nil {
+		// 如果推荐成功就返回
+		return
+	}
+	// 查询当前用户没有看过的活动视频记录
 	unwatched, err := GetUserUnWatched(UserID)
 	if err != nil {
 		unwatched = make([]int, 0)
 		err = nil
 	}
 	var DBModels []*models.Video
-	// 查询没有看过的热点视频记录
+	// 查询没有看过的活动视频记录
 	if len(unwatched) > 0 {
 		// crud.mysql.Model(&models.Video{}).Order("id desc").Where("id in (?)", unwatched).Find(&DBModels)
 		DBModels, err = GetVideos(unwatched)

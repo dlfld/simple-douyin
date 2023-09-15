@@ -1,5 +1,5 @@
 From golang:1.20.5
-ENV GOPROXY https://goproxy.cn
+ENV GOPROXY https://goproxy.cn,direct
 
 COPY ./ /app
 RUN cd /app && go mod tidy && rm -rf /app

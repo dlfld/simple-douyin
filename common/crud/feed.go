@@ -141,13 +141,14 @@ func GetRecommend(UserID int) (videos []*model.Video, next_time int64, err error
 		return
 	}
 	// 转换为int数组
+
 	videoIds := make([]int, len(videoIdStrList))
-	for _, v := range videoIdStrList {
+	for i, v := range videoIdStrList {
 		n, e := strconv.Atoi(v)
 		if e != nil {
 			continue
 		}
-		videoIds = append(videoIds, n)
+		videoIds[i] = n
 	}
 	// 查询视频详情
 	DBModels, err := GetVideos(videoIds)
@@ -196,7 +197,7 @@ func GetUserFeed(UserID int64, latestTime int64) (videos []*model.Video, next_ti
 
 	// 使用gorse查询推荐
 	videos, next_time, err = GetRecommend(int(UserID))
-	if err == nil {
+	if err == nil && len(videos) > 0 {
 		// 如果推荐成功就返回
 		return
 	}

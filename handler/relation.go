@@ -10,16 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//var relationCli relationservice.Client
-//
-//func init() {
-//	var err error
-//	relationCli, err = relationRpc.NewRpcRelationClient()
-//	if err != nil {
-//		panic(err)
-//	}
-//}
-
 // @Summary 关系操作
 // @Schemes
 // @Description 登录用户对其他用户进行关注或取消关注。
@@ -30,10 +20,16 @@ import (
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/relation/action/ [POST]
 func RelationAction(c *gin.Context) {
-	ToUserID, _ := strconv.Atoi(c.Query("to_user_id"))
-	ActionType, _ := strconv.Atoi(c.Query("action_type"))
-	// userID, has := c.Get("userID")
-	// fmt.Println(userID, has)
+	ToUserID, err := strconv.Atoi(c.Query("to_user_id"))
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
+	ActionType, err := strconv.Atoi(c.Query("action_type"))
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	req := relation.FollowActionRequest{
 		FromUserId: int64(c.GetUint("userID")),
 		ToUserId:   int64(ToUserID),
@@ -66,9 +62,7 @@ func RelationFollowList(c *gin.Context) {
 	// req := relation.NewFollowingListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		resp := new(relation.FollowingListResponse)
-		constant.HandlerErr(constant.ErrBadRequest, resp)
-		c.JSON(http.StatusOK, resp)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
 		return
 	}
 	// 前端请求数据绑定到req中
@@ -102,9 +96,8 @@ func RelationFollowerList(c *gin.Context) {
 	// req := relation.NewFollowerListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		resp := relation.FollowerListResponse{}
-		constant.HandlerErr(constant.ErrBadRequest, &resp)
-		c.JSON(http.StatusOK, resp)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
 	}
 	// 前端请求数据绑定到req中
 	req := &relation.FollowerListRequest{
@@ -134,9 +127,8 @@ func RelationFriendList(c *gin.Context) {
 	// req := relation.NewRelationFriendListRequest()
 	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if err != nil {
-		resp := relation.FollowingListResponse{}
-		constant.HandlerErr(constant.ErrBadRequest, &resp)
-		c.JSON(http.StatusOK, resp)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
 	}
 	// 前端请求数据绑定到req中
 	req := &relation.RelationFriendListRequest{

@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/video"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,8 @@ func PublishList(c *gin.Context) {
 	// 创建发生消息的请求实例
 	userId, err := strconv.Atoi(c.Query("user_id"))
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
 	}
 	req := &video.PublishListRequest{
 		UserId: int64(userId),
@@ -40,7 +42,8 @@ func PublishList(c *gin.Context) {
 	// 发起RPC调用
 	resp, err := rpcCli.videoCli.PublishList(context.Background(), req)
 	if err != nil {
-		panic(err)
+		resp := new(video.PublishListResponse)
+		constant.HandlerErr(constant.ErrPublishList, resp)
 	}
 	//返回给前端
 	c.JSON(http.StatusOK, resp)
@@ -58,13 +61,6 @@ func PublishList(c *gin.Context) {
 // @Produce json
 // @Router /douyin/publish/action/ [POST]
 func VideoSubmit(c *gin.Context) {
-	// 创建客户端链接
-	//cli, err := videoRpc.NewRpcVideoClient()
-	//if err != nil {
-	//	panic(err)
-	//}
-	// Token: c.Query("token"),
-	// 创建发生消息的请求实例 接收视频投稿信息
 
 	req := video.NewPublishActionRequest()
 	req.Title = c.PostForm("title")
@@ -73,16 +69,28 @@ func VideoSubmit(c *gin.Context) {
 	req.UserId = int64(c.GetUint("userID"))
 	req.Data = []byte(c.PostForm("data"))
 	file, err := c.FormFile("data")
-	fileContent, _ := file.Open()
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
+	fileContent, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrFileCantOpen))
+		return
+	}
 	byteContainer, err := io.ReadAll(fileContent)
 	req.Data = byteContainer
-
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	// 前端请求数据绑定到req中
 	// 发起RPC调用
 	resp, err := rpcCli.videoCli.PublishAction(context.Background(), req)
 
 	if err != nil {
-		panic(err)
+		resp := new(video.PublishActionResponse)
+		constant.HandlerErr(constant.ErrVideoPublish, resp)
 	}
 	//返回给前端
 	c.JSON(http.StatusOK, resp)
@@ -99,17 +107,18 @@ func VideoSubmit(c *gin.Context) {
 // @Router /douyin/feed [GET]
 func VideoFeed(c *gin.Context) {
 	// 创建客户端链接
-	//cli, err := videoRpc.NewRpcVideoClient()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//token := c.Query("token")
+
 	latestTime := c.Query("latest_time")
 	var timestamp int64 = 0
+	var err error
 	if latestTime != "" {
-		timestamp, _ = strconv.ParseInt(latestTime, 10, 64)
+		timestamp, err = strconv.ParseInt(latestTime, 10, 64)
 	} else {
 		timestamp = time.Now().UnixMilli()
+	}
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
 	}
 	//封装feed
 	feedRequest := &video.FeedRequest{}
@@ -117,8 +126,9 @@ func VideoFeed(c *gin.Context) {
 	feedRequest.UserId = int64(c.GetUint("userID"))
 	resp, err := rpcCli.videoCli.Feed(context.Background(), feedRequest)
 	if err != nil {
-		log.Println(err)
-		panic(err)
+		resp := new(video.FeedResponse)
+		constant.HandlerErr(constant.ErrFeedErr, resp)
+
 	}
 	//返回给前端
 	c.JSON(http.StatusOK, resp)

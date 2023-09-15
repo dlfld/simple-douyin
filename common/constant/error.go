@@ -8,6 +8,8 @@ const (
 	Success      = 0
 	ErrUserExist = iota + 4000
 	ErrUserNotExist
+	ErrLoginFailed
+	ErrRegisterFailed
 	ErrInvalidPassword
 	ErrTokenExpires
 	ErrNotLogin
@@ -32,6 +34,10 @@ const (
 	ErrBloomVideo
 	ErrBloomComment
 	ErrBloomUser
+	ErrVideoPublish
+	ErrFileCantOpen
+	ErrMessageList
+	ErrSendMessage
 )
 
 var errMap = map[int32]string{
@@ -60,6 +66,12 @@ var errMap = map[int32]string{
 	ErrBloomVideo:           "该视频不存在",
 	ErrBloomComment:         "该评论不存在",
 	ErrBloomUser:            "该用户不存在",
+	ErrLoginFailed:          "登录失败",
+	ErrRegisterFailed:       "注册失败",
+	ErrVideoPublish:         "视频发布失败",
+	ErrFileCantOpen:         "视频文件无法访问",
+	ErrMessageList:          "获取消息列表失败",
+	ErrSendMessage:          "发送消息失败",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

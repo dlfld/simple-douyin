@@ -4,7 +4,7 @@ package main
 import (
 	"context"
 	"github.com/douyin/common/bloom"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
+	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -29,11 +29,7 @@ func init() {
 	bf = bloom.NewBloom()
 }
 func main() {
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("video"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("video")
 	defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.VideoService.Addr)
 	if err != nil {

@@ -18,11 +18,12 @@ var (
 	CosConfig          cosConfig
 	BloomConfig        bloomConfig
 	EtcdConfig         etcdConfig
+	OtelConfig         otelConfig
 )
 
 func init() {
 	var wg sync.WaitGroup
-	wg.Add(11)
+	wg.Add(12)
 
 	fileType := "yaml"
 	//初始化mysql配置
@@ -57,6 +58,8 @@ func init() {
 		}
 		wg.Done()
 	}()
+
+	//初始化userService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
@@ -206,6 +209,22 @@ func init() {
 			log.Fatal(err)
 		}
 		EtcdConfig = etcdConfig{
+			v.GetString("addr"),
+		}
+		wg.Done()
+	}()
+
+	//初始化otel配置
+	go func() {
+		v := viper.New()
+		v.SetConfigType(fileType) //设置配置文件类型
+		v.SetConfigName("otel")   //设置配置文件名
+		v.AddConfigPath("/app/common/conf/config")
+		err := v.ReadInConfig()
+		if err != nil {
+			log.Fatal(err)
+		}
+		OtelConfig = otelConfig{
 			v.GetString("addr"),
 		}
 		wg.Done()

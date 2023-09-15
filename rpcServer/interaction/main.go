@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/douyin/common/etcd"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
+	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -15,11 +15,7 @@ import (
 )
 
 func main() {
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("interaction"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("interaction")
 	defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
 

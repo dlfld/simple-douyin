@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/douyin/common/bloom"
 	"github.com/douyin/common/etcd"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
+	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -55,11 +55,7 @@ func init() {
 }
 
 func main() {
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("message"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("message")
 	defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.MessageService.Addr)
 	if err != nil {

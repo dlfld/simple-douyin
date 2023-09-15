@@ -114,6 +114,7 @@ services:
   # Collector
   otel-collector:
     image: otel/opentelemetry-collector-contrib-dev:latest
+    hostname: otel
     command: [ "--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}" ]
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml

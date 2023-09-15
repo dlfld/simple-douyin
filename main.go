@@ -2,11 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"time"
 
-	//_ "github.com/douyin/common/conf"
 	"github.com/douyin/common/middleware"
+	"github.com/douyin/common/otel"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	initialize "github.com/douyin/initialize/gorm"
@@ -66,11 +65,7 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
-	p := provider.NewOpenTelemetryProvider(
-		provider.WithServiceName("http-server"),
-		provider.WithExportEndpoint("host.docker.internal:4317"),
-		provider.WithInsecure(),
-	)
+	p := otel.NewOtelProvider("http-server")
 	defer p.Shutdown(context.Background())
 	time.Sleep(5)
 	initialize.CreateInteractionTable()

@@ -66,8 +66,8 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 			videoDto := model.Video{}
 			err := sonic.Unmarshal([]byte(videoJson), &videoDto)
 			if err != nil {
-				log.Fatalln("JSON decode error!")
 				LogCollector.Error(fmt.Sprintf("func user[%d]:FindVideoListByUserId Failed to Unmarshal data  in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
+				continue
 			}
 			resVideoList = append(resVideoList, &videoDto)
 		}

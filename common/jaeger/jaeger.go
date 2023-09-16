@@ -12,7 +12,6 @@ import (
 	"github.com/uber/jaeger-client-go/config"
 )
 
-// InitJaeger ...
 func InitJaeger(service string) (client.Suite, io.Closer) {
 	cfg := config.Configuration{
 		ServiceName: service,

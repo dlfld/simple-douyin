@@ -9,8 +9,15 @@
 package models
 
 import (
+	"context"
+	"fmt"
+	"strconv"
+
+	"github.com/douyin/common/gorse"
 	"github.com/douyin/common/mysql"
+	myredis "github.com/douyin/common/redis"
 	"github.com/douyin/kitex_gen/model"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +26,8 @@ import (
 //	@Description: 用户数据模型
 type User struct {
 	gorm.Model
-	UserName        string  `gorm:"index:idx_username,unique;type:varchar(40);not null" json:"name,omitempty"`
+	UserName string `gorm:"in
+	dex:idx_username,unique;type:varchar(40);not null" json:"name,omitempty"`
 	Password        string  `gorm:"type:varchar(256);not null" json:"password,omitempty"`
 	FavoriteVideos  []Video `gorm:"many2many:user_favorite_videos" json:"favorite_videos,omitempty"`
 	FollowingCount  uint    `gorm:"default:0;not null" json:"follow_count,omitempty"`                                                           // 关注总数
@@ -32,8 +40,24 @@ type User struct {
 	Signature       string  `gorm:"type:varchar(256)" json:"signature,omitempty"`                                                               // 个人简介
 }
 
+var cache *redis.Client
+
+func init() {
+	cache, _ = myredis.NewRedisConn()
+}
+
 func (User) TableName() string {
 	return "users"
+}
+
+func (u *User) AfterUpdate(tx *gorm.DB) (err error) {
+	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", u.ID))
+	return cache.Del(context.Background(), fmt.Sprintf("video:feed:publish:%d", u.ID)).Err()
+}
+
+func (u *User) AfterCreate(tx *gorm.DB) (err error) {
+	gorse.Client.InsertUser(context.Background(), gorse.User{UserId: strconv.Itoa(int(u.ID)), Comment: u.UserName})
+	return nil
 }
 
 // CreateUser create user

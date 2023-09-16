@@ -7,7 +7,7 @@ import (
 
 func TestReadLogFromKafka(t *testing.T) {
 	for {
-		key, value, err := ReadLogFromKafka()
+		key, value, err := PopLogFromKafka()
 		if err != nil {
 			t.Error(err)
 			return

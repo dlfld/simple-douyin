@@ -4,15 +4,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/bytedance/gopkg/util/logger"
+	"github.com/bytedance/sonic"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/kafkaLog"
 	"github.com/segmentio/kafka-go"
-	"time"
 )
 
 var (
-	kw          *kafka.Writer
+	logKw         *kafka.Writer
+	userKw        *kafka.Writer
+	messageKw     *kafka.Writer
+	relationKw    *kafka.Writer
+	videoKw       *kafka.Writer
+	interactionKw *kafka.Writer
+
 	servicesMap map[string]struct{}
 )
 
@@ -23,17 +31,25 @@ const (
 
 func init() {
 	// 初始化kafka
-	kw = &kafka.Writer{
-		Addr:                   kafka.TCP(kafkaLog.KafkaAddr),
-		Balancer:               &kafka.Hash{},
-		Topic:                  kafkaLog.Topic,
-		AllowAutoTopicCreation: true,
-		RequiredAcks:           kafka.RequireNone,
-	}
+	logKw = newKafkaWriter(kafkaLog.Topic)
+	userKw = newKafkaWriter(conf.UserService.Name)
+	messageKw = newKafkaWriter(conf.MessageService.Name)
+	relationKw = newKafkaWriter(conf.RelationService.Name)
+	videoKw = newKafkaWriter(conf.VideoService.Name)
+	interactionKw = newKafkaWriter(conf.InteractionService.Name)
 	// 记录所有服务名
 	servicesMap = make(map[string]struct{})
 	for _, serviceName := range conf.GetAllServiceName() {
 		servicesMap[serviceName] = struct{}{}
+	}
+}
+func newKafkaWriter(topic string) *kafka.Writer {
+	return &kafka.Writer{
+		Addr:                   kafka.TCP(kafkaLog.KafkaAddr),
+		Balancer:               &kafka.Hash{},
+		Topic:                  topic,
+		AllowAutoTopicCreation: true,
+		RequiredAcks:           kafka.RequireNone,
 	}
 }
 
@@ -42,16 +58,16 @@ type LogCollector struct {
 }
 
 func (l *LogCollector) Debug(logValue string) {
-	writeLogToKafka(l.ServiceName, logger.LevelDebug, logValue)
+	pushLogToKafka(l.ServiceName, logger.LevelDebug, logValue)
 }
 func (l *LogCollector) Info(logValue string) {
-	writeLogToKafka(l.ServiceName, logger.LevelInfo, logValue)
+	pushLogToKafka(l.ServiceName, logger.LevelInfo, logValue)
 }
 func (l *LogCollector) Waring(logValue string) {
-	writeLogToKafka(l.ServiceName, logger.LevelWarn, logValue)
+	pushLogToKafka(l.ServiceName, logger.LevelWarn, logValue)
 }
 func (l *LogCollector) Error(logValue string) {
-	writeLogToKafka(l.ServiceName, logger.LevelError, logValue)
+	pushLogToKafka(l.ServiceName, logger.LevelError, logValue)
 }
 
 // NewLogCollector new 日志收集器，通过收集器的方法可以异步的将日志写入kafka
@@ -65,19 +81,35 @@ func NewLogCollector(serviceName string) (*LogCollector, error) {
 	}, nil
 }
 
-// writeLogToKafka 向kafka写入消息，错误信息用key-value对表示
+// pushLogToKafka 向kafka写入消息，错误信息用key-value对表示
 // key：服务名称 （和配置文件一致，服务名不一致将会拒绝写入）
 // value: 服务日志信息
-// 验证服务名合法后，就会开启携程去执行写入消息的操作
-func writeLogToKafka(key string, level logger.Level, logValue string) {
-	//record, _ := json.Marshal(kafkaLog.LogRecord{
-	//	Type:  level,
-	//	Value: logValue,
-	//})
-	//go write(retryTime, key, record)
+// 验证服务名合法后，就会开启协程去执行写入消息的操作
+func pushLogToKafka(key string, level logger.Level, logValue string) {
+	record, _ := sonic.Marshal(kafkaLog.LogRecord{
+		Type:  level,
+		Value: logValue,
+	})
+	go push(logKw, retryTime, key, record)
 }
 
-func write(reTime int, key string, value []byte) {
+func PushMessageToKafka(key string, value []byte) {
+	push(messageKw, retryTime, key, value)
+}
+func PushUserToKafka(key string, value []byte) {
+	push(userKw, retryTime, key, value)
+}
+func PushRelationToKafka(key string, value []byte) {
+	push(relationKw, retryTime, key, value)
+}
+func PushVideoToKafka(key string, value []byte) {
+	push(videoKw, retryTime, key, value)
+}
+func PushInteractionToKafka(key string, value []byte) {
+	push(interactionKw, retryTime, key, value)
+}
+
+func push(kw *kafka.Writer, reTime int, key string, value []byte) {
 	err := kw.WriteMessages(
 		context.Background(),
 		kafka.Message{
@@ -85,18 +117,18 @@ func write(reTime int, key string, value []byte) {
 			Value: value,
 		},
 	)
-	fmt.Printf("写入了一条消息service[%s], value[%s], top[%s]\n", key, value, kw.Topic)
+	fmt.Printf("写入了一条消息service[%s], value[%s], top[%s]\n", key, value, logKw.Topic)
 	// 写入失败，过一段时间后再重试
 	if err != nil {
 		// 没重试次数了，退出
 		if reTime <= 0 {
 			if err != nil {
-				kafkaLog.KafkaLogger.Errorf("failed to write messages, key[%s], value[%s], err=%s:", key, value, err.Error())
+				kafkaLog.KafkaLogger.Errorf("failed to push messages, key[%s], value[%s], err=%s:", key, value, err.Error())
 				panic(err)
 			}
 			return
 		}
 		time.Sleep(time.Second * retryWaiterTime)
-		write(reTime-1, key, value)
+		push(kw, reTime-1, key, value)
 	}
 }

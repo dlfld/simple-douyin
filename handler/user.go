@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/douyin/common/constant"
 	"github.com/douyin/kitex_gen/user"
 	"github.com/gin-gonic/gin"
 )
@@ -32,11 +33,11 @@ func Register(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, _ := rpcCli.userCli.UserRegister(context.Background(), req)
-	//if err2 != nil {
-	//	panic(err2)
-	//}
-	// 5. gin返回给前端
+	resp, err := rpcCli.userCli.UserRegister(context.Background(), req)
+	if err != nil {
+		resp = new(user.UserRegisterResponse)
+		constant.HandlerErr(constant.ErrRegisterFailed, resp)
+	}
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -63,10 +64,10 @@ func Login(c *gin.Context) {
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, err2 := rpcCli.userCli.UserLogin(context.Background(), req)
-	if err2 != nil {
-		c.JSON(http.StatusBadGateway, resp)
-		//panic(err2)
+	resp, err := rpcCli.userCli.UserLogin(context.Background(), req)
+	if err != nil {
+		resp = new(user.UserLoginResponse)
+		constant.HandlerErr(constant.ErrLoginFailed, resp)
 	}
 	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
@@ -89,22 +90,20 @@ func UserInfo(c *gin.Context) {
 	//}
 	// 2. 创建发生消息的请求实例
 	// req := relation.NewFollowerListRequest()
-	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
-	//if err2 != nil {
-	//	panic(err)
-	//}
+	userId, err := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	token := c.Query("token")
 	req := &user.UserRequest{UserId: userId, Token: token}
 	// 3. 前端请求数据绑定到req中
 	// _ = c.ShouldBind(req)
 	// 4. 发起RPC调用
-	resp, _ := rpcCli.userCli.UserMsg(context.Background(), req)
-	if resp.User != nil {
-		c.Set("userId", resp.User.Id)
+	resp, err := rpcCli.userCli.UserMsg(context.Background(), req)
+	if err != nil {
+		resp = new(user.UserResponse)
+		constant.HandlerErr(constant.ErrUserNotExist, resp)
 	}
-	//if err3 != nil {
-	//	panic(err)
-	//}
-	// 5. gin返回给前端
 	c.JSON(http.StatusOK, resp)
 }

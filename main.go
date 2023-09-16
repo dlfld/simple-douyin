@@ -1,40 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"os/exec"
-	"runtime"
+	"context"
 	"time"
 
 	"github.com/douyin/common/middleware"
+	"github.com/douyin/common/otel"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
+	initialize "github.com/douyin/initialize/gorm"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func getWorkingDirPath() string {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	return dir
-}
-
-func genSwagger() {
-	// 有问题，不能用
-	sysType := runtime.GOOS
-	if sysType == "linux" || sysType == "darwin" {
-		absWd := getWorkingDirPath()
-		command := "bash " + absWd + "/bash/swag_gen.sh"
-		cmd := exec.Command(command)
-		err := cmd.Run()
-		fmt.Printf("%+v\n", err)
-	}
-}
 func main() {
+	//fmt.Printf("%+v\n", conf.Mysql)
+
 	//执行生成swagger文件的命令 warning 失效
 	//genSwagger()
 	// public directory is used to serve static resources
@@ -83,5 +65,10 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
+	p := otel.NewOtelProvider("http-server")
+	defer p.Shutdown(context.Background())
+	time.Sleep(5)
+	initialize.CreateInteractionTable()
+	initialize.CreateTable()
 	r.Run("0.0.0.0:8080")
 }

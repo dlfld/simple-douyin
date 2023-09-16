@@ -56,10 +56,14 @@ type kafkaConfig struct {
 }
 
 type bloomConfig struct {
-	BloomBit uint
-	HashNum  uint
+	Addr     string
+	Password string
 }
 
 type etcdConfig struct {
+	Addr string
+}
+
+type otelConfig struct {
 	Addr string
 }

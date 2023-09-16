@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/douyin/common/conf"
-	"go.etcd.io/etcd/clientv3"
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 const grantTime = 3600 * 24 * 100

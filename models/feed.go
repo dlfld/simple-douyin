@@ -9,10 +9,13 @@
 package models
 
 import (
+	"context"
+	"fmt"
+	"strconv"
 	"time"
 
+	"github.com/douyin/common/gorse"
 	"github.com/douyin/common/mysql"
-
 	"gorm.io/gorm"
 )
 
@@ -35,6 +38,18 @@ type Video struct {
 
 func (Video) TableName() string {
 	return "videos"
+}
+
+func (v *Video) AfterUpdate(tx *gorm.DB) (err error) {
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", v.ID))
+	return nil
+}
+func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
+	gorse.Client.InsertItem(context.Background(),
+		gorse.Item{ItemId: strconv.Itoa(int(v.ID)),
+			Timestamp: time.Now().Format("2006-01-02 15:04:05"),
+			Comment:   v.Title})
+	return nil
 }
 
 // FindVideoListBy
@@ -60,10 +75,10 @@ func FindVideoListBy(field, condition string) ([]*Video, error) {
 // @Description:
 // @param video
 // @return error
-func InsertVideo(video *Video) error {
+func InsertVideo(video *Video) (id int64, err error) {
 	conn, err := mysql.NewMysqlConn()
 	if err != nil {
-		return err
+		return
 	}
 	conn.Transaction(func(tx *gorm.DB) (err error) {
 		err = tx.Model(&User{}).Where("id = ?", video.AuthorID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
@@ -78,7 +93,7 @@ func InsertVideo(video *Video) error {
 	})
 
 	// conn.Create(video)
-	return nil
+	return video.ID, nil
 }
 
 //	GetVideoFeedList

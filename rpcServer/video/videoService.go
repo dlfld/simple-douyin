@@ -6,6 +6,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
+	"log"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/bytedance/sonic"
 	"github.com/douyin/common/conf"
 	"github.com/douyin/common/crud"
@@ -14,11 +20,6 @@ import (
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/models"
 	"github.com/douyin/rpcServer/video/convert"
-	"io"
-	"log"
-	"strconv"
-	"strings"
-	"time"
 )
 
 // 视频类型
@@ -98,6 +99,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 				return nil, err
 			}
 		}
+		pipeline.Expire(context.Background(), userPublishVideoList(userId), time.Minute)
 		// 执行缓存操作
 		pipeline.Exec(context.Background())
 	}
@@ -117,6 +119,7 @@ func FindVideoListByUserId(userId int) ([]*model.Video, error) {
 // @param userId 用户id
 func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	service, _ := oss.GetOssService()
+	// 分布式id
 	snowId, _ := GenSnowId()
 	//生成文件名
 	filename := fmt.Sprintf("%s-%d", snowId, userId)
@@ -127,7 +130,7 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	//视频文件上传
 	err := service.UploadFileWithBytestream(conf.MinioConfig.VideoBucketName, reader, videoName, dataLen, videoContentType)
 	if err != nil {
-		log.Fatalln("OSS视频文件上传失败")
+		log.Print("OSS视频文件上传失败")
 		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to upload video to cos in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
@@ -137,7 +140,7 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 	//抽取第一帧图片,得先上传视频文件，然后获取到视频文件的播放链接
 	buffer, err := GetSnapshotImageBuffer(videoUrl, 1)
 	if err != nil {
-		log.Fatalln("视频封面图抽取失败！", err)
+		log.Print("视频封面图抽取失败！", err)
 		LogCollector.Error(fmt.Sprintf("func user[%d]:UploadVideo Failed to get the first frame in %s, err=%s", userId, time.Now().Format("2006-01-02 15:04:05"), err.Error()))
 		return err
 	}
@@ -158,7 +161,9 @@ func UploadVideo(reader io.Reader, dataLen, userId int64, title string) error {
 		CommentCount:  0,
 	}
 	//插入数据
-	err = models.InsertVideo(&video)
+	ID, err := models.InsertVideo(&video)
+	bf.AddVideoId(ID)
+	crud.DeletePublishListCache(int(userId))
 	if err != nil {
 		return err
 	}

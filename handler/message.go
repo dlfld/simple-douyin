@@ -19,16 +19,15 @@ import (
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/message/action/ [POST]
 func MessageAction(c *gin.Context) {
-	// 1. 创建客户端连接
-	//cli, err := messageRpc.NewRpcMessageClient()
-	//if err != nil {
-	//	c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
-	//	return
-	//}
+
 	// 2. 创建发生消息的请求实例
 	req := message.NewMessageActionRequest()
 	// 3. 前端请求数据绑定到req中
-	_ = c.ShouldBind(req)
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	if req.Content == "" {
 		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrEmptyMessage))
 		return
@@ -38,9 +37,12 @@ func MessageAction(c *gin.Context) {
 		return
 	}
 	req.FromUserId = int64(c.GetUint("userID"))
-	// fmt.Printf("req = %+v\n", req)
 	// 4. 发起RPC调用
-	resp, _ := rpcCli.messageCli.SendMessage(c, req)
+	resp, err := rpcCli.messageCli.SendMessage(c, req)
+	if err != nil {
+		resp = new(message.MessageActionResponse)
+		constant.HandlerErr(constant.ErrSendMessage, resp)
+	}
 	// 5. 处理错误返回响应
 	c.JSON(http.StatusOK, resp)
 }
@@ -55,24 +57,30 @@ func MessageAction(c *gin.Context) {
 // @Param token query string true "用户鉴权token"
 // @Router /douyin/message/chat/ [GET]
 func MessageChat(c *gin.Context) {
-	// 1. 创建客户端连接
-	//cli, err := messageRpc.NewRpcMessageClient()
-	//if err != nil {
-	//	c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrSystemBusy))
-	//	return
-	//}
 	// 2. 创建请求实例
 	req := message.NewMessageChatRequest()
 	// 3. 前端请求数据绑定到req中
 	uid := c.GetUint("userID")
-	toUserID, _ := strconv.Atoi(c.Query("to_user_id"))
+	toUserID, err := strconv.Atoi(c.Query("to_user_id"))
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	timeStr := c.Query("pre_msg_time")
-	preMsgTime, _ := strconv.Atoi(timeStr)
+	preMsgTime, err := strconv.Atoi(timeStr)
+	if err != nil {
+		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+		return
+	}
 	req.FromUserId = int64(uid)
 	req.ToUserId = int64(toUserID)
 	req.PreMsgTime = int64(preMsgTime)
 	// 4. 发起RPC调用
-	resp, _ := rpcCli.messageCli.MessageList(c, req)
+	resp, err := rpcCli.messageCli.MessageList(c, req)
+	if err != nil {
+		resp = new(message.MessageChatResponse)
+		constant.HandlerErr(constant.ErrMessageList, resp)
+	}
 	// 5. 处理错误返回响应
 	c.JSON(http.StatusOK, resp)
 }

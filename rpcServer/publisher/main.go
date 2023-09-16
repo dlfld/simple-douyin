@@ -25,7 +25,7 @@ func main() {
 	go func() {
 		for i := 0; i < 3; i++ {
 			if err := videoconsumer.HandleVideoFromKafka(); err != nil {
-				logger.Error(fmt.Sprintf("video pub failed, err=%s", err.Error()))
+				(fmt.Sprintf("video pub failed, err=%s", err.Error()))
 			}
 			logger.Error(fmt.Sprintf("video pub restart %d", i))
 		}

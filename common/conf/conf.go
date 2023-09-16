@@ -1,9 +1,10 @@
 package conf
 
 import (
-	"github.com/spf13/viper"
 	"log"
 	"sync"
+
+	"github.com/spf13/viper"
 )
 
 var (
@@ -245,5 +246,5 @@ var MinioConfig = minioConfig{
 }
 
 func GetAllServiceName() []string {
-	return []string{UserService.Name, RelationService.Name, MessageService.Name, VideoService.Name, InteractionService.Name}
+	return []string{UserService.Name, RelationService.Name, MessageService.Name, VideoService.Name, InteractionService.Name, "videoPublisher"}
 }

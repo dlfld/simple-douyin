@@ -2,6 +2,7 @@ package crud
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -194,6 +195,9 @@ func RelationGetFriends(userID uint) (userList []*models.User, err error) {
 // CacheUserInfo 将用户信息存入缓存
 func CacheUserInfo(user *models.User) (err error) {
 	// 序列化用户信息
+	if user == nil {
+		return
+	}
 	user.Password = ""
 	data, err := sonic.Marshal(user)
 	if err != nil {
@@ -210,9 +214,15 @@ func CacheUserInfo(user *models.User) (err error) {
 
 // CacheUsersInfo 批量将用户信息存入缓存
 func CacheUsersInfo(users []*models.User) (err error) {
+	if users == nil {
+		return
+	}
 	pipline := crud.redis.Pipeline()
 	// 序列化用户信息
 	for _, v := range users {
+		if v == nil {
+			continue
+		}
 		v.Password = ""
 		data, err := sonic.Marshal(v)
 		if err != nil {
@@ -236,7 +246,11 @@ func CacheUsersInfo(users []*models.User) (err error) {
 
 // GetAuthor 获取用户信息
 func GetAuthor(self uint, UserID uint) (user *model.User, err error) {
-	ormmodel, _ := GetUserInfo(strconv.Itoa(int(UserID)))
+	ormmodel, err := GetUserInfo(strconv.Itoa(int(UserID)))
+	if err != nil || ormmodel == nil {
+		return nil, errors.New("用户不存在")
+	}
+
 	user = &model.User{
 		Id:              int64(ormmodel.ID),
 		Name:            ormmodel.UserName,

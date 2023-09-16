@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"log"
+	"net"
+
 	"github.com/douyin/common/etcd"
 	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
-	"log"
-	"net"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
@@ -26,7 +27,7 @@ func main() {
 	svr := interaction.NewServer(new(InteractionServiceImpl), server.WithServiceAddr(addr), server.WithSuite(tracing.NewServerSuite()))
 	InitDao()
 	etcd.RegisterService(conf.InteractionService.Name, conf.InteractionService.Addr)
-	if logCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
+	if logCollector, err = productor.NewLogCollector(conf.InteractionService.Name); err != nil {
 		panic(err)
 	}
 	logCollector.Info("Interaction 服务启动")

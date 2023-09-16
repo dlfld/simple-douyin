@@ -2,6 +2,7 @@ package kafkaLog
 
 import (
 	"fmt"
+
 	"github.com/bytedance/gopkg/util/logger"
 	"github.com/douyin/common/comLogger"
 	"github.com/douyin/common/conf"
@@ -19,6 +20,7 @@ var (
 type LogRecord struct {
 	Type  logger.Level // 日志类型
 	Value string       // 日志信息
+	Time  string       // 日志时间
 }
 
 func init() {

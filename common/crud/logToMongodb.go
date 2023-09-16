@@ -3,6 +3,7 @@ package crud
 import (
 	"context"
 	"fmt"
+
 	"github.com/douyin/common/kafkaLog"
 	"github.com/douyin/common/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -14,7 +15,7 @@ func SetLog(serviceName string, log *kafkaLog.LogRecord) {
 	mdb, _ := mongodb.NewMongodbConn()
 	collection := mdb.Database("log").Collection(serviceName)
 
-	mlog := bson.D{{logType[log.Type], log.Value}}
+	mlog := bson.D{{"Type", logType[log.Type]}, {"Msg", log.Value}, {"Time", log.Time}}
 	result, err := collection.InsertOne(context.TODO(), mlog)
 	if err != nil {
 		panic(err)

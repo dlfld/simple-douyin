@@ -48,11 +48,12 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	log.Printf("userId --> %v\n", userId)
 	title := req.Title
 	dataLen := int64(len(req.GetData()))
-	//执行视频上传逻辑
+	//执行视频上传逻辑 视频大于50m就不上传了
 	if dataLen > 50*1000*1000 {
 		constant.HandlerErr(constant.ErrVideoSizeMaxLimit, resp)
 		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: nil}, nil
 	}
+	//如果视频标题长度为0 或者长度大于20哥字符也不上传
 	if len(title) == 0 || len(title) > 50 {
 		constant.HandlerErr(constant.ErrVideoTitleLength, resp)
 		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: nil}, nil

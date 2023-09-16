@@ -52,3 +52,7 @@ func GetSnapshotImageBuffer(videoPath string, frameNum int) (*bytes.Buffer, erro
 
 	return buf, nil
 }
+
+func AddWaterMark(video string) {
+
+}

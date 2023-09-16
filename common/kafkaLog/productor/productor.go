@@ -31,6 +31,7 @@ func init() {
 		Topic:                  kafkaLog.Topic,
 		AllowAutoTopicCreation: true,
 		RequiredAcks:           kafka.RequireNone,
+		Compression:            kafka.Snappy,
 	}
 	// 记录所有服务名
 	servicesMap = make(map[string]struct{})

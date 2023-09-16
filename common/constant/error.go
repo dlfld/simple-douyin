@@ -72,6 +72,8 @@ var errMap = map[int32]string{
 	ErrFileCantOpen:         "视频文件无法访问",
 	ErrMessageList:          "获取消息列表失败",
 	ErrSendMessage:          "发送消息失败",
+	ErrVideoSizeMaxLimit:    "视频大小超过限制",
+	ErrVideoTitleLength:     "视频标题长度错误",
 }
 
 // HandlerErr 只要把对应期望的错误码，以及自己的resp传入，就会设置好StatusCode字段和StatusMsg字段

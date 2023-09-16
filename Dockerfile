@@ -1,5 +1,5 @@
 FROM 15150276667/douyin
-
+ENV TZ=Asia/Shanghai
 # 设置工作目录
 WORKDIR /app
 
@@ -26,6 +26,7 @@ RUN go build -o main .
 WORKDIR /app/rpcServer/logger
 RUN go build -o main .
 
-
+WORKDIR /app/rpcServer/publisher
+RUN go build -o main .
 
 

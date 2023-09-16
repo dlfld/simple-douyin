@@ -9,8 +9,11 @@ import (
 
 	"github.com/douyin/common/constant"
 	"github.com/douyin/common/crud"
+	videoproducer "github.com/douyin/common/kafkaUpload/producer"
+	"github.com/douyin/common/utils"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/video"
+	"github.com/u2takey/go-utils/pointer"
 )
 
 // VideoServiceImpl implements the last service interface defined in the IDL.
@@ -31,7 +34,6 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 		return resp, nil
 	}
 	statusMsg := "Success"
-	// log.Println("%+v\n", feed)
 	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &nextTime}, nil
 }
 
@@ -55,16 +57,12 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 		constant.HandlerErr(constant.ErrVideoTitleLength, resp)
 		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: nil}, nil
 	}
-	go func() {
-		for i := 0; i < 10; i++ {
-			err = UploadVideo(reader, dataLen, userId, title)
-			if err != nil {
-				//往Kafka中写入错误日志
-				LogCollector.Error(fmt.Sprintf("user[%d]:Failed upload video in %s, err=%s", req.GetUserId(), time.Now().Format("2006-01-02 15:04:05"), err.Error()))
-			}
-		}
-
-	}()
+	// 使用消息队列异步上传视频
+	err = videoproducer.WriteVideoToKafka(reader, dataLen, int64(userId), title)
+	if err != nil {
+		LogCollector.Error(fmt.Sprintf("user[%d]:Failed to write video to kafka in %s, err=%s", req.GetUserId(), time.Now().Format("2006-01-02 15:04:05"), err.Error()))
+		return &video.PublishActionResponse{StatusCode: 1, StatusMsg: pointer.StringPtr("视频上传失败,限制最大文件大小50M!")}, nil
+	}
 	statusMsg := "视频上传成功，后台上传完成之后便可查看"
 	resp = &video.PublishActionResponse{StatusCode: 0, StatusMsg: &statusMsg}
 	return resp, nil
@@ -75,7 +73,7 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 func (s *VideoServiceImpl) PublishList(ctx context.Context, req *video.PublishListRequest) (resp *video.PublishListResponse, err error) {
 	// 根据登陆用户的id，查询用户所投稿过的所有视频
 	resp = new(video.PublishListResponse)
-	videoList, err := FindVideoListByUserId(int(req.GetUserId()))
+	videoList, err := utils.FindVideoListByUserId(int(req.GetUserId()))
 	if err != nil {
 		//往Kafka中写入错误日志
 		LogCollector.Error(fmt.Sprintf("user[%d]:Failed to get user publish list in %s, err=%s", req.GetUserId(), time.Now().Format("2006-01-02 15:04:05"), err.Error()))

@@ -75,6 +75,9 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_COMPRESSION_CODEC: snappy
+      KAFKA_MESSAGE_MAX_BYTES: 52428800
+      KAFKA_MAX_REQUEST_SIZE: 52428800
   
   zookeeper:
     image: wurstmeister/zookeeper
@@ -143,6 +146,15 @@ services:
     ports:
       - "8085:8085"
     command: sh -c "cd /app/rpcServer/interaction && sleep 10 && ./main"
+    restart: always
+
+  publisher:
+    depends_on:
+      - mysql
+      - etcd
+      - redis
+    image: base-image
+    command: sh -c "cd /app/rpcServer/publisher && sleep 10 && ./main"
     restart: always
 
   logger:

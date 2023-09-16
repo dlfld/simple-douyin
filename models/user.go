@@ -52,7 +52,8 @@ func (User) TableName() string {
 
 func (u *User) AfterUpdate(tx *gorm.DB) (err error) {
 	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", u.ID))
-	return cache.Del(context.Background(), fmt.Sprintf("video:feed:publish:%d", u.ID)).Err()
+	cache.Del(context.Background(), fmt.Sprintf("video:feed:publish:%d", u.ID))
+	return nil
 }
 
 func (u *User) AfterCreate(tx *gorm.DB) (err error) {

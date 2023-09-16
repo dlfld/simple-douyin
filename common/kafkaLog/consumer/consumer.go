@@ -41,8 +41,8 @@ func newKafkaReader(topic, groupId string) *kafka.Reader {
 		})
 }
 
-// PopLog 从kafka中读取日志信息
-func PopLog() (serviceName string, log *kafkaLog.LogRecord, err error) {
+// PopLogFromKafka 从kafka中读取日志信息
+func PopLogFromKafka() (serviceName string, log *kafkaLog.LogRecord, err error) {
 	msg, err := logKr.ReadMessage(context.Background())
 	if err != nil {
 		kafkaLog.KafkaLogger.Errorf("failed read kafka, err=%s", err.Error())
@@ -55,19 +55,19 @@ func PopLog() (serviceName string, log *kafkaLog.LogRecord, err error) {
 	return string(msg.Key), log, nil
 }
 
-func PopMessage() (key string, values []byte, err error) {
+func PopMessageFromKafka() (key string, values []byte, err error) {
 	return pop(messageKr)
 }
-func PopUser() (key string, values []byte, err error) {
+func PopUserFromKafka() (key string, values []byte, err error) {
 	return pop(userKr)
 }
-func PopRelation() (key string, values []byte, err error) {
+func PopRelationFromKafka() (key string, values []byte, err error) {
 	return pop(relationKr)
 }
-func PopVideo() (key string, values []byte, err error) {
+func PopVideoFromKafka() (key string, values []byte, err error) {
 	return pop(videoKr)
 }
-func PopInteraction() (key string, values []byte, err error) {
+func PopInteractionFromKafka() (key string, values []byte, err error) {
 	return pop(interactionKr)
 }
 func pop(kr *kafka.Reader) (key string, values []byte, err error) {

@@ -26,7 +26,7 @@ func init() {
 func handler() {
 	fmt.Println("准备读取消息：")
 	for {
-		serviceName, log, err := consumer.PopLog()
+		serviceName, log, err := consumer.PopLogFromKafka()
 		if err != nil {
 			fmt.Println(err.Error())
 			return

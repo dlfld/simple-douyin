@@ -78,11 +78,13 @@ func HandleVideoFromKafka() error {
 			return err
 		}
 		// upload video
-		fmt.Println("read video publish task from kafka: ", userId, title, dataLen)
-		err = utils.UploadVideo(reader, dataLen, userId, title)
-		if err != nil {
-			logger.Error(fmt.Sprintf("failed upload video, err=%s", err.Error()))
-			return err
+		for i := 0; i < 3; i++ {
+			err = utils.UploadVideo(reader, dataLen, userId, title)
+			if err != nil {
+				logger.Error(fmt.Sprintf("retry [%d] failed upload video, err=%s", i, err.Error()))
+				return err
+			}
+
 		}
 		// writeoffset
 		kr.CommitMessages(context.Background(), msg)

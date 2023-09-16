@@ -42,7 +42,6 @@ func PublishList(c *gin.Context) {
 	// 发起RPC调用
 	resp, err := rpcCli.videoCli.PublishList(context.Background(), req)
 	if err != nil {
-		resp := new(video.PublishListResponse)
 		constant.HandlerErr(constant.ErrPublishList, resp)
 	}
 	//返回给前端
@@ -89,7 +88,6 @@ func VideoSubmit(c *gin.Context) {
 	resp, err := rpcCli.videoCli.PublishAction(context.Background(), req)
 
 	if err != nil {
-		resp := new(video.PublishActionResponse)
 		constant.HandlerErr(constant.ErrVideoPublish, resp)
 	}
 	//返回给前端
@@ -126,9 +124,8 @@ func VideoFeed(c *gin.Context) {
 	feedRequest.UserId = int64(c.GetUint("userID"))
 	resp, err := rpcCli.videoCli.Feed(context.Background(), feedRequest)
 	if err != nil {
-		resp := new(video.FeedResponse)
 		constant.HandlerErr(constant.ErrFeedErr, resp)
-
+		return
 	}
 	//返回给前端
 	c.JSON(http.StatusOK, resp)

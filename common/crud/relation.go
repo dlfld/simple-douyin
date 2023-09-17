@@ -394,8 +394,15 @@ func GetUsersByID(userIDs []string) (users []*models.User, err error) {
 		pipline.HGet(context.Background(), "UserInfoCache", id)
 	}
 	// 执行缓存查询操作
-	res, _ := pipline.Exec(context.Background())
-
+	res, err := pipline.Exec(context.Background())
+	if err != nil {
+		var mysql_users []*models.User
+		err = crud.mysql.Where("id in ?", userIDs).Find(&mysql_users).Error
+		if err == nil {
+			CacheUsersInfo(mysql_users)
+		}
+		return mysql_users, err
+	}
 	uncached_users_id := make([]string, 0)
 	uncached_users_pos := make([]int, 0)
 	// 遍历查询结果，进行反序列化,记录缓存中没有查询到的用户
@@ -410,7 +417,9 @@ func GetUsersByID(userIDs []string) (users []*models.User, err error) {
 		user = new(models.User)
 		err = sonic.Unmarshal([]byte(data), &user)
 		if err != nil {
-			return
+			uncached_users_id = append(uncached_users_id, userIDs[i])
+			uncached_users_pos = append(uncached_users_pos, i)
+			continue
 		}
 		users[i] = user
 	}

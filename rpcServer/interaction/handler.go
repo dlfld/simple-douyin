@@ -105,10 +105,12 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 	}
 
 	if videoList, err := dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
+
 		return newFavoriteListResp(0, "ok", videoList), nil
 	}
 	dbList, err := dao.Mysql.SearchVideoListById(req.UserId)
 	if err != nil {
+		logCollector.Error(fmt.Sprintf("Interaction SearchVideoListById err[%v]", err))
 		constant.HandlerErr(constant.ErrFavoriteList, resp)
 		return resp, nil
 	}

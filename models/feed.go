@@ -24,7 +24,7 @@ import (
 //	@Description: 视频数据模型
 type Video struct {
 	ID            int64          `gorm:"primarykey" redis:"id"`
-	CreatedAt     time.Time      `gorm:"not null;index:idx_create" json:"created_at,omitempty" redis:"-"`
+	CreatedAt     time.Time      `gorm:"not null;index:idx_create" json:"created_at,omitempty" redis:"created_at"`
 	UpdatedAt     time.Time      `redis:"-"`
 	DeletedAt     gorm.DeletedAt `gorm:"index" json:"-" redis:"-"`
 	Author        User           `gorm:"foreignkey:AuthorID" json:"author,omitempty" redis:"-"`
@@ -45,6 +45,7 @@ func (v *Video) AfterUpdate(tx *gorm.DB) (err error) {
 	return nil
 }
 func (v *Video) AfterCreate(tx *gorm.DB) (err error) {
+	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", v.AuthorID))
 	gorse.Client.InsertItem(context.Background(),
 		gorse.Item{ItemId: strconv.Itoa(int(v.ID)),
 			Timestamp: time.Now().Format("2006-01-02 15:04:05"),

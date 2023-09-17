@@ -26,12 +26,9 @@ func (s *VideoServiceImpl) Feed(ctx context.Context, req *video.FeedRequest) (re
 	resp = new(video.FeedResponse)
 	feed, nextTime, err = crud.GetUserFeed(req.GetUserId(), req.GetLatestTime())
 	if err != nil {
-		log.Fatalln("视频流调用失败")
 		//往Kafka中写入错误日志
 		LogCollector.Error(fmt.Sprintf("user[%d]:Failed to get video feed in %s, err=%s", req.GetUserId(), time.Now().Format("2006-01-02 15:04:05"), err.Error()))
-		// 返回给客户端错误信息
-		constant.HandlerErr(constant.ErrFeedErr, resp)
-		return resp, nil
+		return resp, err
 	}
 	statusMsg := "Success"
 	return &video.FeedResponse{VideoList: feed, StatusMsg: &statusMsg, StatusCode: 0, NextTime: &nextTime}, nil
@@ -43,7 +40,6 @@ func (s *VideoServiceImpl) PublishAction(ctx context.Context, req *video.Publish
 	fmt.Printf("data -> %+v\n", reader.Len())
 	resp = new(video.PublishActionResponse)
 	// 上传文件的文件名
-	//filename := fmt.Sprintf("user-%d-%d", req.UserId, time.Now().Unix())
 	userId := req.UserId
 	log.Printf("userId --> %v\n", userId)
 	title := req.Title

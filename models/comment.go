@@ -37,13 +37,8 @@ func (Comment) TableName() string {
 	return "comments"
 }
 
-func (c *Comment) AfterUpdate(tx *gorm.DB) (err error) {
-	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", c.UserID))
-	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", c.VideoID))
-	return nil
-}
-
 func (c *Comment) AfterCreate(tx *gorm.DB) (err error) {
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", c.VideoID))
 	gorse.Client.InsertFeedback(context.Background(),
 		[]gorse.Feedback{{
 			FeedbackType: "comment",
@@ -55,6 +50,7 @@ func (c *Comment) AfterCreate(tx *gorm.DB) (err error) {
 }
 
 func (c *Comment) AfterDelete(tx *gorm.DB) (err error) {
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", c.VideoID))
 	gorse.Client.DelFeedback(context.Background(), "comment",
 		strconv.Itoa(int(c.UserID)), strconv.Itoa(int(c.VideoID)),
 	)

@@ -154,11 +154,9 @@ func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.Foll
 
 // FollowerList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.FollowerListRequest) (resp *relation.FollowerListResponse, err error) {
-	// TODO: Your code here...
+
 	var msg string = "get follow list ok"
-	// crud, _ := crud.NewCachedCRUD()
-	// var kitexList []*model.User
-	// userList, _ := models.GetFollowerList(uint(req.UserId))
+	resp = new(relation.FollowerListResponse)
 	userList, err := crud.RelationGetFollowers(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get follower list error: %v", err))
@@ -171,9 +169,9 @@ func (s *RelationServiceImpl) FollowerList(ctx context.Context, req *relation.Fo
 
 // FriendList implements the RelationServiceImpl interface.
 func (s *RelationServiceImpl) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) (resp *relation.RelationFriendListResponse, err error) {
-	// TODO: Your code here...
+	resp = new(relation.RelationFriendListResponse)
 	var msg string = "get follow list ok"
-	// crud, _ := crud.NewCachedCRUD()
+
 	userList, err := crud.RelationGetFriends(uint(req.UserId))
 	if err != nil {
 		logCollector.Error(fmt.Sprintf("get friend list error: %v", err))

@@ -36,13 +36,9 @@ type FavoriteCommentRelation struct {
 	UserID uint `gorm:"column:user_id;index:idx_userid;not null" json:"user_id"`
 }
 
-func (f *FavoriteVideoRelation) AfterUpdate(tx *gorm.DB) (err error) {
-	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", f.UserID))
-
-	return cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", f.VideoID)).Err()
-}
-
 func (f *FavoriteVideoRelation) AfterCreate(tx *gorm.DB) (err error) {
+	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", f.UserID))
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", f.VideoID))
 	gorse.Client.InsertFeedback(context.Background(),
 		[]gorse.Feedback{{FeedbackType: "star",
 			UserId:    strconv.Itoa(int(f.UserID)),
@@ -52,6 +48,8 @@ func (f *FavoriteVideoRelation) AfterCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 func (f *FavoriteVideoRelation) AfterDelete(tx *gorm.DB) (err error) {
+	cache.HDel(context.Background(), "UserInfoCache", fmt.Sprintf("%d", f.UserID))
+	cache.Del(context.Background(), fmt.Sprintf("video:cache:%d", f.VideoID))
 	gorse.Client.DelFeedback(context.Background(),
 		"star", strconv.Itoa(int(f.UserID)), strconv.Itoa(int(f.VideoID)),
 	)

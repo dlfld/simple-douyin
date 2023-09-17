@@ -94,18 +94,18 @@ func InteractionCommentAction(c *gin.Context) {
 		return
 	}
 	userId := int64(c.GetUint("userID"))
-	commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
-	if err != nil {
-		c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
-		return
-	}
+	// commentId, err := strconv.ParseInt(c.Query("comment_id"), 10, 64)
+	// if err != nil {
+	// 	c.JSON(http.StatusOK, constant.NewErrResp(constant.ErrBadRequest))
+	// 	return
+	// }
 	commentText := c.Query("comment_text")
 	req := &interaction.CommentActionRequest{
 		VideoId:     videoId,
 		UserId:      &userId,
 		ActionType:  int32(actionType),
 		CommentText: &commentText,
-		CommentId:   &commentId,
+		// CommentId:   &commentId,
 	}
 	resp, err := rpcCli.interactionCli.CommentAction(context.Background(), req)
 

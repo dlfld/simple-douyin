@@ -82,7 +82,7 @@ func HandleVideoFromKafka() error {
 			err = utils.UploadVideo(reader, dataLen, userId, title)
 			if err != nil {
 				logger.Error(fmt.Sprintf("retry [%d] failed upload video, err=%s", i, err.Error()))
-				return err
+				err = nil
 			}
 
 		}

@@ -161,15 +161,15 @@ func (s *UserServiceImpl) UserMsg(ctx context.Context, req *user.UserRequest) (r
 	tokenString := req.GetToken()
 
 	resp = new(user.UserResponse)
-	exists, err := bf.CheckIfUserIdExists(int64(userId))
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserIdExists(int64(userId))
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	token, claims, err1 := common.ParseToken(tokenString)
 	useridClaims := claims.UserId

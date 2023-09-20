@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/douyin/common/constant"
@@ -33,15 +32,15 @@ func InitDao() {
 
 func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *interaction.FavoriteActionRequest) (resp *interaction.FavoriteActionResponse, err error) {
 	resp = new(interaction.FavoriteActionResponse)
-	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomVideo, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomVideo, resp)
+	//		return resp, nil
+	//	}
+	//}
 	m := models.FavoriteVideoRelation{
 		VideoID: req.VideoId,
 		UserID:  req.UserId,
@@ -94,15 +93,15 @@ func (s *InteractionServiceImpl) FavoriteAction(ctx context.Context, req *intera
 
 func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interaction.FavoriteListRequest) (resp *interaction.FavoriteListResponse, err error) {
 	resp = new(interaction.FavoriteListResponse)
-	exists, err := dao.BloomFilter.CheckIfUserIdExists(req.UserId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := dao.BloomFilter.CheckIfUserIdExists(req.UserId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	if videoList, err := dao.Redis.GetFavoriteVideoListByUserId(req.UserId); err == nil {
 		return newFavoriteListResp(0, "ok", videoList), nil
@@ -139,15 +138,15 @@ func (s *InteractionServiceImpl) FavoriteList(ctx context.Context, req *interact
 // CommentAction implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interaction.CommentActionRequest) (resp *interaction.CommentActionResponse, err error) {
 	resp = new(interaction.CommentActionResponse)
-	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomVideo, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomVideo, resp)
+	//		return resp, nil
+	//	}
+	//}
 	actionType := req.ActionType
 	if actionType != 1 && actionType != 2 {
 		constant.HandlerErr(constant.ErrCommentAction, resp)
@@ -159,25 +158,25 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		exists, err = dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
-		if err != nil {
-			logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
-		} else {
-			if !exists {
-				constant.HandlerErr(constant.ErrBloomVideo, resp)
-				return resp, nil
-			}
-		}
-
-		exists, err = dao.BloomFilter.CheckIfUserIdExists(*req.UserId)
-		if err != nil {
-			logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
-		} else {
-			if !exists {
-				constant.HandlerErr(constant.ErrBloomUser, resp)
-				return resp, nil
-			}
-		}
+		//exists, err = dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
+		//if err != nil {
+		//	logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+		//} else {
+		//	if !exists {
+		//		constant.HandlerErr(constant.ErrBloomVideo, resp)
+		//		return resp, nil
+		//	}
+		//}
+		//
+		//exists, err = dao.BloomFilter.CheckIfUserIdExists(*req.UserId)
+		//if err != nil {
+		//	logCollector.Error(fmt.Sprintf("Interaction bloom_user err[%v]", err))
+		//} else {
+		//	if !exists {
+		//		constant.HandlerErr(constant.ErrBloomUser, resp)
+		//		return resp, nil
+		//	}
+		//}
 
 		m := models.Comment{
 			VideoID:     req.VideoId,
@@ -211,15 +210,15 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 			return resp, nil
 		}
 
-		exists, err = dao.BloomFilter.CheckIfCommentIdExists(*req.CommentId)
-		if err != nil {
-			logCollector.Error(fmt.Sprintf("Interaction bloom_comment err[%v]", err))
-		} else {
-			if !exists {
-				constant.HandlerErr(constant.ErrBloomComment, resp)
-				return resp, nil
-			}
-		}
+		//exists, err = dao.BloomFilter.CheckIfCommentIdExists(*req.CommentId)
+		//if err != nil {
+		//	logCollector.Error(fmt.Sprintf("Interaction bloom_comment err[%v]", err))
+		//} else {
+		//	if !exists {
+		//		constant.HandlerErr(constant.ErrBloomComment, resp)
+		//		return resp, nil
+		//	}
+		//}
 
 		m := models.Comment{
 			ID: *req.CommentId,
@@ -242,15 +241,15 @@ func (s *InteractionServiceImpl) CommentAction(ctx context.Context, req *interac
 // CommentList implements the InteractionServiceImpl interface.
 func (s *InteractionServiceImpl) CommentList(ctx context.Context, req *interaction.CommentListRequest) (resp *interaction.CommentListResponse, err error) {
 	resp = new(interaction.CommentListResponse)
-	exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomVideo, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := dao.BloomFilter.CheckIfVideoIdExists(req.VideoId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Interaction bloom_video err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomVideo, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	if commentList, err := dao.Redis.GetCommentListByVideoId(req.VideoId); err == nil {
 		return newCommentListResponse(0, "ok", commentList), nil

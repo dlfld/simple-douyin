@@ -16,7 +16,6 @@ services:
     restart: always
 
 
-
   mongodb:
     container_name: mongodb
     image: mongo:5.0.10-focal
@@ -90,82 +89,6 @@ services:
     ports:
       - "6380:6379"
     restart: always
-
-  video:
-    depends_on:
-      - mysql
-      - etcd
-      - redis
-    image: base-image
-    ports:
-      - "8084:8084"
-    command: sh -c "cd /app/rpcServer/video && sleep 10 && ./main"
-    restart: always
-    
-  relation:
-    depends_on:
-      - mysql
-      - etcd
-      - redis
-    image: base-image
-    ports:
-      - "8082:8082"
-    command: sh -c "cd /app/rpcServer/relation && sleep 10 && ./main"
-    restart: always
-
-  message:
-    depends_on:
-      - mysql
-      - etcd
-      - redis
-    image: base-image
-    ports:
-      - "8083:8083"
-    command: sh -c "cd /app/rpcServer/message && sleep 10 && ./main"
-    restart: always
-
-  user:
-    depends_on:
-      - mysql
-      - etcd
-      - redis
-    image: base-image
-    ports:
-      - "8081:8081"
-    command: sh -c "cd /app/rpcServer/user && sleep 10 && ./main"
-    restart: always
-  
-  interaction:
-    depends_on:
-      - mysql
-      - etcd
-    image: base-image
-    ports:
-      - "8085:8085"
-    command: sh -c "cd /app/rpcServer/interaction && sleep 10 && ./main"
-    restart: always
-
-  logger:
-    depends_on:
-      - mysql
-      - etcd
-    image: base-image
-    command: sh -c "cd /app/rpcServer/logger && sleep 10 && ./main"
-    restart: always
-
-  http_server:
-    depends_on:
-      - message
-      - interaction
-      - user
-      - relation
-      - video
-    image: base-image
-    ports:
-      - "8080:8080"
-    command: sh -c "cd /app && sleep 10 && ./main"
-    restart: always
-
 
   # Collector
   otel-collector:

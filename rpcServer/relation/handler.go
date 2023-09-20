@@ -5,8 +5,6 @@ import (
 	"fmt"
 
 	"github.com/douyin/common/bloom"
-	"github.com/douyin/common/constant"
-
 	"github.com/douyin/common/crud"
 	"github.com/douyin/kitex_gen/model"
 	"github.com/douyin/kitex_gen/relation"
@@ -88,15 +86,15 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 	resp.StatusMsg = &msg
 	userId := uint(req.FromUserId)
 
-	exists, err := bf.CheckIfUserIdExists(req.ToUserId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserIdExists(req.ToUserId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	switch req.ActionType {
 	case 1:
@@ -130,15 +128,15 @@ func (s *RelationServiceImpl) FollowAction(ctx context.Context, req *relation.Fo
 func (s *RelationServiceImpl) FollowList(ctx context.Context, req *relation.FollowingListRequest) (resp *relation.FollowingListResponse, err error) {
 	// TODO: Your code here...
 	resp = new(relation.FollowingListResponse)
-	exists, err := bf.CheckIfUserIdExists(req.UserId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserIdExists(req.UserId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 	var msg string = "get follow list ok"
 	// crud, _ := crud.NewCachedCRUD()
 	// userList, _ := models.GetFollowList(uint(req.UserId))

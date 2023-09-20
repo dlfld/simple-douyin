@@ -20,15 +20,15 @@ type MessageServiceImpl struct{}
 func (s *MessageServiceImpl) MessageList(ctx context.Context, req *message.MessageChatRequest) (resp *message.MessageChatResponse, err error) {
 	resp = message.NewMessageChatResponse()
 
-	exists, err := bf.CheckIfUserIdExists(req.ToUserId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Message bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserIdExists(req.ToUserId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Message bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	// 1. 数据库和缓存中读取消息
 	// req.FromUserId是当前用户id，req.ToUserId是对方用户id
@@ -124,15 +124,15 @@ func (s *MessageServiceImpl) SendMessage(ctx context.Context, req *message.Messa
 	// 1. 消息合法类型验证
 	resp = message.NewMessageActionResponse()
 
-	exists, err := bf.CheckIfUserIdExists(req.ToUserId)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("Message bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserIdExists(req.ToUserId)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("Message bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	if req.ActionType != 1 {
 		constant.HandlerErr(constant.ErrUnsupportedOperation, resp)

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"github.com/douyin/common/etcd"
-	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -15,8 +13,8 @@ import (
 )
 
 func main() {
-	p := otel.NewOtelProvider("interaction")
-	defer p.Shutdown(context.Background())
+	//p := otel.NewOtelProvider("interaction")
+	//defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.InteractionService.Addr)
 
 	if err != nil {

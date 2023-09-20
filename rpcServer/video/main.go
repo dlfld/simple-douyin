@@ -26,7 +26,7 @@ func init() {
 	if LogCollector, err = productor.NewLogCollector(conf.MessageService.Name); err != nil {
 		panic(err)
 	}
-	bf = bloom.NewBloom()
+	//bf = bloom.NewBloom()
 }
 func main() {
 	p := otel.NewOtelProvider("video")

@@ -10,9 +10,7 @@
 package main
 
 import (
-	"context"
 	"github.com/douyin/common/bloom"
-	"github.com/douyin/common/otel"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
@@ -32,12 +30,12 @@ func init() {
 	if logCollector, err = productor.NewLogCollector(conf.UserService.Name); err != nil {
 		panic(err)
 	}
-	bf = bloom.NewBloom()
+	//bf = bloom.NewBloom()
 }
 
 func main() {
-	p := otel.NewOtelProvider("user")
-	defer p.Shutdown(context.Background())
+	//p := otel.NewOtelProvider("user")
+	//defer p.Shutdown(context.Background())
 	addr, err := net.ResolveTCPAddr("tcp", conf.UserService.Addr)
 	if err != nil {
 		log.Println(err.Error())

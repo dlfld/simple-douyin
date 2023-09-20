@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"time"
 
 	"github.com/douyin/common/middleware"
-	"github.com/douyin/common/otel"
 	docs "github.com/douyin/docs"
 	"github.com/douyin/handler"
 	initialize "github.com/douyin/initialize/gorm"
@@ -65,8 +63,8 @@ func main() {
 	limitTestRouter.GET("/test", handler.BucketLimit)
 
 	handler.InitRpcCli()
-	p := otel.NewOtelProvider("http-server")
-	defer p.Shutdown(context.Background())
+	//p := otel.NewOtelProvider("http-server")
+	//defer p.Shutdown(context.Background())
 	time.Sleep(5)
 	initialize.CreateInteractionTable()
 	initialize.CreateTable()

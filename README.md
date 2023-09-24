@@ -30,11 +30,13 @@ DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY  
 - [安装方法](#安装方法)
 - [使用说明](#使用说明)
 - [贡献](#贡献)
+- [项目文档](https://mvhxlqf1uw6.feishu.cn/docx/ANc0dV9buoRrwXxqrNfcjb9jn6f)
 - [许可证](#许可证)
 <!-- - [联系方式](#联系方式)-->
 <br>
 
-
+## 决赛三等奖（4/48队）
+  
 ## 背景介绍
 1、项目介绍：第六届字节跳动青训营后端任务————实现一个简易版的抖音。要求使用Go语言编程、常用框架、数据库、对象存储等内容。我们组使用Golang实现基于Redis的安全高效RPC通信。  
 2、项目要求：

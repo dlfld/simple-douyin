@@ -67,3 +67,8 @@ type etcdConfig struct {
 type otelConfig struct {
 	Addr string
 }
+
+type chatGptConfig struct {
+	Name string
+	Addr string
+}

@@ -1,9 +1,10 @@
 package conf
 
 import (
-	"github.com/spf13/viper"
 	"log"
 	"sync"
+
+	"github.com/spf13/viper"
 )
 
 var (
@@ -19,11 +20,17 @@ var (
 	BloomConfig        bloomConfig
 	EtcdConfig         etcdConfig
 	OtelConfig         otelConfig
+	Gpt                chatGptConfig
 )
 
+var dir = "/Users/didi/Desktop/gocode/src/douyin/common/conf/config"
+
+//var dir = "/app/common/conf/config"
+
 func init() {
+
 	var wg sync.WaitGroup
-	wg.Add(12)
+	wg.Add(1)
 
 	fileType := "yaml"
 	//初始化mysql配置
@@ -31,7 +38,7 @@ func init() {
 		v := viper.New()
 		v.SetConfigName("mysql")  //设置配置文件名
 		v.SetConfigType(fileType) //设置配置文件类型
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -42,12 +49,13 @@ func init() {
 		}
 		wg.Done()
 	}()
+	wg.Add(1)
 	//初始化redis配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("redis")  //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -58,13 +66,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化userService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("user")   //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -75,13 +83,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化relationService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType)   //设置配置文件类型
 		v.SetConfigName("relation") //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -92,13 +100,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化messageService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType)  //设置配置文件类型
 		v.SetConfigName("message") //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -109,13 +117,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化videoService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("video")  //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -126,13 +134,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化interactionService配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType)      //设置配置文件类型
 		v.SetConfigName("interaction") //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -143,13 +151,13 @@ func init() {
 		}
 		wg.Done()
 	}()
-
+	wg.Add(1)
 	//初始化kafka配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("kafka")  //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -162,48 +170,48 @@ func init() {
 		wg.Done()
 	}()
 
-	//初始化cos配置
-	go func() {
-		v := viper.New()
-		v.SetConfigType(fileType) //设置配置文件类型
-		v.SetConfigName("cos")    //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
-		err := v.ReadInConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
-		CosConfig = cosConfig{
-			Url:       v.GetString("url"),
-			SecretID:  v.GetString("secretId"),
-			SecretKey: v.GetString("secretKey"),
-			ReginUrl:  v.GetString("reginUrl"),
-		}
-		wg.Done()
-	}()
+	////初始化cos配置
+	//go func() {
+	//	v := viper.New()
+	//	v.SetConfigType(fileType) //设置配置文件类型
+	//	v.SetConfigName("cos")    //设置配置文件名
+	//	v.AddConfigPath("/app/common/conf/config")
+	//	err := v.ReadInConfig()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	CosConfig = cosConfig{
+	//		Url:       v.GetString("url"),
+	//		SecretID:  v.GetString("secretId"),
+	//		SecretKey: v.GetString("secretKey"),
+	//		ReginUrl:  v.GetString("reginUrl"),
+	//	}
+	//	wg.Done()
+	//}()
 
-	//初始化bloom配置
-	go func() {
-		v := viper.New()
-		v.SetConfigType(fileType) //设置配置文件类型
-		v.SetConfigName("bloom")  //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
-		err := v.ReadInConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
-		BloomConfig = bloomConfig{
-			Addr:     v.GetString("addr"),
-			Password: v.GetString("pwd"),
-		}
-		wg.Done()
-	}()
-
+	////初始化bloom配置
+	//go func() {
+	//	v := viper.New()
+	//	v.SetConfigType(fileType) //设置配置文件类型
+	//	v.SetConfigName("bloom")  //设置配置文件名
+	//	v.AddConfigPath("/app/common/conf/config")
+	//	err := v.ReadInConfig()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	BloomConfig = bloomConfig{
+	//		Addr:     v.GetString("addr"),
+	//		Password: v.GetString("pwd"),
+	//	}
+	//	wg.Done()
+	//}()
+	wg.Add(1)
 	//初始化etcd配置
 	go func() {
 		v := viper.New()
 		v.SetConfigType(fileType) //设置配置文件类型
 		v.SetConfigName("etcd")   //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
+		v.AddConfigPath(dir)
 		err := v.ReadInConfig()
 		if err != nil {
 			log.Fatal(err)
@@ -214,21 +222,21 @@ func init() {
 		wg.Done()
 	}()
 
-	//初始化otel配置
-	go func() {
-		v := viper.New()
-		v.SetConfigType(fileType) //设置配置文件类型
-		v.SetConfigName("otel")   //设置配置文件名
-		v.AddConfigPath("/app/common/conf/config")
-		err := v.ReadInConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
-		OtelConfig = otelConfig{
-			v.GetString("addr"),
-		}
-		wg.Done()
-	}()
+	////初始化otel配置
+	//go func() {
+	//	v := viper.New()
+	//	v.SetConfigType(fileType) //设置配置文件类型
+	//	v.SetConfigName("otel")   //设置配置文件名
+	//	v.AddConfigPath("/app/common/conf/config")
+	//	err := v.ReadInConfig()
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	OtelConfig = otelConfig{
+	//		v.GetString("addr"),
+	//	}
+	//	wg.Done()
+	//}()
 	wg.Wait()
 }
 

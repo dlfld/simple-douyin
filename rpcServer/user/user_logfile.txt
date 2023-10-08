@@ -1,0 +1,33 @@
+WARNING: sonic only supports Go1.16~1.20 && CPU amd64, but your environment is not suitable
+2023/09/21 17:29:38.578671 server.go:83: [Info] KITEX: server listen at addr=[::]:8081
+
+2023/09/21 17:32:34 [32m/Users/didi/Desktop/gocode/src/douyin/models/user.go:83
+[0m[33m[157.938ms] [34;1m[rows:1][0m SELECT * FROM `users` WHERE user_name = 'wdk_test3' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+写入了一条消息service[userService], value[{"Type":5,"Value":"user[wdk_test3]: Failed to regist with existed name"}], top[logger]
+124.223.117.87:9092
+
+2023/09/21 17:32:41 [31;1m/Users/didi/Desktop/gocode/src/douyin/models/user.go:83 [35;1mrecord not found
+[0m[33m[166.421ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE user_name = 'wdk_test6' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2023/09/21 17:32:42 [32m/Users/didi/Desktop/gocode/src/douyin/models/user.go:70 [33mSLOW SQL >= 200ms
+[0m[31;1m[376.444ms] [33m[rows:1][35m INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`user_name`,`password`,`following_count`,`follower_count`,`avatar`,`background_image`,`work_count`,`favorite_count`,`total_favorited`,`signature`) VALUES ('2023-09-21 17:32:41.753','2023-09-21 17:32:41.753',NULL,'wdk_test6','$2a$10$JPRAgnf4x7w8PdQYH4/w8ubLPfJWiRXzmlDhoOi0j5R0FZGPbcINC',0,0,'https://th.bing.com/th/id/OIP.TgAt8TdvbjehPYIKGY7BIgHaHY?w=208&h=207&c=7&r=0&o=5&pid=1.7','default_background.jpg',0,0,0,'')[0m
+写入了一条消息service[userService], value[{"Type":2,"Value":"user[wdk_test6]: success to regist with encryptPassword[$2a$10$JPRAgnf4x7w8PdQYH4/w8ubLPfJWiRXzmlDhoOi0j5R0FZGPbcINC]"}], top[logger]
+124.223.117.87:9092
+
+2023/09/21 17:32:56 [32m/Users/didi/Desktop/gocode/src/douyin/models/user.go:83
+[0m[33m[169.458ms] [34;1m[rows:1][0m SELECT * FROM `users` WHERE user_name = 'wdk_test6' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+写入了一条消息service[userService], value[{"Type":5,"Value":"user[wdk_test6]: Failed to regist with existed name"}], top[logger]
+124.223.117.87:9092
+
+2023/09/21 17:33:20 [32m/Users/didi/Desktop/gocode/src/douyin/models/user.go:83
+[0m[33m[120.677ms] [34;1m[rows:1][0m SELECT * FROM `users` WHERE user_name = 'wdk_test8' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+写入了一条消息service[userService], value[{"Type":5,"Value":"user[wdk_test8]: Failed to regist with existed name"}], top[logger]
+124.223.117.87:9092
+
+2023/09/21 17:33:26 [31;1m/Users/didi/Desktop/gocode/src/douyin/models/user.go:83 [35;1mrecord not found
+[0m[33m[162.647ms] [34;1m[rows:0][0m SELECT * FROM `users` WHERE user_name = 'wdk_test7' AND `users`.`deleted_at` IS NULL ORDER BY `users`.`id` LIMIT 1
+
+2023/09/21 17:33:27 [32m/Users/didi/Desktop/gocode/src/douyin/models/user.go:70 [33mSLOW SQL >= 200ms
+[0m[31;1m[310.727ms] [33m[rows:1][35m INSERT INTO `users` (`created_at`,`updated_at`,`deleted_at`,`user_name`,`password`,`following_count`,`follower_count`,`avatar`,`background_image`,`work_count`,`favorite_count`,`total_favorited`,`signature`) VALUES ('2023-09-21 17:33:27.036','2023-09-21 17:33:27.036',NULL,'wdk_test7','$2a$10$PR3T2t0GSE0MFRh3KdJShumY8wYugzSdrrcJG.maU0kHx.zyvgYAC',0,0,'https://th.bing.com/th/id/OIP.TgAt8TdvbjehPYIKGY7BIgHaHY?w=208&h=207&c=7&r=0&o=5&pid=1.7','default_background.jpg',0,0,0,'')[0m
+写入了一条消息service[userService], value[{"Type":2,"Value":"user[wdk_test7]: success to regist with encryptPassword[$2a$10$PR3T2t0GSE0MFRh3KdJShumY8wYugzSdrrcJG.maU0kHx.zyvgYAC]"}], top[logger]
+124.223.117.87:9092

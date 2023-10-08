@@ -1,0 +1,16 @@
+WARNING: sonic only supports Go1.16~1.20 && CPU amd64, but your environment is not suitable
+
+2023/09/21 17:29:05 [32m/Users/didi/Desktop/gocode/src/douyin/common/bloom/load.go:19
+[0m[33m[68.084ms] [34;1m[rows:0][0m SELECT id from videos
+
+2023/09/21 17:29:05 [32m/Users/didi/Desktop/gocode/src/douyin/common/bloom/load.go:26
+[0m[33m[64.561ms] [34;1m[rows:0][0m SELECT id from comments
+
+2023/09/21 17:29:05 [32m/Users/didi/Desktop/gocode/src/douyin/common/bloom/load.go:33
+[0m[33m[85.810ms] [34;1m[rows:3][0m SELECT id from users
+
+2023/09/21 17:29:05 [32m/Users/didi/Desktop/gocode/src/douyin/common/bloom/load.go:40
+[0m[33m[59.523ms] [34;1m[rows:3][0m SELECT user_name from users
+写入了一条消息service[messageService], value[{"Type":2,"Value":"Interaction 服务启动"}], top[logger]
+124.223.117.87:9092
+2023/09/21 17:29:07.292778 server.go:83: [Info] KITEX: server listen at addr=[::]:8085

@@ -1,0 +1,1 @@
+kitex -module github.com/douyin -service interaction-server idl/interaction.thrift

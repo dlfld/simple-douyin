@@ -10,10 +10,10 @@
 package main
 
 import (
-	"github.com/douyin/common/bloom"
-	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
 	"net"
+
+	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 
 	"github.com/cloudwego/kitex/server"
 	"github.com/douyin/common/conf"
@@ -23,7 +23,6 @@ import (
 )
 
 var logCollector *productor.LogCollector
-var bf *bloom.Filter
 
 func init() {
 	var err error

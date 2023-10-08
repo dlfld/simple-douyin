@@ -53,7 +53,6 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 		logCollector.Error(fmt.Sprintf("user[%s]: Failed to regist with existed name", username))
 		return resp, nil
 	}
-
 	//创建用户&&密码加密
 	encryptPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -63,7 +62,6 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 			username, statusMsg))
 		return resp, nil
 	}
-
 	newUser, nerr := models.CreateUser(username, string(encryptPassword))
 	if nerr != nil {
 		statusMsg := "create user failed"
@@ -72,7 +70,6 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 			username, statusMsg))
 		return resp, nil
 	}
-
 	token, terr := common.ReleaseToken(*newUser)
 	if terr != nil {
 		statusMsg := "token发放错误"
@@ -81,12 +78,10 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, req *user.UserRegist
 			username, statusMsg))
 		return resp, nil
 	}
-
 	//返回结果
 	logCollector.Info(fmt.Sprintf("user[%s]: success to regist with encryptPassword[%s]",
 		username, encryptPassword))
-	bf.AddUserId(int64(int(newUser.ID)))
-	bf.AddUserName(username)
+
 	statusMsg := "注册并登录成功"
 	resp = &user.UserRegisterResponse{StatusCode: 0, StatusMsg: &statusMsg, UserId: int64(int(newUser.ID)), Token: token}
 	return resp, nil
@@ -99,15 +94,15 @@ func (s *UserServiceImpl) UserLogin(ctx context.Context, req *user.UserLoginRequ
 	password := req.GetPassword()
 
 	resp = new(user.UserLoginResponse)
-	exists, err := bf.CheckIfUserNameExists(username)
-	if err != nil {
-		logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
-	} else {
-		if !exists {
-			constant.HandlerErr(constant.ErrBloomUser, resp)
-			return resp, nil
-		}
-	}
+	//exists, err := bf.CheckIfUserNameExists(username)
+	//if err != nil {
+	//	logCollector.Error(fmt.Sprintf("User bloom_user err[%v]", err))
+	//} else {
+	//	if !exists {
+	//		constant.HandlerErr(constant.ErrBloomUser, resp)
+	//		return resp, nil
+	//	}
+	//}
 
 	//数据验证
 	if len(password) <= 0 || len(username) <= 0 {

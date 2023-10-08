@@ -14,4 +14,5 @@ func TestGetAllServiceName(t *testing.T) {
 	fmt.Printf("%+v\n", Mysql)
 	fmt.Printf("%+v\n", VideoService)
 	fmt.Printf("%+v\n", MessageService)
+	fmt.Printf("%+v\n", Kafka)
 }

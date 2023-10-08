@@ -12,7 +12,7 @@ var (
 	KafkaLogger  *logrus.Logger
 	KafkaLogFile = "./kafka.log"
 	Topic        = "logger"
-	KafkaAddr    = fmt.Sprintf("%s:%d", conf.Kafka.Addr, conf.Kafka.Port)
+	KafkaAddr    = fmt.Sprintf("%s:%d", "124.223.117.87", conf.Kafka.Port)
 )
 
 // LogRecord 一条日志记录

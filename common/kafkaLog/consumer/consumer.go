@@ -21,17 +21,20 @@ var (
 
 func init() {
 	logKr = newKafkaReader(kafkaLog.Topic, kafkaLog.Topic+"-group")
-	messageKr = newKafkaReader(conf.MessageService.Name, conf.MessageService.Name+"-group")
-	relationKr = newKafkaReader(conf.RelationService.Name, conf.RelationService.Name+"-group")
-	videoKr = newKafkaReader(conf.VideoService.Name, conf.VideoService.Name+"-group")
-	interactionKr = newKafkaReader(conf.InteractionService.Name, conf.InteractionService.Name+"-group")
-	userKr = newKafkaReader(conf.UserService.Name, conf.UserService.Name+"-group")
+	//messageKr = newKafkaReader(conf.MessageService.Name, conf.MessageService.Name+"-group")
+	//relationKr = newKafkaReader(conf.RelationService.Name, conf.RelationService.Name+"-group")
+	//videoKr = newKafkaReader(conf.VideoService.Name, conf.VideoService.Name+"-group")
+	//interactionKr = newKafkaReader(conf.InteractionService.Name, conf.InteractionService.Name+"-group")
+	//userKr = newKafkaReader(conf.UserService.Name, conf.UserService.Name+"-group")
 }
 
+var addr = fmt.Sprintf("%s:%d", "124.223.117.87", conf.Kafka.Port)
+
 func newKafkaReader(topic, groupId string) *kafka.Reader {
+	fmt.Println(kafkaLog.KafkaAddr)
 	return kafka.NewReader(
 		kafka.ReaderConfig{
-			Brokers:        []string{fmt.Sprintf(kafkaLog.KafkaAddr)},
+			Brokers:        []string{addr},
 			GroupID:        groupId,
 			Topic:          topic,
 			CommitInterval: time.Second * 2,
@@ -43,11 +46,16 @@ func newKafkaReader(topic, groupId string) *kafka.Reader {
 
 // PopLogFromKafka 从kafka中读取日志信息
 func PopLogFromKafka() (serviceName string, log *kafkaLog.LogRecord, err error) {
+	fmt.Println("=========")
+	fmt.Println(logKr.Config())
+	fmt.Println(logKr)
 	msg, err := logKr.ReadMessage(context.Background())
 	if err != nil {
+		fmt.Println(logKr.Config())
 		kafkaLog.KafkaLogger.Errorf("failed read kafka, err=%s", err.Error())
 		return "", nil, err
 	}
+	fmt.Println("=========")
 	log = new(kafkaLog.LogRecord)
 	if err = json.Unmarshal(msg.Value, log); err != nil {
 		panic(err)
@@ -71,7 +79,9 @@ func PopInteractionFromKafka() (key string, values []byte, err error) {
 	return pop(interactionKr)
 }
 func pop(kr *kafka.Reader) (key string, values []byte, err error) {
+	fmt.Println(kafkaLog.KafkaAddr)
 	msg, err := kr.ReadMessage(context.Background())
+	fmt.Println(kafkaLog.KafkaAddr)
 	if err != nil {
 		kafkaLog.KafkaLogger.Errorf("failed read kafka, err=%s", err.Error())
 		return

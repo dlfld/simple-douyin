@@ -49,7 +49,7 @@ func newKafkaWriter(topic string) *kafka.Writer {
 		Balancer:               &kafka.Hash{},
 		Topic:                  topic,
 		AllowAutoTopicCreation: true,
-		RequiredAcks:           kafka.RequireNone,
+		RequiredAcks:           kafka.RequireAll,
 	}
 }
 
@@ -90,7 +90,7 @@ func pushLogToKafka(key string, level logger.Level, logValue string) {
 		Type:  level,
 		Value: logValue,
 	})
-	go push(logKw, retryTime, key, record)
+	push(logKw, retryTime, key, record)
 }
 
 func PushMessageToKafka(key string, value []byte) {
@@ -110,6 +110,7 @@ func PushInteractionToKafka(key string, value []byte) {
 }
 
 func push(kw *kafka.Writer, reTime int, key string, value []byte) {
+
 	err := kw.WriteMessages(
 		context.Background(),
 		kafka.Message{
@@ -118,6 +119,7 @@ func push(kw *kafka.Writer, reTime int, key string, value []byte) {
 		},
 	)
 	fmt.Printf("写入了一条消息service[%s], value[%s], top[%s]\n", key, value, logKw.Topic)
+	fmt.Println(kafkaLog.KafkaAddr)
 	// 写入失败，过一段时间后再重试
 	if err != nil {
 		// 没重试次数了，退出

@@ -35,7 +35,7 @@ DDDDDDDDDDDDD           ooooooooooo       uuuuuuuu  uuuu         YYYYYYYYYYYYY  
 <!-- - [联系方式](#联系方式)-->
 <br>
 
-## 决赛三等奖（4/48队）
+## 决赛三等奖（第4名）
   
 ## 背景介绍
 1、项目介绍：第六届字节跳动青训营后端任务————实现一个简易版的抖音。要求使用Go语言编程、常用框架、数据库、对象存储等内容。我们组使用Golang实现基于Redis的安全高效RPC通信。  
